@@ -1,0 +1,62 @@
+package br.com.desafio.petz.api.model;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import br.com.desafio.petz.api.model.enuns.EnumTipo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "Pet")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+public class Pet implements Serializable {
+	
+	private static final long serialVersionUID = 2136959624933902915L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	private Long id;
+	
+	@NotEmpty(message = "Nome não pode ser vazio")
+	@Column(nullable = false)
+	private String nome;
+	
+	@Column(nullable = true)
+	private String raca;
+
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	private EnumTipo tipo;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_dono_fk")
+	private Cliente dono;
+	
+	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
+	@Column(name= "data_nascimento", nullable = false, columnDefinition = "DATE")
+	private LocalDate dataNascimento;
+	
+}
+		
+		
