@@ -122,10 +122,10 @@ public class ClienteController {
 
 
 	/**
-	 *   --Pagar um Cliente---
-	 *  Esse método da API deve alterar o status do Cliente para PAID.
+	 *   --Alterar um Cliente---
+	 *  Esse método da API deve alterar alguma propriedade do Cliente.
 	 * 
-	 * @param dataPagamento
+	 * @param IdCliente
 	 * {@code Request:	{ "payment_date" : "2018-06-30" }	 }		
 	 * 
 	 * @param id
@@ -153,12 +153,8 @@ public class ClienteController {
 	}
 	
 	/**
-	 * Regra para definir se é possivel CANCELAR um Cliente:
-	 * 
-	 * NÂO pode ter os seguintes Status: PAID e CANCELED 
-	 * deve ser apenas status PENDING
-	 * 
-	 * @param id resposta
+	 *  
+	 * @param id idCliente
 	 * @return Cliente
 	 */
 	@DeleteMapping("/clientes/{id}")

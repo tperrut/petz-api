@@ -12,4 +12,9 @@ public enum EnumTipo {
 	public int id() {
 		return this.id;
 	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
+	}
 }

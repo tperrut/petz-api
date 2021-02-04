@@ -46,7 +46,7 @@ public class Pet implements Serializable {
 	private String raca;
 
 	@Column(nullable = true)
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.ORDINAL)
 	private EnumTipo tipo;
 	
 	@ManyToOne

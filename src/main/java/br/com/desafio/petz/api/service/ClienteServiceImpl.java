@@ -1,4 +1,4 @@
-package br.com.desafio.petz.api.service;
+package br.com.desafio.CLIENTEz.api.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.desafio.petz.api.dao.ClienteRepository;
-import br.com.desafio.petz.api.model.Cliente;
-import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
+import br.com.desafio.CLIENTEz.api.dao.ClienteRepository;
+import br.com.desafio.CLIENTEz.api.model.Cliente;
+import br.com.desafio.CLIENTEz.api.web.exception.ResourceNotFoundException;
 
 @Service 
 public class ClienteServiceImpl implements ClienteService {
@@ -53,22 +53,22 @@ public class ClienteServiceImpl implements ClienteService {
 		return dao.findAll();
 	}
 	
-	public void verificarSeClienteExiste(String pet) {
-		Optional<List<Cliente>> petOptional = dao.findByNome(pet);
+	public void verificarSeClienteExiste(String CLIENTE) {
+		Optional<List<Cliente>> CLIENTEOptional = dao.findByNome(CLIENTE);
 
-		if (!petOptional.isPresent()) {
-			LOGGER.info(" PET_NOT_FOUND_BY_PET " + pet);
-			throw new ResourceNotFoundException(" PET_NOT_FOUND_BY_PET " + pet);
+		if (!CLIENTEOptional.isPresent()) {
+			LOGGER.info(" CLIENTE_NOT_FOUND_BY_CLIENTE " + CLIENTE);
+			throw new ResourceNotFoundException(" CLIENTE_NOT_FOUND_BY_CLIENTE " + CLIENTE);
 		}
 	}
 
 	public Optional<Cliente> verificarSeClienteExiste(Long id) {
-		Optional<Cliente> petOptional = dao.findById(id);
+		Optional<Cliente> CLIENTEOptional = dao.findById(id);
 
-		if (!petOptional.isPresent()) {
-			LOGGER.info(" PET_NOT_FOUND " + id);
-			throw new ResourceNotFoundException(" PET_NOT_FOUND " + id);
+		if (!CLIENTEOptional.isPresent()) {
+			LOGGER.info(" CLIENTE_NOT_FOUND " + id);
+			throw new ResourceNotFoundException(" CLIENTE_NOT_FOUND " + id);
 		}
-		return petOptional;
+		return CLIENTEOptional;
 	}
 }

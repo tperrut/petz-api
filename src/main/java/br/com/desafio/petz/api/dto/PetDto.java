@@ -35,6 +35,7 @@ public class PetDto {
 	@JsonIgnore
 	private Cliente dono;
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private EnumTipo tipo;	
 	
 	private String raca;
