@@ -6,25 +6,24 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.web.exception.BusinessException;
+import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 public interface ClienteService {
-	
-	Cliente salvar(Cliente Cliente);
-	
-	void excluir(Long id);
 
-	Optional<Cliente> buscarPorId(Long id);
+	Cliente salvar(Cliente cliente) throws BusinessException;
 
-	Page<Cliente> findAll(Pageable pageable);
-	
-	Optional<List<Cliente>> buscarPorNome(String name);
+	Cliente alterar(Cliente cliente) throws BusinessException;
 
-	List<Cliente> findAll();
-	
-	Optional<Cliente> verificarSeClienteExiste(Long id);
-	
-	void verificarSeClienteExiste(String nome);
-	
+	void excluir(Long id) throws ResourceNotFoundException, BusinessException;
+
+	Optional<Cliente> buscarPorId(Long id) throws ResourceNotFoundException, BusinessException;
+
+	Page<Cliente> findAll(Pageable pageable) throws BusinessException;
+
+	Optional<List<Cliente>> buscarPorNome(String name) throws ResourceNotFoundException, BusinessException;
+
+	List<Cliente> findAll() throws BusinessException ;
+
 }
