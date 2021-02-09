@@ -54,8 +54,8 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 	}
 	
 	@Override
-	public Pet converteDtoToEntity(PetDto dto) {
-		if(dto== null) return new Pet();
+	public Optional<Pet> converteDtoToEntity(PetDto dto) {
+		if(dto== null) return Optional.of(new Pet());
 		
 		Optional<Cliente> dono;
 		dono = service.buscarPorId(Long.valueOf(dto.getIdDono()));
@@ -70,13 +70,19 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 		pet.setRaca(dto.getRaca());
 		pet.setTipo(dto.getTipo());
 		
-		return  pet;
+		return  Optional.of(pet);
 	
 	}
 	
 
 	@Override
 	public List<Pet> convertListDtoToListEntity(List<PetDto> dtos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Pet> converteDtoToEntity(PetDto dto, Pet cliente) {
 		// TODO Auto-generated method stub
 		return null;
 	}
