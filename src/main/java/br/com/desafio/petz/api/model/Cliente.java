@@ -3,8 +3,8 @@ package br.com.desafio.petz.api.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,8 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -21,7 +19,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import br.com.desafio.petz.api.dto.ClienteDetalheDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,10 +39,10 @@ public class Cliente implements Serializable {
 	private String email;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
-	@Column(name= "data_nascimento", nullable = false, columnDefinition = "DATE")
+	@Column(name= "data_nascimento", columnDefinition = "DATE")
 	private LocalDate dataNascimento;
 
-	@OneToMany(mappedBy="dono", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="dono", cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	private List<Pet> pets;
 	
 	@NotEmpty(message = "Nome não pode ser vazio")
