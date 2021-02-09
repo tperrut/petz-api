@@ -50,6 +50,7 @@ public class PetDto {
 		this.idDono = builderPetDto.idDono;	
 		this.dono = builderPetDto.dono;
 		this.raca = builderPetDto.raca;
+		this.tipo = builderPetDto.tipo; 
 	}
 
 	public static final class Builder {
@@ -57,6 +58,7 @@ public class PetDto {
 		private String raca;
 		private String nome;
 		private String idDono;
+		private EnumTipo tipo;
 		private LocalDate dataNascimento; 
 		
 		private Builder() {
@@ -82,6 +84,10 @@ public class PetDto {
 			return this;
 		}
 		
+		public Builder tipo(EnumTipo e) {
+			this.tipo= e;
+			return this;
+		}
 		
 		public Builder dataNascimento(LocalDate date) {
 			this.dataNascimento = date;
