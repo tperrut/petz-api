@@ -4,22 +4,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MissingPathVariableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import br.com.desafio.petz.api.web.error.BusinessExceptionDetail;
+import br.com.desafio.petz.api.web.error.DataIntegrityViolationExceptionDetails;
+import br.com.desafio.petz.api.web.error.ErrorDetail;
 import br.com.desafio.petz.api.web.error.InternalServerExceptionDetail;
 import br.com.desafio.petz.api.web.error.JsonNotReadableDetail;
 import br.com.desafio.petz.api.web.error.ResourceNotFoundDetails;
@@ -28,46 +37,71 @@ import br.com.desafio.petz.api.web.exception.BusinessException;
 import br.com.desafio.petz.api.web.exception.InternalServerException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
-@ControllerAdvice
+/**
+ * @RestControllerAdvice is just a syntactic sugar for @ControllerAdvice + @ResponseBody
+ * @author tperrut
+ *
+ */
+
+@RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<?> handleResourceNotFoundException (ResourceNotFoundException e){
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public @ResponseBody ResourceNotFoundDetails handleResourceNotFoundException (ResourceNotFoundException e){
 		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
 		detalhe(e.getMessage()).
 		developerMessage(ResourceNotFoundException.class.getName()).
 		statusCode(HttpStatus.NOT_FOUND.value()).
 		timestamp(new Date()).
-		titulo("Resource Not Found").
+		titulo(HttpStatus.NOT_FOUND.getReasonPhrase()).
 		build();
 
-		LOGGER.info(ex.toString());
+		LOGGER.error(ex.toString());
 
-		return new ResponseEntity<>(ex,HttpStatus.NOT_FOUND );
+		return ex;
 		
 	}
 	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public @ResponseBody ErrorDetail duplicateEmailException(DataIntegrityViolationException e) {
+		DataIntegrityViolationExceptionDetails ex = DataIntegrityViolationExceptionDetails.builder().
+				detalhe(e.getRootCause().getMessage().substring(0, 46).concat(" ...")).
+				developerMessage(BusinessException.class.getName()).
+				statusCode(HttpStatus.CONFLICT.value()).
+				timestamp(new Date()).
+				titulo("Email já cadastrado!").
+				build();
+
+				LOGGER.error(ex.toString());
+				return ex;
+    }
+	
 	@ExceptionHandler(BusinessException.class) 
-	public ResponseEntity<?> handleResourceBusinessException (BusinessException e){
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+	public @ResponseBody ErrorDetail handleResourceBusinessException (BusinessException e){
 		BusinessExceptionDetail ex = BusinessExceptionDetail.builder().
-		detalhe(e.getMessage()).
+		detalhe(e.getCause().getMessage()).
 		developerMessage(BusinessException.class.getName()).
 		statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
 		timestamp(new Date()).
-		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+		titulo(e.getMessage()).
 		build();
 
 		e.printStackTrace();
 
 		LOGGER.error(e.toString());
 
-		return new ResponseEntity<>(ex,HttpStatus.UNPROCESSABLE_ENTITY );
+		return ex;
 		
 	}
+	
 	@ExceptionHandler(InternalServerException.class) 
-	public ResponseEntity<?> handleResourceInternalServerException (InternalServerException e){
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public @ResponseBody ErrorDetail handleResourceInternalServerException (InternalServerException e){
 		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
 		detalhe(e.getMessage()).
 		developerMessage(InternalServerException.class.getName()).
@@ -79,22 +113,39 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 		LOGGER.error(ex.toString());
 
-		return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR) ;
+		return ex ;
     }
+	
+	@ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public @ResponseBody ErrorDetail handleRuntimeException (ResourceNotFoundException e){
+		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
+		detalhe(e.getCause().getLocalizedMessage()).
+		developerMessage(InternalServerException.class.getName()).
+		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
+		timestamp(new Date()).
+		titulo(e.getMessage()).
+		build();
 
+		LOGGER.error(ex.toString());
+
+		return ex;
+		
+	}
 	
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+		
+		// TODO Refator e tentar os handlers da classe mãe
 		String title = "Json is invalid";
 		HttpStatus statusName = HttpStatus.UNPROCESSABLE_ENTITY;
 		int statusCode = statusName.value();
 		
-		if(ex.getMessage().contains(" not a valid representation"))
+		if(" not a valid representation".contains(ex.getMessage()))
 			title = "Erro de Conversão";
-		else if(ex.getMessage().contains("Required request body is missing")) {
+		else if("Required request body is missing".contains(ex.getMessage())) {
 			statusCode= HttpStatus.BAD_REQUEST.value();
 			statusName = HttpStatus.BAD_REQUEST;
 			title = "Corpo da Requisição vazio";
@@ -115,21 +166,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				 
 		ex.printStackTrace();
 
-		LOGGER.info(ex.toString());
+		LOGGER.error(ex.toString());
 
 		return new ResponseEntity<>(jnr,statusName);
 
 	}
-	
-	
-	
+		
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<FieldError> fields = ex.getBindingResult().getFieldErrors();
 		String fieldErro =  fields.stream().map(FieldError::getField).collect(Collectors.joining(" | "));
 		String fieldMsg =  fields.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(" | "));
-		ValidationErrorDetail jnr = ValidationErrorDetail.builder().
+		ValidationErrorDetail ved = ValidationErrorDetail.builder().
 				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
 				timestamp(new Date()).
 				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
@@ -142,10 +191,86 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 		LOGGER.error(ex.toString());
 
-		return new ResponseEntity<>(jnr,status);
+		return new ResponseEntity<>(ved,status);
 		
 
 	}
+	
+	// TODO refatorar p @ResponseBody
+	@Override
+	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+				detalhe(ex.getCause().getMessage()).
+				developerMessage(InternalServerException.class.getName()).
+				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+				timestamp(new Date()).
+				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+				build();
+
+		LOGGER.error(ise.toString());
+
+		return new ResponseEntity<>(ise,status);
+		
+
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		// TODO criar uma Excpetion para tratar erros genéricos do cliente
+		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+		detalhe(ex.getCause().getMessage()).
+		developerMessage(InternalServerException.class.getName()).
+		statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+		timestamp(new Date()).
+		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+		build();
+
+		LOGGER.error(ise.toString());
+
+		return new ResponseEntity<>(ise,status);
+		
+
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		// TODO criar uma Excpetion para tratar erros genéricos do cliente
+		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+				detalhe(ex.getCause().getMessage()).
+				developerMessage(InternalServerException.class.getName()).
+				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+				timestamp(new Date()).
+				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+				build();
+
+		LOGGER.error(ise.toString());
+
+		return new ResponseEntity<>(ise,status);
+		
+
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		// TODO criar uma Excpetion para tratar erros genéricos do cliente
+		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+				detalhe(ex.getMessage()).
+				developerMessage(InternalServerException.class.getName()).
+				statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
+				timestamp(new Date()).
+				titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
+				build();
+
+				LOGGER.error(ise.toString());
+
+
+
+		return new ResponseEntity<>(ise,status);
+		
+
+	}
+	
 	
 	
 }
