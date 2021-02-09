@@ -8,9 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import br.com.desafio.petz.api.model.Cliente;
 
-
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente,String>{
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	Optional<Cliente> findById(Long id);
 
