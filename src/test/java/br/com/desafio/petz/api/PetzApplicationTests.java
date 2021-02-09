@@ -1,8 +1,5 @@
 package br.com.desafio.petz.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.Rule;

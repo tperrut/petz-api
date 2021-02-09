@@ -1,111 +1,192 @@
 package br.com.desafio.petz.api.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
+import java.util.function.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.desafio.petz.api.dto.ClienteDto;;
+import br.com.desafio.petz.api.dao.ClienteRepository;
+import br.com.desafio.petz.api.dto.ClienteDto;
+import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.web.response.Response;
+import br.com.desafio.petz.api.web.response.ResponseApi;;
 
 public class ClienteControllerTest extends AbstractTest {
 	
+	public static final String CLIENTE= "CLIENTE Teste";
+	public static final String CLIENTE2= "CLIENTE2 Teste";
+	public static final String EMAIL_CLIENTE= "EMAIL_CLIENTE Teste";
+	public static final String EMAIL_CLIENTE2= "EMAIL_CLIENTE2 Teste";
+	public static final String PATH = "/rest/clientes";
+	public static final String PATH_ = "/rest/clientes/";
+	public static final String PATH_NOME = "/rest/clientes/nome/";
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private ClienteRepository repository;
+	
 	@Override
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		super.setUp();
 	}
 	
 	@Test
 	@WithMockUser(roles = "ADMIN")
 	public void getClientesListEmpty() throws Exception {
-	   String uri = "/rest/clientes";
-	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-	      .accept(MediaType.APPLICATION_JSON_VALUE))
-		  .andReturn();
+	   repository.deleteAll();
+
+	   String uri = ClienteControllerTest.PATH;
+	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+			   .get(uri)
+			   .accept(MediaType.APPLICATION_JSON_VALUE))
+			   .andExpect(status().isNoContent())
+			   .andReturn();
 	   
-	   int status = mvcResult.getResponse().getStatus();
-	   assertEquals(200, status);
+	   ResponseApi<ClienteDto> response = convertStringToObject(mvcResult);
+	   assertThat(response).isNotNull();
+	   assertThat(response.getData()).isNull();
 	}
 	
 	@Test
 	@WithMockUser(roles = "ADMIN")
 	public void getClientesList() throws Exception {
-	   String uri = "/rest/clientes";
-	   MvcResult mvcPOSTResult1 = createClienteViaPostRequest(uri);
-	   MvcResult mvcPOSTResult2 = createClienteViaPostRequest(uri);
+	   String uri = ClienteControllerTest.PATH;
+	   repository.deleteAll();
+	   createClienteByRepository(ClienteControllerTest.EMAIL_CLIENTE);
+	   createClienteByRepository(ClienteControllerTest.EMAIL_CLIENTE2);
 
-	   MvcResult mvcGETResult = mvc.perform(MockMvcRequestBuilders
+	   MvcResult result = mvc.perform(MockMvcRequestBuilders
 			   .get(uri)
 			   .accept(MediaType.APPLICATION_JSON_VALUE))
-			   .andDo(print())
 			   .andExpect(status().isOk())
- 		       .andExpect(MockMvcResultMatchers.jsonPath(uri).exists())
+ 		       .andDo(print()) 		       
 			   .andReturn();
-	   
-//	   int status = mvcGETResult.getResponse().getStatus();
-//	   
-//	   assertEquals(200, status);
+       /*.andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())*/
+
+	   ResponseApi<ClienteDto> response = convertStringToObject(result);
+	   assertThat(response).isNotNull();
+	   assertThat(response.getData()).isNotEmpty();
+	   assertThat(response.getData()).size().isEqualTo(2);
 	}
 	
-//	@Test
-//	public void getAllEmployeesAPI() throws Exception 
-//	{
-//	  mvc.perform( MockMvcRequestBuilders
-//	      .get("/employees")
-//	      .accept(MediaType.APPLICATION_JSON))
-//	      .andDo(print())
-//	      .andExpect(status().isOk())
-//	      .andExpect(MockMvcResultMatchers.jsonPath("$.employees").exists())
-//	      .andExpect(MockMvcResultMatchers.jsonPath("$.employees[*].employeeId").isNotEmpty());
-//	}
-//	 
-//	@Test
-//	public void getEmployeeByIdAPI() throws Exception 
-//	{
-//	  mvc.perform( MockMvcRequestBuilders
-//	      .get("/employees/{id}", 1)
-//	      .accept(MediaType.APPLICATION_JSON))
-//	      .andDo(print())
-//	      .andExpect(status().isOk())
-//	      .andExpect(MockMvcResultMatchers.jsonPath("$.employeeId").value(1));
-//	}
+	@Test
+	@WithMockUser(roles = "ADMIN")
+	public void getClientesById() throws Exception {
+	   repository.deleteAll();
+	   Long id = createClienteByRepository(ClienteControllerTest.CLIENTE);
+	   
+	   String uriGet = ClienteControllerTest.PATH_ +id.toString();
+	   MvcResult result = mvc.perform(MockMvcRequestBuilders
+			   .get(uriGet)
+			   .accept(MediaType.APPLICATION_JSON_VALUE))
+			   .andExpect(status().isOk())
+ 		       .andDo(print()) 		       
+			   .andReturn();
+       /*.andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())*/
+
+	   ResponseApi<ClienteDto> response = convertStringToObject(result);
+	   assertThat(response).isNotNull();
+	   assertThat(response.getData()).isNotEmpty();
+	   assertThat(response.getData()).size().isEqualTo(1);
+	}
 	
+	@Test
+	public void updateCliente() throws Exception {
+	   repository.deleteAll();
+
+	   Long id = createClienteByRepository("teste1@teste.com");
+	   
+	   String uriPut = ClienteControllerTest.PATH_+id.toString();
+
+	   MvcResult mvcPutResult = updateClienteViaPUTRequest(uriPut);
+	   int status = mvcPutResult.getResponse().getStatus();	 
+
+	   assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value()) ;
+	   			  	
+	}
+	
+	@Test
+	public void deleteCliente() throws Exception {
+	   repository.deleteAll();
+
+	   Long id = createClienteByRepository(ClienteControllerTest.EMAIL_CLIENTE);
+	   String uriDelete = ClienteControllerTest.PATH_+id.toString();
+
+	   mvc.perform(MockMvcRequestBuilders.delete(uriDelete)
+			.contentType(MediaType.APPLICATION_JSON_VALUE))
+	   		.andExpect(status().is2xxSuccessful())	  
+	   		.andReturn();		   
+	 
+	}
 	
 	@Test
 	public void createCliente() throws Exception {
-	   String uri = "/rest/clientes";
-	   
+	   String uri = ClienteControllerTest.PATH;
+   
 	   MvcResult mvcResult = createClienteViaPostRequest(uri);
+	   ResponseApi<ClienteDto> response = convertStringToObject(mvcResult);
+	   assertThat(response.getData()).isNotNull();
+	   assertThat(response.getData()).size().isEqualTo(1);
 	   
-	   int status = mvcResult.getResponse().getStatus();
-	   assertEquals(201, status);
-	   //String content = mvcResult.getResponse().getContentAsString();	 
-	   //assertEquals(content, "Cliente is created successfully");
+	}
+	
+	/**
+	 *
+	 * 
+	 * Refatorar ====================================>>>>>>>>>>>>>>>>>>>>>>>>
+	 * TODO colocar esses metodos numa classeUtil
+
+	
+	 */
+	private Long createClienteByRepository(String keyEmail) throws JsonProcessingException, Exception {
+		Cliente entity = newCliente(keyEmail);
+		entity = repository.save(entity);		
+		return entity.getId();
 	}
 	
 	private MvcResult createClienteViaPostRequest(String uri) throws JsonProcessingException, Exception {
-		ClienteDto dto = createNewClienteDto();
+		ClienteDto dto = newClienteDtoToPost();
 		String inputJson = convertToJson(dto);
 		MvcResult mvcResult = postApiCliente(uri, inputJson);
+		return mvcResult;
+	}
+	
+	private MvcResult updateClienteViaPUTRequest(String uri) throws JsonProcessingException, Exception {
+		ClienteDto dto = newClienteDtoToPut();
+		String inputJson = convertToJson(dto);
+		MvcResult mvcResult = putApiCliente(uri, inputJson);
+		return mvcResult;
+	}
+
+	
+	private MvcResult putApiCliente(String uri, String inputJson) throws Exception {
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+		      .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 		return mvcResult;
 	}
 
@@ -114,15 +195,28 @@ public class ClienteControllerTest extends AbstractTest {
 		      .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 		return mvcResult;
 	}
-
-	private ClienteDto createNewClienteDto() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto("CLIENTE Teste" ,"Emailxxxxxxxx"+Math.random(), LocalDate.now() );
+	
+	private Cliente newCliente(String keyEmail) throws JsonProcessingException {
+		return new Cliente(ClienteControllerTest.CLIENTE, LocalDate.now(), keyEmail);
+	}
+	
+	private ClienteDto newClienteDtoToPost() throws JsonProcessingException {
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE+Math.random(), LocalDate.now());
 		return dto;
 	}
-
+	
+	private ClienteDto newClienteDtoToPut() throws JsonProcessingException {
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE2 ,ClienteControllerTest.EMAIL_CLIENTE2, LocalDate.now());
+		return dto;
+	}
+	
+	private ResponseApi<ClienteDto> convertStringToObject(MvcResult result)
+			throws IOException, JsonParseException, JsonMappingException, UnsupportedEncodingException {
+		return objectMapper.readValue(result.getResponse().getContentAsString(), ResponseApi.class);
+	}
+	
 	private String convertToJson(ClienteDto dto) throws JsonProcessingException {
-		String inputJson = super.mapToJson(dto);
-		return inputJson;
+		return super.mapToJson(dto);
 	}
 	
 }
