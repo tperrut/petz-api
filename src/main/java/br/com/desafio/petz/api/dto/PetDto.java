@@ -25,7 +25,6 @@ public class PetDto {
 	@NotEmpty(message = "Nome não pode ser vazio")
 	private String nome;
 	
-	@NotNull(message="Data Nascimento não pode ser vazia.")
 	@DateTimeFormat(iso = ISO.TIME, pattern="yyyy-MM-dd")
 	private LocalDate dataNascimento;
 	
@@ -35,6 +34,7 @@ public class PetDto {
 	@JsonIgnore
 	private Cliente dono;
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private EnumTipo tipo;	
 	
 	private String raca;
@@ -49,6 +49,7 @@ public class PetDto {
 		this.idDono = builderPetDto.idDono;	
 		this.dono = builderPetDto.dono;
 		this.raca = builderPetDto.raca;
+		this.tipo = builderPetDto.tipo; 
 	}
 
 	public static final class Builder {
@@ -56,6 +57,7 @@ public class PetDto {
 		private String raca;
 		private String nome;
 		private String idDono;
+		private EnumTipo tipo;
 		private LocalDate dataNascimento; 
 		
 		private Builder() {
@@ -81,6 +83,10 @@ public class PetDto {
 			return this;
 		}
 		
+		public Builder tipo(EnumTipo e) {
+			this.tipo= e;
+			return this;
+		}
 		
 		public Builder dataNascimento(LocalDate date) {
 			this.dataNascimento = date;

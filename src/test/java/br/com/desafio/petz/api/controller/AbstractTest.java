@@ -21,11 +21,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @SpringBootTest
 @WebAppConfiguration
 public abstract class AbstractTest {
+	
 	protected MockMvc mvc;
+	
 	@Autowired
 	WebApplicationContext webApplicationContext;
 
-	protected void setUp() {
+	protected void setUp() throws Exception {
 		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
