@@ -25,7 +25,6 @@ public class PetDto {
 	@NotEmpty(message = "Nome não pode ser vazio")
 	private String nome;
 	
-	@NotNull(message="Data Nascimento não pode ser vazia.")
 	@DateTimeFormat(iso = ISO.TIME, pattern="yyyy-MM-dd")
 	private LocalDate dataNascimento;
 	

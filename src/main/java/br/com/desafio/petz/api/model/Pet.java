@@ -56,7 +56,7 @@ public class Pet implements Serializable {
 	private Cliente dono;
 
 	@DateTimeFormat(iso = ISO.DATE, pattern = "yyyy-MM-dd")
-	@Column(name = "data_nascimento", nullable = false, columnDefinition = "DATE")
+	@Column(name = "data_nascimento", nullable = true, columnDefinition = "DATE")
 	private LocalDate dataNascimento;
 
 	public Pet(@NotEmpty(message = "Nome não pode ser vazio") String nome, String raca, EnumTipo tipo, Cliente dono,
