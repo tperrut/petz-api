@@ -1,14 +1,13 @@
 package br.com.desafio.petz.api.service;
 
-import java.sql.SQLDataException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,7 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
+	@CachePut("buscarClientePorId")
 	public Cliente alterar(Cliente cliente) throws ResourceNotFoundException, BusinessException {
 			return dao.save(cliente);
 	}
@@ -63,6 +63,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Cacheable("buscarClientePorId")
 	@Transactional(readOnly = true)
 	public Optional<Cliente> buscarPorId(Long id) throws ResourceNotFoundException, BusinessException {
 			verificarSeClienteExiste(id);
