@@ -121,12 +121,12 @@ public class PetController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/pets/{id}")
-	public ResponseEntity<Object> alterarPet(@RequestBody @Valid PetDto dto, @PathVariable Long id) {
+	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
 		logger.info(String.format("UPDATE PET %s", id));
 
 		Optional<Pet> pet = null;
-		Optional<Pet> cliente = service.buscarPorId(id);
-		if (cliente.isPresent()) {
+		pet = service.buscarPorId(id);
+		if (pet.isPresent()) {
 			pet = converter.converteDtoToEntity(dto);
 			pet.get().setId(id);
 			service.salvar(pet.get());
