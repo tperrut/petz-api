@@ -35,6 +35,9 @@ import br.com.desafio.petz.api.web.exception.InternalServerException;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/rest")
@@ -50,6 +53,13 @@ public class PetController {
 
 	@GetMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
+	@ApiOperation(value = "Get list of Students in the System ", response = Iterable.class, tags = "getStudents")
+
+	@ApiResponses(value = { 
+            @ApiResponse(code = 200, message = "Success|OK"),
+            @ApiResponse(code = 401, message = "not authorized!"), 
+            @ApiResponse(code = 403, message = "forbidden!!!"),
+            @ApiResponse(code = 404, message = "not found!!!") })
 	public ResponseEntity<ResponseApi<PetDto>> listarPets() {
 		logger.info("LISTAR_PETS");
 		Response<PetDto> response;
@@ -109,11 +119,12 @@ public class PetController {
 		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
 		List<PetDto> listDataTtoResponse = new ArrayList<PetDto>();
 		Pet pet = null; 
-		
-		pet = service.salvar(converter.converteDtoToEntity(dto).get());
-
-		listDataTtoResponse.add(converter.convertToDto(pet));
-		petResponse.setData(listDataTtoResponse);
+		Optional<Pet> optPet = converter.converteDtoToEntity(dto);
+		if (optPet.isPresent()) {
+			pet = service.salvar(optPet.get());
+			listDataTtoResponse.add(converter.convertToDto(pet));
+			petResponse.setData(listDataTtoResponse);
+		}	
 		return new ResponseEntity<>(petResponse, HttpStatus.CREATED);
 	}
 
@@ -127,7 +138,7 @@ public class PetController {
 		Optional<Pet> pet = null;
 		pet = service.buscarPorId(id);
 		if (pet.isPresent()) {
-			pet = converter.converteDtoToEntity(dto);
+			pet = converter.converteDtoToEntity(dto, pet.get());
 			pet.get().setId(id);
 			service.salvar(pet.get());
 		}

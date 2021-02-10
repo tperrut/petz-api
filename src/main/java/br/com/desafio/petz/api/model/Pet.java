@@ -20,6 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import br.com.desafio.petz.api.model.enuns.EnumTipo;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,7 @@ public class Pet implements Serializable {
 
 	@NotEmpty(message = "Nome não pode ser vazio")
 	@Column(nullable = false)
+	@ApiModelProperty(notes = "Nome do Pet", name="name",required=true,value="Brutus")
 	private String nome;
 
 	@Column(nullable = true)

@@ -131,7 +131,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	public void updatePet() throws Exception {
+	public void updatePetAllFileds() throws Exception {
 		clienteRepository.deleteAll();
 		petRepository.deleteAll();
 		Cliente cliente = createClienteByRepository(PetControllerTest.EMAIL_CLIENTE);
@@ -139,7 +139,7 @@ public class PetControllerTest extends AbstractTest {
 		pet = petRepository.save(pet);
 		String uriPut = PetControllerTest.PATH_ + pet.getId().toString();
 
-		MvcResult mvcPutResult = updatePetViaPUTRequest(uriPut, cliente);
+		MvcResult mvcPutResult = updatePetAllFieldsByPUTRequest(uriPut, cliente);
 		int status = mvcPutResult.getResponse().getStatus();
 		
 		assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -150,7 +150,29 @@ public class PetControllerTest extends AbstractTest {
 		assertThat(optPet.get().getRaca()).isEqualTo(PetControllerTest.RACA2);
 
 	}
+	
+	@Test
+	public void updatePetPartialFields() throws Exception {
+		clienteRepository.deleteAll();
+		petRepository.deleteAll();
+		Cliente cliente = createClienteByRepository(PetControllerTest.EMAIL_CLIENTE);
+		Pet pet = newPet(PetControllerTest.PET, PetControllerTest.RACA, PetControllerTest.TIPO, cliente);
+		pet = petRepository.save(pet);
+		String uriPut = PetControllerTest.PATH_ + pet.getId().toString();
 
+		MvcResult mvcPutResult = updatePetPartialFieldsByPUTRequest(uriPut, cliente);
+		
+		int status = mvcPutResult.getResponse().getStatus();
+		
+		assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value());
+		
+		Optional<Pet> optPet =petRepository.findById(pet.getId());
+		assertThat(optPet).isPresent();
+		assertThat(optPet.get().getNome()).isEqualTo(PetControllerTest.PET2);
+		assertThat(optPet.get().getRaca()).isEqualTo(PetControllerTest.RACA2);
+
+	}
+	
 	@Test
 	public void deletePet() throws Exception {
 	   clienteRepository.deleteAll();
@@ -195,13 +217,21 @@ public class PetControllerTest extends AbstractTest {
 		return mvcResult;
 	}
 	
-	private MvcResult updatePetViaPUTRequest(String uri, Cliente cliente) throws JsonProcessingException, Exception {
-		PetDto dto = newPetDtoToPut(cliente);
+	private MvcResult updatePetAllFieldsByPUTRequest(String uri, Cliente cliente) throws JsonProcessingException, Exception {
+		PetDto dto = newPetDtoToPutAllFields(cliente);
 		String inputJson = convertToJson(dto);
 		MvcResult mvcResult = putApiCliente(uri, inputJson);
 		return mvcResult;
 	}
 
+	private MvcResult updatePetPartialFieldsByPUTRequest(String uri, Cliente cliente) throws JsonProcessingException, Exception {
+		PetDto dto = newPetDtoToPutPartialFields(cliente);
+		String inputJson = convertToJson(dto);
+		MvcResult mvcResult = putApiCliente(uri, inputJson);
+		return mvcResult;
+	}
+	
+	
 	
 	private MvcResult putApiCliente(String uri, String inputJson) throws Exception {
 		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -238,13 +268,23 @@ public class PetControllerTest extends AbstractTest {
 		return dto;
 	}
 	
-	private PetDto newPetDtoToPut(Cliente dono) throws JsonProcessingException {
+	private PetDto newPetDtoToPutAllFields(Cliente dono) throws JsonProcessingException {
 		PetDto dto = PetDto.builder().
 				idDono(dono.getId().toString()).
 				nome(PetControllerTest.PET2).
 				dataNascimento(LocalDate.now()).
 				dono(dono).
 				tipo(PetControllerTest.TIPO).
+				raca(PetControllerTest.RACA2).
+				build();
+				
+		return dto;
+	}
+	
+	private PetDto newPetDtoToPutPartialFields(Cliente dono) throws JsonProcessingException {
+		PetDto dto = PetDto.builder().
+				idDono(dono.getId().toString()).
+				nome(PetControllerTest.PET2).
 				raca(PetControllerTest.RACA2).
 				build();
 				

@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.dto.PetDto;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
 import br.com.desafio.petz.api.service.ClienteService;
+import br.com.desafio.petz.api.service.PetService;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 @Service 
@@ -19,7 +21,8 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 	
 	
 	@Autowired
-	private ClienteService service;
+	private ClienteService clienteService;
+	
 	
 	/**
 	 * Nesse converter o Dto usa o Padrão Builder
@@ -43,8 +46,6 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 	
 	@Override
 	public PetDto convertToDto(Pet entry) {
-		// TODO veificar se vamos pegar o dono no repository 
-		
 		return PetDto.builder().
 				nome(entry.getNome()).
 				raca(entry.getRaca()).
@@ -52,28 +53,45 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 				dataNascimento(entry.getDataNascimento()).
 				build();
 	}
-	
 	@Override
-	public Optional<Pet> converteDtoToEntity(PetDto dto) {
+	public Optional<Pet> converteDtoToEntity(PetDto dto, Pet pet) {
 		if(dto== null) return Optional.of(new Pet());
 		
 		Optional<Cliente> dono;
-		dono = service.buscarPorId(Long.valueOf(dto.getIdDono()));
+		dono = clienteService.buscarPorId(Long.valueOf(dto.getIdDono()));
 		
 		if(!dono.isPresent()) 
 			throw new ResourceNotFoundException("Id do dono não encontrado");
 		
+		setValidFields(dto, pet);
+		return  Optional.of(pet);
+	}
+
+	
+	@Override
+	public Optional<Pet> converteDtoToEntity(PetDto dto) {
 		Pet pet = new Pet();
-		pet.setDataNascimento(dto.getDataNascimento());
-		pet.setDono(dono.get());
-		pet.setNome(dto.getNome());
-		pet.setRaca(dto.getRaca());
-		pet.setTipo(dto.getTipo());
+		if(dto== null) return Optional.of(pet);
 		
+		Optional<Cliente> dono;
+		dono = clienteService.buscarPorId(Long.valueOf(dto.getIdDono()));
+		
+		if(!dono.isPresent()) 
+			throw new ResourceNotFoundException("Id do dono não encontrado");
+		
+		setValidFields(dto, pet);
 		return  Optional.of(pet);
 	
 	}
 	
+	private void setValidFields(PetDto dto, Pet pet) {
+		if(dto.getNome() != null) pet.setNome(dto.getNome());
+		if(dto.getRaca() != null) pet.setRaca(dto.getRaca());
+		if(dto.getTipo() != null) pet.setTipo(dto.getTipo());
+		if(dto.getDataNascimento() != null) pet.setDataNascimento(dto.getDataNascimento());
+		
+				
+	}
 
 	@Override
 	public List<Pet> convertListDtoToListEntity(List<PetDto> dtos) {
@@ -81,12 +99,7 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 		return null;
 	}
 
-	@Override
-	public Optional<Pet> converteDtoToEntity(PetDto dto, Pet cliente) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	
 
 }
