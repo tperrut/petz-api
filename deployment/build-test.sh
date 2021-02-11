@@ -1,2 +1,3 @@
 echo 'Iniciando os testes'
-mvn clean verify
+mvn surefire:test
+mvn verify
