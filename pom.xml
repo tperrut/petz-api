@@ -21,27 +21,77 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-	<profile>
-	    <id>deploy-heroku</id>
-	    <properties>
-	        <maven.deploy.skip>true</maven.deploy.skip>
-	    </properties>
-	    <build>
-	        <plugins>
-	            <plugin>
-	                <groupId>com.heroku.sdk</groupId>
-	                <artifactId>heroku-maven-plugin</artifactId>
-	                <version>3.0.2</version>
-	                <configuration>
-	                    <appName>desafio-petz-api</appName>
-	                    <processTypes>
-	                        <web>java $JAVA_OPTS -jar -Dserver.port=$PORT target/${project.build.finalName}.jar</web>
-	                    </processTypes>
-	                </configuration>
-	            </plugin>
-	        </plugins>
-	    </build>
-	</profile>
+	<profiles>
+		<profile>
+		    <id>prod</id>
+		    <activation>
+                <!-- this profile is active by default -->
+                <activeByDefault>false</activeByDefault>
+                <!-- activate if system properties 'env=dev' -->
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+                
+            </activation>
+		    <properties>
+                <env>prod</env>
+            </properties>
+		</profile>    
+		<profile>
+		    <id>dev</id>
+		    <activation>
+                <!-- this profile is active by default -->
+                <activeByDefault>true</activeByDefault>
+                <!-- activate if system properties 'env=dev' -->
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+                
+            </activation>
+		    <properties>
+                <env>dev</env>
+            </properties>
+		</profile>  
+		<profile>
+		    <id>test</id>
+		    <activation>
+                <!-- this profile is active by default -->
+                <activeByDefault>false</activeByDefault>
+                <!-- activate if system properties 'env=dev' -->
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+                
+            </activation>
+		    <properties>
+                <env>test</env>
+            </properties>
+		</profile>    
+		<profile>
+		    <id>deploy-heroku</id>
+		    <properties>
+		        <maven.deploy.skip>true</maven.deploy.skip>
+		    </properties>
+		    <build>
+		        <plugins>
+		            <plugin>
+		                <groupId>com.heroku.sdk</groupId>
+		                <artifactId>heroku-maven-plugin</artifactId>
+		                <version>3.0.2</version>
+		                <configuration>
+		                    <appName>desafio-petz-api</appName>
+		                    <processTypes>
+		                        <web>java $JAVA_OPTS -jar -Dserver.port=$PORT target/${project.build.finalName}.jar</web>
+		                    </processTypes>
+		                </configuration>
+		            </plugin>
+		        </plugins>
+		    </build>
+		</profile>
+	</profiles>	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -112,11 +162,31 @@
 	</dependencies>
 
 	<build>
+	<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-help-plugin</artifactId>
+	            <version>3.2.0</version>
+	            <executions>
+	                <execution>
+	                    <id>show-profiles</id>
+	                    <phase>compile</phase>
+	                    <goals>
+	                        <goal>active-profiles</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
 			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -2,6 +2,7 @@ language: java
 
 script: 
   - ./mvnw clean install
+  - ./mvnw help:active-profiles
   - ./deployment/build-test.sh
   
 jdk:
