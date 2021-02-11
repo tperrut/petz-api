@@ -1,3 +1,13 @@
-echo 'Iniciando os testes'
+echo '=================  ¯\_༼ᴼل͜ᴼ༽_/¯‍  ================='
+echo '================= Iniciando os Testes ================='
+
+
+
+
 mvn test -P test 
-echo 'Testes okay!!!'
+
+
+
+
+echo '================= Fim dos Testes================='
+echo '================= ¯\_༼ᴼل͜ᴼ༽_/¯‍ ================='
