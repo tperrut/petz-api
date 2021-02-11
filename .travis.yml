@@ -1,11 +1,12 @@
 language: java
 
 script: 
-  - chmod +x ./deployment/build-test.sh
+  - ./mvnw clean install
   - ./deployment/build-test.sh
- 
+  
 jdk:
   - openjdk8
 before_install:
   - chmod +x mvnw
+  - chmod +x ./deployment/run-tests.sh
  
