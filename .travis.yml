@@ -1,6 +1,8 @@
 language: java
 
-script: ./deployment/build-test.sh
+script: 
+  - chmod +x ./deployment/build-test.sh
+  - ./deployment/build-test.sh
  
 jdk:
   - openjdk8
