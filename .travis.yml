@@ -2,8 +2,6 @@ language: java
 
 script: 
   - ./mvnw clean install
-  - ./mvnw help:active-profiles
-  - ./mvnw  -P test 
   - ./deployment/run-tests.sh
   
 jdk:
@@ -14,7 +12,7 @@ before_install:
   - chmod +x ./deployment/run-tests.sh
 
 before_deploy: 
-  - ./mvnw package -P prod
+  - ./mvnw package -P prod -D skipTests=true
 
 deploy:
   provider: heroku
