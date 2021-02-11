@@ -6,7 +6,12 @@ script:
   
 jdk:
   - openjdk8
+
 before_install:
   - chmod +x mvnw
   - chmod +x ./deployment/run-tests.sh
- 
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "${HEROKU_API_KEY}"
