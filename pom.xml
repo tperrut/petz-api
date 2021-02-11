@@ -103,7 +103,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M1</version>
 				<configuration>
-					<skipTests>true</skipTests>
+					<skipTests>false</skipTests>
 				</configuration>
 			</plugin>
 			 
@@ -128,7 +128,7 @@
 	                <info>Version: ${application.version}, Server: ${server.address}:${server.port}, Active Profiles: ${spring.active.profiles}</info>
 	                <version>${project.version}</version>
 	                <font>bubble</font>
-	                <color>default</color>
+	                <color>purple</color>
 	            </configuration>
 	        </plugin>
    		 </plugins>
