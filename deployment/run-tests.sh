@@ -1,3 +1,3 @@
 echo 'Iniciando os testes'
-mvn surefire:test
+mvn test -P test
 echo 'Testes okay!!!'

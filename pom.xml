@@ -188,14 +188,14 @@
 	            </executions>
 	        </plugin>
 			
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M1</version>
 				<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			 
 			<plugin>
 	            <groupId>ch.acanda.maven</groupId>
