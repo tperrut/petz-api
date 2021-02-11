@@ -1,7 +1,6 @@
 language: java
 
 script: 
-  - ./mvnw clean install
   - ./deployment/run-tests.sh
   
 jdk:
