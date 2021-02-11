@@ -12,6 +12,9 @@ before_install:
   - chmod +x mvnw
   - chmod +x ./deployment/run-tests.sh
 
+before_deploy: 
+  - ./mvnw package -D env=prod
+
 deploy:
   provider: heroku
   api_key:
