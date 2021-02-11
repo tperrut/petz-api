@@ -3,6 +3,7 @@ language: java
 script: 
   - ./mvnw clean install
   - ./mvnw help:active-profiles
+  - ./mvnw compile -D skipTests=false env=test 
   - ./deployment/run-tests.sh
   
 jdk:
