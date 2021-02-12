@@ -78,7 +78,7 @@ Use maven goal 'test'
 mvn test
 ```
 ## Heroku
-Url to access API on Heroku  https://desafio-petz-api.herokuapp.com/
+Url to access API on Heroku  https://desafio-petz-api.herokuapp.com/swagger-ui.htm
  
 ## Config Security
 The Basic authentication was implemented with Spring Security.
