@@ -11,7 +11,7 @@ public class PetzApplication {
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(PetzApplication.class);
-		application.setBannerMode(Banner.Mode.LOG);
+		application.setBannerMode(Banner.Mode.CONSOLE);
 		application.run(args);
 	}
 

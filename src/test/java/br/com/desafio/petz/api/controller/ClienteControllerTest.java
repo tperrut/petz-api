@@ -1,26 +1,30 @@
-package br.com.desafio.petz.api.controller;
+	package br.com.desafio.petz.api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-import java.util.function.Consumer;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,15 +34,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
-import br.com.desafio.petz.api.web.response.Response;
+import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
 
 public class ClienteControllerTest extends AbstractTest {
 	
 	public static final String CLIENTE= "CLIENTE Teste";
 	public static final String CLIENTE2= "CLIENTE2 Teste";
-	public static final String EMAIL_CLIENTE= "EMAIL_CLIENTE Teste";
-	public static final String EMAIL_CLIENTE2= "EMAIL_CLIENTE2 Teste";
+	public static final String EMAIL_CLIENTE= "teste@gmail.com";
+	public static final String EMAIL_CLIENTE2= "teste2@gmail.com";
+	public static final String INVALID_EMAIL= "teste2xxxxxgmail.com";
 	public static final String PATH = "/rest/clientes";
 	public static final String PATH_ = "/rest/clientes/";
 	public static final String PATH_NOME = "/rest/clientes/nome/";
@@ -48,6 +53,10 @@ public class ClienteControllerTest extends AbstractTest {
 	
 	@Autowired
 	private ClienteRepository repository;
+	
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 	
 	@Override
 	@Before
@@ -98,7 +107,7 @@ public class ClienteControllerTest extends AbstractTest {
 	@WithMockUser(roles = "ADMIN")
 	public void getClientesById() throws Exception {
 	   repository.deleteAll();
-	   Long id = createClienteByRepository(ClienteControllerTest.CLIENTE);
+	   Long id = createClienteByRepository(ClienteControllerTest.EMAIL_CLIENTE);
 	   
 	   String uriGet = ClienteControllerTest.PATH_ +id.toString();
 	   MvcResult result = mvc.perform(MockMvcRequestBuilders
@@ -116,7 +125,7 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	public void updateCliente() throws Exception {
+	public void updateClienteOK() throws Exception {
 	   repository.deleteAll();
 
 	   Long id = createClienteByRepository("teste1@teste.com");
@@ -129,6 +138,22 @@ public class ClienteControllerTest extends AbstractTest {
 	   assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value()) ;
 	   			  	
 	}
+	
+//	@Test
+//	public void updateClienteDeveLancarExceptionQuandoId() throws Exception {
+//	   repository.deleteAll();
+//
+//	   Long id = createClienteByRepository("teste1@teste.com");
+//	   
+//	   String uriPut = ClienteControllerTest.PATH_+id.toString();
+//
+//	   MvcResult mvcPutResult = updateClienteViaPUTRequest(uriPut);
+//	   int status = mvcPutResult.getResponse().getStatus();	 
+//
+//	   assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value()) ;
+//	   			  	
+//	}
+	
 	
 	@Test
 	public void deleteCliente() throws Exception {
@@ -145,14 +170,35 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	public void createCliente() throws Exception {
+	public void createClienteOk() throws Exception {
 	   String uri = ClienteControllerTest.PATH;
-   
+	   repository.deleteAll();
+
 	   MvcResult mvcResult = createClienteViaPostRequest(uri);
 	   ResponseApi<ClienteDto> response = convertStringToObject(mvcResult);
 	   assertThat(response.getData()).isNotNull();
 	   assertThat(response.getData()).size().isEqualTo(1);
 	   
+	}
+	
+	
+	
+	
+	/**
+	 *  TODO Considerar testar esses erros numa classe d test separada
+	 *  assim podemos testar a camada de serviço de forma isolada
+	 *  
+	*/
+	
+	@Test
+	public void testNameNotFoundException() throws JsonProcessingException, Exception {
+		repository.deleteAll();
+
+		String uriGet = ClienteControllerTest.PATH_NOME + ClienteControllerTest.CLIENTE;
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriGet).accept(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().is4xxClientError()).andDo(print()).andReturn();
+		/* .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists()) */
+		assertThat(mvcResult.getResponse().getContentAsString()).contains("CLIENTE : CLIENTE Teste NOT_FOUND.");
 	}
 	
 	/**
@@ -167,6 +213,14 @@ public class ClienteControllerTest extends AbstractTest {
 		Cliente entity = newCliente(keyEmail);
 		entity = repository.save(entity);		
 		return entity.getId();
+	}
+	
+
+	private MvcResult createClienteViaPostRequestInvalidEmail(String uri) throws JsonProcessingException, Exception {
+		ClienteDto dto = newClienteDtoToPostWithInvalidEmail();
+		String inputJson = convertToJson(dto);
+		MvcResult mvcResult = postApiCliente(uri, inputJson);
+		return mvcResult;
 	}
 	
 	private MvcResult createClienteViaPostRequest(String uri) throws JsonProcessingException, Exception {
@@ -201,7 +255,12 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	private ClienteDto newClienteDtoToPost() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE+Math.random(), LocalDate.now());
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE, LocalDate.now());
+		return dto;
+	}
+	
+	private ClienteDto newClienteDtoToPostWithInvalidEmail() throws JsonProcessingException {
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now());
 		return dto;
 	}
 	

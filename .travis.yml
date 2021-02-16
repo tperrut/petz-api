@@ -1,0 +1,19 @@
+language: java
+
+script: 
+  - ./deployment/run-tests.sh
+  
+jdk:
+  - openjdk8
+
+before_install:
+  - chmod +x mvnw
+  - chmod +x ./deployment/run-tests.sh
+
+before_deploy: 
+  - ./mvnw package -P prod -D skipTests=true
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: ${HEROKU_API_KEY}

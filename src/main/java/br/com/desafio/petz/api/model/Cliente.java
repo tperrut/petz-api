@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -34,7 +35,7 @@ public class Cliente implements Serializable {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 	
-	@NotEmpty(message = "Email não pode ser vazio")
+	@Email(message = "Por favor digite um email válido!")
 	@Column(nullable = false, unique = true)
 	private String email;
 	

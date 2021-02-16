@@ -17,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,10 +36,18 @@ import br.com.desafio.petz.api.web.error.ResourceNotFoundDetails;
 import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
 import br.com.desafio.petz.api.web.exception.BusinessException;
 import br.com.desafio.petz.api.web.exception.InternalServerException;
+import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 /**
- * @RestControllerAdvice is just a syntactic sugar for @ControllerAdvice + @ResponseBody
+ * @RestControllerAdvice <p>is just a syntactic sugar for to: </p>
+ * {@link ControllerAdvice} + {@link ResponseBody}
+ *
+ * 
+ * @RestExceptionHandler Manipulador genérico de exceptions.
+ * Captura as exceptions lançadas pela aplicação e retorna 
+ * com uma resposta padronizada {@link ErrorDetail}.
+ * 
  * @author tperrut
  *
  */
@@ -54,6 +63,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
 		detalhe(e.getMessage()).
 		developerMessage(ResourceNotFoundException.class.getName()).
+		statusCode(HttpStatus.NOT_FOUND.value()).
+		timestamp(new Date()).
+		titulo(HttpStatus.NOT_FOUND.getReasonPhrase()).
+		build();
+
+		LOGGER.error(ex.toString());
+
+		return ex;
+		
+	}
+	
+	@ExceptionHandler(NameNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public @ResponseBody ResourceNotFoundDetails handleResourceNameNotFoundException (NameNotFoundException e){
+		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
+		detalhe(e.getMessage()).
+		developerMessage(NameNotFoundException.class.getName()).
 		statusCode(HttpStatus.NOT_FOUND.value()).
 		timestamp(new Date()).
 		titulo(HttpStatus.NOT_FOUND.getReasonPhrase()).
@@ -116,22 +142,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return ex ;
     }
 	
-	@ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public @ResponseBody ErrorDetail handleRuntimeException (ResourceNotFoundException e){
-		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
-		detalhe(e.getCause().getLocalizedMessage()).
-		developerMessage(InternalServerException.class.getName()).
-		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
-		timestamp(new Date()).
-		titulo(e.getMessage()).
-		build();
-
-		LOGGER.error(ex.toString());
-
-		return ex;
-		
-	}
+//	@ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+//	public @ResponseBody ErrorDetail handleRuntimeException (RuntimeException e){
+//		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
+//		detalhe(e.getMessage()).
+//		developerMessage(InternalServerException.class.getName()).
+//		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
+//		timestamp(new Date()).
+//		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
+//		build();
+//
+//		LOGGER.error(ex.toString());
+//
+//		return ex;
+//		
+//	}
 	
 	
 	@Override
@@ -171,7 +197,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(jnr,statusName);
 
 	}
-		
+	
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	protected ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
+//			HttpHeaders headers, HttpStatus status, WebRequest request) {
+//		List<FieldError> fields = ex.getBindingResult().getFieldErrors();
+//		String fieldErro =  fields.stream().map(FieldError::getField).collect(Collectors.joining(" | "));
+//		String fieldMsg =  fields.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(" | "));
+//		ValidationErrorDetail ved = ValidationErrorDetail.builder().
+//				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+//				timestamp(new Date()).
+//				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+//				detalhe("Ver Field(s): ").
+//				field(fieldErro).
+//				fieldMessages(fieldMsg).
+//				developerMessage(ValidationErrorDetail.class.getName()).
+//				build();
+//		ex.printStackTrace();
+//
+//		LOGGER.error(ex.toString());
+//
+//		return new ResponseEntity<>(ved,status);
+//		
+//
+//	}
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {

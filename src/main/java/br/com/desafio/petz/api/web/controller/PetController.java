@@ -53,8 +53,6 @@ public class PetController {
 
 	@GetMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-	@ApiOperation(value = "Get list of Students in the System ", response = Iterable.class, tags = "getStudents")
-
 	@ApiResponses(value = { 
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 401, message = "not authorized!"), 
