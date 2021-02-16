@@ -7,7 +7,7 @@ before_install:
 - chmod +x mvnw
 - chmod +x ./deployment/run-tests.sh
 before_deploy:
-- "./mvnw package -P prod -D skipTests=true"
+- ./mvnw package -P prod -D skipTests=true
 deploy:
   provider: heroku
   api_key:
