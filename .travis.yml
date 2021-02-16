@@ -1,19 +1,18 @@
 language: java
-
-script: 
-  - ./deployment/run-tests.sh
-  
+script:
+- "./deployment/run-tests.sh"
 jdk:
-  - openjdk8
-
+- openjdk8
 before_install:
-  - chmod +x mvnw
-  - chmod +x ./deployment/run-tests.sh
-
-before_deploy: 
-  - ./mvnw package -P prod -D skipTests=true
-
+- chmod +x mvnw
+- chmod +x ./deployment/run-tests.sh
+before_deploy:
+- "./mvnw package -P prod -D skipTests=true"
 deploy:
   provider: heroku
   api_key:
-    secure: ${HEROKU_API_KEY}
+    secure: zl7HoSvcIm5G94xrHD/OuLusT50oxP+CLxPSYawaE22iHDiFiyn812xLKaEaRFfLD27cp7ZYmBrWwTE5DuBQjktZPLVn9BvK7ypZLPbgLj2VvnEYGxXE5qUmJAb5YyTt62GQbscHbofxgskl5rYqkfGiKbbGKXvJNLAsLY/kaGIf2+cvlfhVmNzcE6d02Uw3pNn1i9vbeUWtd8wkW7X8NaXdD42jVWRfc+BDrhSRsEn+RzjuQgFrXE/54F42HxHsCRVGj12+Fhx6VUQKwxTMQMDBswnspD8cjtld8bJwFhSBf57MjL+eR51VmLQO3EB7FrQAxdotRPBmrGzeG4AukvlYIpKzcAptTA6BqS8N+rWRUlRG5604ij9CvAQ82pdE+xVxm6//B1S6bmC3BqkyeYCqaHRfm7IMmJv8nFTljiKl/rrbH9oIORhiKBLA5iL2ntV0huAYy0mDOPyPxRwJOtuMjyi3xBqI178j5OoGVycVz16eaFRxGAjrPgHs494StpSwQEeaHudBLfS2KUZ8Km/fqP4J6FHKG/kKSt/1FVV5YAavXIbjCMdCmNgzXz1X2Cy4jTndlxVpxgMGAJylMbKEpW4rXr6FMqcSe0Q+SkPTiAO7g97w+f8Lj7o3kN2C7HvTiaFF7jBTvPNDcgwX8bfld2CD0FTtw4t3adxPgJo=
+  app: petz-api
+  on:
+    repo: tperrut/petz-api
+  skip_cleanup: 'true'
