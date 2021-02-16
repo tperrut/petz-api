@@ -34,8 +34,8 @@ public class PetControllerTest extends AbstractTest {
 	
 	public static final String CLIENTE= "Cliente Teste";
 	
-	public static final String EMAIL_CLIENTE= "EMAIL_CLIENTE Teste";
-	public static final String EMAIL_CLIENTE2= "EMAIL_CLIENTE2 Teste";
+	public static final String EMAIL_CLIENTE= "teste@gmail.com";
+	public static final String EMAIL_CLIENTE2= "teste2@gmail.com";
 	public static final String PATH = "/rest/pets";
 	public static final String PATH_ = "/rest/pets/";
 	public static final String PATH_NOME = "/rest/pets/nome/";
@@ -192,6 +192,8 @@ public class PetControllerTest extends AbstractTest {
 	@Test
 	public void createPet() throws Exception {
 	   String uri = PetControllerTest.PATH;
+	   clienteRepository.deleteAll();
+	   petRepository.deleteAll();
    
 	   MvcResult mvcResult = createPetViaPostRequest(uri);
 	   ResponseApi<PetDto> response = convertStringToObject(mvcResult);
@@ -211,7 +213,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	private MvcResult createPetViaPostRequest(String uri) throws JsonProcessingException, Exception {
-		PetDto dto = newPetDtoToPost(newCliente(PetControllerTest.CLIENTE));
+		PetDto dto = newPetDtoToPost(newCliente(PetControllerTest.EMAIL_CLIENTE));
 		String inputJson = convertToJson(dto);
 		MvcResult mvcResult = postApiCliente(uri, inputJson);
 		return mvcResult;
