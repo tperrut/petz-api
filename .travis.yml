@@ -1,13 +1,28 @@
 language: java
+
 script:
-- "./deployment/run-tests.sh"
+- ./deployment/run-tests.sh
+
+addons:
+  sonarcloud:
+    organization: "tperrut"
+    token:
+      secure: "pFdHUkL9R/qejK5H10u81d7KhO8sOR8f2EEz1nyI9NEui3Z7Y5rseZP91S604dEUWkr+7r0JjDAH3LyNbWKP+fUQ8UbccBUt1f9PPxoaxmauwFu83AG5F77VQMRr0hN+yMM+Vm6aOJxM3TxBryf4ZxgGOUDmlOmM435glK/hOoZl7nWLWZHBquaIL3pgncSg0hIKPcefw6TgiMFUiKzYp8G0ZVUkwcZVT0nd/F/ihPqQ/eRdY+s+DtlQ48Kt9nzEnMv0F+MPq+vjjqBmnBu+IuedE3rAcC4er2Fn640vf7NNBcnlOR6G5JYc9qLQuuhBaAm8V2OIsFfZXpFbjzHEe/i3kBKCSTgNvb7529psHRPelqzLXTx8MGlPPZ9ECgcbcWxWZpxtfnBjRzLswHldZ02Wk2dOuPLHqJjxMVZ3an0s0CUgFETui2wnDwFOCxZbkqBjvzUon5+HtgozH2AhQDJXkRy5wBPIazYNCbuCtqzpHcDW3GtquamSitwtUxwPSd5RrGsQ7lA3Mlha6sLOnMCBsaBNQzWANLcKkApG0sdSaUvrhNu4owgMLPfjISa8v4lywdsEl2qznLN3Unt2r4tBA9sUZBF7r9ri7l9TEUo31N0s/pLU0ptBeMOxQE/qy/F17vBHZoXt0+OsmlW2a3+FFBdDoUw6iqfMwcNlbLs=" # encrypted value of your token
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  #- mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=myorg_myrepo
 jdk:
 - openjdk8
+
 before_install:
 - chmod +x mvnw
 - chmod +x ./deployment/run-tests.sh
+
 before_deploy:
 - ./mvnw package -P prod -D skipTests=true
+
 deploy:
   provider: heroku
   api_key:
