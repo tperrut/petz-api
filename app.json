@@ -1,8 +1,6 @@
 {
   "name": "Spring PetAPI",
-  "description": "",
-/*   "addons": [ "heroku-cleardb" ],
- */  "env": {
+  "env": {
     "JAVA_OPTS": {
       "value": "-Dspring.profiles.active=prod"
     }
