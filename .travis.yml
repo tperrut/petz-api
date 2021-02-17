@@ -15,6 +15,7 @@ before_deploy:
 deploy:
   provider: heroku
   api_key: $HEROKU_TOKEN
+  app: desafio-petz-api
   on:
     repo: tperrut/petz-api
  
