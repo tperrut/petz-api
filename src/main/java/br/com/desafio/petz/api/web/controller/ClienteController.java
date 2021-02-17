@@ -173,18 +173,7 @@ public class ClienteController {
 
 		Optional<Cliente> cliente = service.buscarPorId(id);
 		if (cliente.isPresent()) {
-			try {
-				service.excluir(id);
-			} catch (ResourceNotFoundException ex) {
-				LOGGER.error(ex.getMessage(), ex.toString());
-				throw new ResourceNotFoundException(" ERRO AO EXCLUIR CLIENTE " + id);
-			} catch (BusinessException ex) {
-				LOGGER.error(ex.getMessage(), ex.toString());
-				throw new BusinessException(" ERRO AO EXCLUIR CLIENTE" + id);
-			} catch (Exception e) {
-				LOGGER.error(String.format("INTERNAL_SERVER_ERROR : %s", e.toString()));
-				throw new InternalServerException(" ERRO AO EXCLUIR CLIENTE " + id, e);
-			}
+			service.excluir(id);
 		}
 		
 		return ResponseEntity.noContent().build();

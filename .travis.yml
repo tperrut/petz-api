@@ -1,8 +1,8 @@
 language: java
 
-script: 
+script:
   - ./deployment/run-tests.sh
-  
+
 jdk:
   - openjdk8
 
@@ -10,9 +10,8 @@ before_install:
   - chmod +x mvnw
   - chmod +x ./deployment/run-tests.sh
 
-before_deploy: 
-  - ./mvnw package -P prod -D skipTests=true
-
+before_deploy:
+  - ./mvnw package -P prod -DskipTests=true
 deploy:
   provider: heroku
   api_key:
@@ -20,4 +19,6 @@ deploy:
   app: petz-api
   on:
     repo: tperrut/petz-api
+
   skip_cleanup: 'true'
+

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.web.exception.BusinessException;
+import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 @Service
@@ -77,10 +78,12 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 			Optional<List<Cliente>> cliente = dao.findByNome(nome);
 			if (!cliente.isPresent()) {
-				throw new ResourceNotFoundException(" CLIENTE_NOT_FOUND " + nome);
+				throw new NameNotFoundException(" CLIENTE : " + nome+ " NOT_FOUND.");
 			}
 			return cliente;
-		}catch (Exception e) {
+		} catch (NameNotFoundException e) {
+			throw e;
+		} catch (Exception e) {
 			throw new BusinessException("ERRO INTERNO -> buscarPorNome", e);
 		
 		}

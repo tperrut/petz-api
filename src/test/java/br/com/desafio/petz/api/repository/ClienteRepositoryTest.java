@@ -1,6 +1,10 @@
 package br.com.desafio.petz.api.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,10 +20,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import br.com.desafio.petz.api.controller.ClienteControllerTest;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -30,6 +41,8 @@ public class ClienteRepositoryTest {
 
 	private static final String EMAIL_TESTE = "teste@gmail.com";
 	private static final String EMAIL_TESTE2 = "teste2@gmail.com";
+	private static final String EMAIL_INVALIDO = "teste2xxxgmail.com";
+
 
 	private static final String CAMPO_EMAIL_CLIENTE_JA_ESTA_CADASTRADO = "Email já cadastrado!";
 
@@ -56,6 +69,13 @@ public class ClienteRepositoryTest {
 		assertThat(resposta).isNotNull();
 	}
 	
+	@Test
+	public void criarClienteComEmailInavalido() {
+		thrown.expect(ConstraintViolationException.class);
+
+		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_INVALIDO);
+		repository.save(cliente);
+	}
 	
 	@Test
 	public void buscarClientesComSucesso() {
@@ -94,7 +114,6 @@ public class ClienteRepositoryTest {
 		assertThat(resposta.get().isEmpty()).isFalse();
 		assertThat(resposta.get().get(0).getNome()).isEqualTo(CLIENTE_TESTE);
 	}
-	
 	
 	@Test
 	public void deleteClienteSucesso() {
