@@ -19,6 +19,5 @@ deploy:
   app: petz-api
   on:
     repo: tperrut/petz-api
-
-  skip_cleanup: 'true'
+  cleanup: 'true'
 
