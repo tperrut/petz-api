@@ -14,8 +14,7 @@ before_deploy:
   - ./mvnw package -P prod -DskipTests=true
 deploy:
   provider: heroku
-  api_key: 
-    secure: $HEROKU_API_KEY
+  api_key: $HEROKU_API_KEY
   app: desafio-petz-api
   on:
     repo: tperrut/petz-api
