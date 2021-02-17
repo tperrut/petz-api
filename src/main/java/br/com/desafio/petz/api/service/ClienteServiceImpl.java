@@ -47,9 +47,10 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 			verificarSeClienteExiste(id);
 			dao.deleteById(id);
+		}catch (ResourceNotFoundException e) {
+			throw e;
 		}catch (Exception e) {
 			throw new BusinessException("ERRO INTERNO -> excluir", e);
-		
 		}
 		
 	}
@@ -108,20 +109,6 @@ public class ClienteServiceImpl implements ClienteService {
 			return dao.findAll();
 		} catch (Exception e) {
 			throw new BusinessException("ERRO INTERNO -> findAll");
-
-		}
-	}
-
-	public void clienteExisteByNome(String cliente) throws ResourceNotFoundException, BusinessException {
-		try {
-			Optional<List<Cliente>> clienteOptional = dao.findByNome(cliente);
-
-			if (!clienteOptional.isPresent()) {
-				LOGGER.info(String.format("CLIENTE_NOT_FOUND:  %s", cliente));
-				throw new ResourceNotFoundException(" CLIENTE_NOT_FOUND_BY_CLIENTE " + cliente);
-			}
-		} catch (Exception e) {
-			throw new BusinessException("ERRO INTERNO -> clienteExisteByNome");
 
 		}
 	}

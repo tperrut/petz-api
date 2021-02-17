@@ -2,6 +2,7 @@ package br.com.desafio.petz.api.dto;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +22,7 @@ public class ClienteDto {
 	@NotEmpty(message = "Nome não pode ser vazio")
 	private String nome;
 
-	@NotEmpty(message = "Email não pode ser vazio")
+	@Email(message = "Por favor digite um email válido!")
 	private String email;
 
 	@DateTimeFormat(iso = ISO.TIME, pattern = "yyyy-MM-dd")
