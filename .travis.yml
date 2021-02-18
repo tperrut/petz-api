@@ -2,7 +2,6 @@ language: java
 
 script:
   - ./deployment/run-tests.sh
-  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKeytperrut_petz-api
 addons:
   sonarcloud:
     organization: tperrut
