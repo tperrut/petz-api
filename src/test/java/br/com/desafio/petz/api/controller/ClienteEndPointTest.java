@@ -92,6 +92,8 @@ public class ClienteEndPointTest {
 	public void listClientesTest() throws JsonParseException, JsonMappingException, IOException {
 		List<Cliente> Clientes = Arrays.
 				asList(createCliente(ClienteEndPointTest.EMAIL_CLIENTE),createCliente(ClienteEndPointTest.EMAIL_CLIENTE2));
+		clienteRepository.deleteAll();
+
 		BDDMockito.when(clienteRepository.findAll()).thenReturn(Clientes);
 		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/clientes",String.class);
@@ -103,6 +105,7 @@ public class ClienteEndPointTest {
 	@Test
 	public void findByClienteNotValid() {
 		Cliente Cliente = createCliente(null);
+		clienteRepository.deleteAll();
 		BDDMockito.when(clienteRepository.save(Cliente)).thenReturn(Cliente);
 		List list = new ArrayList();
 		list.add(Cliente);
@@ -124,6 +127,8 @@ public class ClienteEndPointTest {
 	@Test
 	public void findByNomeValidTest() {
 		Cliente cliente = createCliente(ClienteEndPointTest.EMAIL_CLIENTE);
+		clienteRepository.deleteAll();
+
 		BDDMockito.when(clienteRepository.save(cliente)).thenReturn(cliente);
 
 		List<Cliente> list = new ArrayList<Cliente>();

@@ -5,7 +5,10 @@ import java.util.Date;
 public class ValidationErrorDetail extends ErrorDetail{
 	private String field;
 	private String fieldMessages;
-
+	
+	public ValidationErrorDetail() {
+	}
+	
 	private ValidationErrorDetail(Builder builder) {
 		this.titulo = builder.titulo;
 		this.detalhe = builder.detalhe;

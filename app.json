@@ -1,8 +1,11 @@
 {
   "name": "Spring PetAPI",
+  "description": "",
   "env": {
     "JAVA_OPTS": {
       "value": "-Dspring.profiles.active=prod"
     }
   }
 }
+
+

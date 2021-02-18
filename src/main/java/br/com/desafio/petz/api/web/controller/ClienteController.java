@@ -134,7 +134,7 @@ public class ClienteController {
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
 
 		clienteOpt = Optional.of(service.salvar(converter.converteDtoToEntity(dto, new Cliente()).get()));
-
+	
 		listDataTtoResponse.add(converter.convertToDto(clienteOpt.get()));
 		clienteResponse.setData(listDataTtoResponse);
 		
