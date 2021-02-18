@@ -266,7 +266,8 @@
 									   </limit>
 			                        </limits>
 		                        </rule>
-		                        <rule>
+		                        <!-- Regra ousada 
+		                         <rule>
 								    <element>CLASS</element>
 								    <excludes>
 								      <exclude>*Test</exclude>
@@ -278,7 +279,7 @@
 								        <minimum>50%</minimum>
 								      </limit>
 								    </limits>
-								  </rule>
+								  </rule> -->
 		                    </rules>
 		                </configuration>
 					</execution>
