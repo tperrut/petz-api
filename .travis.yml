@@ -23,7 +23,7 @@ before_install:
   - mkdir logs
 
 before_deploy:
-  - ./mvnw package -P prod -D skipTests=true
+  - ./mvnw package -P prod -DskipTests=true
 
 deploy:
   provider: heroku
