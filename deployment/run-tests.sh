@@ -4,8 +4,8 @@ echo '================= Iniciando os Testes =================='
 
 
 # Rodando os testes
-mvn clean test -P test -Djacoco.skip=true
-
+# mvn clean test -P test -Djacoco.skip=true
+mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKeytperrut_petz-api
 echo '========================================================'
 echo '====================  ¯\_༼ᴼل͜ᴼ༽_/¯‍  ====================='
 echo '=================== Fim dos Testes ====================='
