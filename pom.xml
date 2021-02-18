@@ -31,9 +31,9 @@
 	</properties>
 	
 	<scm>
-        <connection>scm:git:git@tperrut/petz-api.git</connection>
-        <developerConnection>scm:git:git@tperrut/petz-api.git</developerConnection>
-        <url>https://github.com/tperrut/petz-api</url>
+        <connection>scm:tperrut@github</connection>
+        <developerConnection>scm:tperrut@github</developerConnection>
+        <url>https://sonarcloud.io</url>
     </scm>
     
 	<profiles>
