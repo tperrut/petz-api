@@ -8,7 +8,7 @@ addons:
   sonarcloud:
     organization: tperrut
     token:
-      secure: "fxBq70bz9mEOJ71o4bY6+pN+Ph6Gu6TxcoO9j+ev9dK1/jySBHWloi+ni5CDuRmQGUkEzqSPrdRo+GvclUEZBIPjBz4OJc8/yObwkZOMnpJb5bNmQFiY44OPxCUV6LHsgDhV8VIILm1kXOL7D6gsHOOupBDDhfSutwL8yh9H1+UCslmXd8KPt1MiEO47mKu74PWG8qzANPFfYRVKnHUljrkhv1FZ3NLdZ9L6lyUFFFnCKvJPn9kfnyeTk8kfCwgKlkSDj7/4vxAIT999iEfMAw/I5FJnf0askAJkpTIdARHV/cINTfnkKNb84dGiR/OzqxYynLKAZk9KXy7v9zQLmkn4+c0J2irF5ovDOidaVSwFuFSfPrI66EHzk39HNUGKwwoXrAMNbr9ENhT/r+2FG97tWQ1lXAOGTOKjRwenw/vblsYIfkTzKPLRS5jaq6t77WrsBOjVtLYlISNns4RX3ltvLUb9zCfwsTFSx3Jot7p14+A6S8sw3OlbqJE2TegzH5k7S7Qz6cDp0hZSYDVS+p9X8gNPJuKs8HNFuXp/kTd8arUrdOWAao6W1wHgpkC42IHH9jIXlcSCKozccOrj5TQC3yVGhp4wx5Q1ilBQRqTgSkB+mYKeGp3czqaY7XP3NoMdzCBPzBxnD21z6wlKdz77MtQ+RxSX/XVWJqB9iFE="
+      secure: $SONAR_API_KEY
 jdk:
 - openjdk8
 
