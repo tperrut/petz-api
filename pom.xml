@@ -42,7 +42,7 @@
 			<id>dev</id>
 			<activation>
 				<!-- this profile is active by default -->
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 				<!-- activate if system properties 'env=dev' -->
 				<property>
 					<name>env</name>
@@ -58,7 +58,7 @@
 			<id>test</id>
 			<activation>
 				<!-- this profile is active by default -->
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 				<!-- activate if system properties 'env=test' -->
 				<property>
 					<name>env</name>
@@ -97,24 +97,26 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.3</version>
-						<executions>
-							<execution>
-								<id>prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>report</id>
-								<goals>
-									<goal>report</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+				        <groupId>org.jacoco</groupId>
+				        <artifactId>jacoco-maven-plugin</artifactId>
+				        <version>0.8.2</version>
+				        <executions>
+				            <execution>
+				                <goals>
+				                    <goal>prepare-agent</goal>
+				                </goals>
+				            </execution>
+				            <!-- attached to Maven test phase -->
+				            <execution>
+				                <id>report</id>
+				                <phase>test</phase>
+				                <goals>
+				                    <goal>report</goal>
+				                </goals>
+					            
+				            </execution>
+				        </executions>
+				    </plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -241,31 +243,48 @@
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>default-prepare-agent-integration</id>
-						<goals>
-							<goal>prepare-agent-integration</goal>
-						</goals>
-					</execution>
+					
 					<execution>
 						<id>default-report</id>
-						<phase>verify</phase>
+						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
+						
 					</execution>
-					<execution>
-						<id>default-report-integration</id>
-						<goals>
-							<goal>report-integration</goal>
-						</goals>
-					</execution>
+					
 					<execution>
 						<id>default-check</id>
 						<goals>
 							<goal>check</goal>
 						</goals>
 						
+						<configuration>
+		                    <rules>
+		                        <rule>
+			                        <limits>
+			                           <limit>
+									        <counter>COMPLEXITY</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.60</minimum>
+									   </limit>
+			                        </limits>
+		                        </rule>
+		                        <rule>
+								    <element>CLASS</element>
+								    <excludes>
+								      <exclude>*Test</exclude>
+								    </excludes>
+								    <limits>
+								      <limit>
+								        <counter>LINE</counter>
+								        <value>COVEREDRATIO</value>
+								        <minimum>50%</minimum>
+								      </limit>
+								    </limits>
+								  </rule>
+		                    </rules>
+		                </configuration>
 					</execution>
 				</executions>
 			</plugin>

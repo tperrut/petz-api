@@ -3,7 +3,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <Pattern>%yellow[%d{yyyy-MM-dd_HH:mm:ss.SSS}] [%thread] [%-5level] %logger{15} - %msg%n</Pattern>
+            <Pattern>%yellow[%d{yyyy-MM-dd_HH:mm:ss.SSS}] [%thread] [%-5level] %logger{36} - %msg%n</Pattern>
             
         </encoder>
     </appender>s
@@ -13,7 +13,7 @@
             <appender-ref ref="STDOUT" />
         </logger>
 
-        <logger name="com.pets.api" level="debug" additivity="false">
+        <logger name="br.com.desafio.petz.api" level="debug" additivity="false">
             <appender-ref ref="STDOUT" />
         </logger>
 
@@ -38,7 +38,7 @@
             <appender-ref ref="FILE" />
         </logger>
 
-        <logger name="com.pets.api" level="debug" additivity="false">
+        <logger name="br.com.desafio.petz.api" level="debug" additivity="false">
             <appender-ref ref="STDOUT" />
             <appender-ref ref="FILE" />
         </logger>
