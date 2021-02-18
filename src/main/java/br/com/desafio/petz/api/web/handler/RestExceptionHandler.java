@@ -2,7 +2,11 @@ package br.com.desafio.petz.api.web.handler;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +103,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				developerMessage(BusinessException.class.getName()).
 				statusCode(HttpStatus.CONFLICT.value()).
 				timestamp(new Date()).
-				titulo("Email já cadastrado!").
+				titulo("Erro: Email já cadastrado ou vazio!").
 				build();
 
 				LOGGER.error(ex.toString());
@@ -198,30 +202,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
-//	@ResponseStatus(HttpStatus.BAD_REQUEST)
-//	@ExceptionHandler(MethodArgumentNotValidException.class)
-//	protected ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
-//			HttpHeaders headers, HttpStatus status, WebRequest request) {
-//		List<FieldError> fields = ex.getBindingResult().getFieldErrors();
-//		String fieldErro =  fields.stream().map(FieldError::getField).collect(Collectors.joining(" | "));
-//		String fieldMsg =  fields.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(" | "));
-//		ValidationErrorDetail ved = ValidationErrorDetail.builder().
-//				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
-//				timestamp(new Date()).
-//				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
-//				detalhe("Ver Field(s): ").
-//				field(fieldErro).
-//				fieldMessages(fieldMsg).
-//				developerMessage(ValidationErrorDetail.class.getName()).
-//				build();
-//		ex.printStackTrace();
-//
-//		LOGGER.error(ex.toString());
-//
-//		return new ResponseEntity<>(ved,status);
-//		
-//
-//	}
+	
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

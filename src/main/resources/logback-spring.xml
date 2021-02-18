@@ -5,26 +5,56 @@
 		class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>
-			 %cyan(%d{ISO8601}) %highlight(%-5level) [%green(%t)] %yellow(%C{1.}): %msg%n%throwable
+			 <!-- %cyan(%d{ISO8601}) %highlight(%-5level) [%green(%t)] %yellow(%C{1.}): %msg%n%throwable -->
+			 %yellow[%d{yyyy-MM-dd_HH:mm:ss.SSS}] [- %yellow(%C{1.}) -] [%thread] [%-5level] %logger{36} - %msg%n
 			</Pattern>
 		</layout>
 	</appender>
 
 
-	<springProfile name="test">
-		<logger name="org.springframework" level="info"
-			additivity="false">
-			<appender-ref ref="STDOUT" />
-		</logger>
 
-		<logger name="com.pets.api" level="debug" additivity="false">
-			<appender-ref ref="STDOUT" />
-		</logger>
+    <springProfile name="test">
+        <logger name="org.springframework" level="info" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
 
-		<root level="error">
-			<appender-ref ref="STDOUT" />
-		</root>
-	</springProfile>
+        <logger name="br.com.desafio.petz.api" level="debug" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <root level="error">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+
+    <springProfile name="dev,docker">
+        <timestamp key="executionDate" datePattern="yyyy-MM-dd"/>
+
+        <!-- <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>./logs/app-${executionDate}.log</file>
+            <append>true</append>
+            <encoder>
+                <pattern>[yellow%d{yyyy-MM-dd HH:mm:ss.S}] blue%thread [%logger{36}] %level: %msg%n</pattern>
+            </encoder>
+        </appender> -->
+
+        <logger name="org.springframework" level="info" additivity="false">
+            <appender-ref ref="STDOUT" />
+<!--             <appender-ref ref="FILE" /> -->
+        </logger>
+
+        <logger name="br.com.desafio.petz.api" level="debug" additivity="false">
+            <appender-ref ref="STDOUT" />
+<!--             <appender-ref ref="FILE" /> -->
+        </logger>
+
+        <root level="error">
+            <appender-ref ref="STDOUT" />
+<!--             <appender-ref ref="FILE" /> -->
+        </root>
+    </springProfile>
+
+	
 
 	<springProfile name="prod">
 		<logger name="org.springframework" level="error"
@@ -41,37 +71,7 @@
 		</root>
 	</springProfile>
 
-	<springProfile name="dev,docker">
-		<timestamp key="executionDate" datePattern="yyyy-MM-dd" />
-
-		<appender name="FILE"
-			class="ch.qos.logback.core.FileAppender">
-			<file>./logs/app-${executionDate}.log</file>
-			<append>true</append>
-			<encoder>
-				<pattern>
-					 [%thread] %highlight(%-5level) %cyan(%logger{15}) : %msg %n
-				</pattern>
-				
-			</encoder>
-		</appender>
-
-		<logger name="org.springframework" level="info"
-			additivity="false">
-			<appender-ref ref="STDOUT" />
-			<appender-ref ref="FILE" />
-		</logger>
-
-		<logger name="br.com.pets.api" level="debug" additivity="false">
-			<appender-ref ref="STDOUT" />
-			<appender-ref ref="FILE" />
-		</logger>
-
-		<root level="error">
-			<appender-ref ref="STDOUT" />
-			<appender-ref ref="FILE" />
-		</root>
-	</springProfile>
+	
 
 
 

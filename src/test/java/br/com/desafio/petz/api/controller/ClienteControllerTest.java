@@ -1,18 +1,12 @@
 	package br.com.desafio.petz.api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
-import br.com.desafio.petz.api.web.exception.NameNotFoundException;
+import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
 
 public class ClienteControllerTest extends AbstractTest {
@@ -181,6 +174,40 @@ public class ClienteControllerTest extends AbstractTest {
 	   
 	}
 	
+	@Test
+	public void createClienteWithInvalidEmail() throws Exception {
+	   String uri = ClienteControllerTest.PATH;
+	   repository.deleteAll();
+
+	   MvcResult mvcResult = createClienteViaPostRequestInvalidEmail(uri);
+	   assertThat(mvcResult.getResponse()).isNotNull();
+	   ValidationErrorDetail ved = super.mapFromJson(mvcResult.getResponse().getContentAsString(), ValidationErrorDetail.class);
+	   
+	   assertThat(ved.getField()).isEqualTo("email");
+	   assertThat(ved.getFieldMessages()).isEqualTo("Por favor digite um email válido!");
+	   assertThat(ved.getStatusCode()).isEqualTo(422);
+	   assertThat(ved.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.error.ValidationErrorDetail");
+
+	   
+	}
+
+	@Test
+	public void createClienteWithEmptyEmail() throws Exception {
+	   String uri = ClienteControllerTest.PATH;
+	   repository.deleteAll();
+
+	   MvcResult mvcResult = createClienteViaPostRequestEmptyEmail(uri);
+	   assertThat(mvcResult.getResponse()).isNotNull();
+	   ValidationErrorDetail ved = super.mapFromJson(mvcResult.getResponse().getContentAsString(), ValidationErrorDetail.class);
+	   
+	   assertThat(ved.getTitulo()).isEqualTo("Erro: Email já cadastrado ou vazio!");
+	   assertThat(ved.getStatusCode()).isEqualTo(409);
+	   assertThat(ved.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.exception.BusinessException");
+	   assertThat(ved.getDetalhe()).contains("NULL not allowed for column \"EMAIL\"");
+
+	   
+	}
+
 	
 	
 	
@@ -218,6 +245,13 @@ public class ClienteControllerTest extends AbstractTest {
 
 	private MvcResult createClienteViaPostRequestInvalidEmail(String uri) throws JsonProcessingException, Exception {
 		ClienteDto dto = newClienteDtoToPostWithInvalidEmail();
+		String inputJson = convertToJson(dto);
+		MvcResult mvcResult = postApiCliente(uri, inputJson);
+		return mvcResult;
+	}
+	
+	private MvcResult createClienteViaPostRequestEmptyEmail(String uri) throws JsonProcessingException, Exception {
+		ClienteDto dto = newClienteDtoToPostWithEmptyEmail();
 		String inputJson = convertToJson(dto);
 		MvcResult mvcResult = postApiCliente(uri, inputJson);
 		return mvcResult;
@@ -261,6 +295,11 @@ public class ClienteControllerTest extends AbstractTest {
 	
 	private ClienteDto newClienteDtoToPostWithInvalidEmail() throws JsonProcessingException {
 		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now());
+		return dto;
+	}
+	
+	private ClienteDto newClienteDtoToPostWithEmptyEmail() throws JsonProcessingException {
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE , null, LocalDate.now());
 		return dto;
 	}
 	
