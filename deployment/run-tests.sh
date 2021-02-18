@@ -8,7 +8,12 @@ echo '============ Verificando Regras de Coverage ========'
 # mvn clean test -P test -Djacoco.skip=true
 # mvn clean verify install sonar:sonar \
 echo 'ENV SONAR_API_KEY =>' $SONAR_API_KEY
- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.login=$SONAR_API_KEY -Dsonar.projectKey=tperrut_petz-api 
+# mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.login=$SONAR_API_KEY 
+
+
+mvn clean verify sonar:sonar -Dsonar.login=$SONAR_API_KEY 
+
+
 #-Pcoverage \
 #-Dsonar.projectKey=tperrut_petz-api \
 #-Dsonar.organization=tperrut \
