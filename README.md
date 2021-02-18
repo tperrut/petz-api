@@ -1,6 +1,6 @@
 # Petz-API
 
-## [!Build Status(https://travis-ci.com/tperrut/petz-api.svg?branch=master&status=passed)]
+[!Build Status(https://travis-ci.com/tperrut/petz-api.svg?branch=master&status=passed)]
 
 Desafio PETZ
 
