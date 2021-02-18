@@ -20,6 +20,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+				
+		
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<!-- Organization and project keys are displayed in the right sidebar of the project homepage -->
+		<sonar.organization>tperrut</sonar.organization>
+		<sonar.projectKey>tperrut_petz-api</sonar.projectKey>
+		
+		
 	</properties>
 	
 	<scm>
@@ -228,14 +236,7 @@
 				<version>3.0.0-M1</version> <configuration> <skipTests>true</skipTests> </configuration> 
 				</plugin> -->
 
-			 <plugin>
-		        <groupId>org.sonarsource.scanner.maven</groupId>
-		        <artifactId>sonar-maven-plugin</artifactId>
-		        <version>3.7.0.1746</version>
-		        <configuration>
-		          <goalPrefix>sonar</goalPrefix>
-		        </configuration>
-		      </plugin>
+			
 		      
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -304,7 +305,14 @@
 		<pluginManagement>
 			<plugins>
 			
-		     
+		      <plugin>
+		        <groupId>org.sonarsource.scanner.maven</groupId>
+		        <artifactId>sonar-maven-plugin</artifactId>
+		        <version>3.7.0.1746</version>
+		        <configuration>
+		          <goalPrefix>sonar</goalPrefix>
+		        </configuration>
+		      </plugin>
 		    </plugins>
 		</pluginManagement>
 	</build>
