@@ -8,7 +8,6 @@ addons:
     organization: "tperrut"
     token:
       secure: "pFdHUkL9R/qejK5H10u81d7KhO8sOR8f2EEz1nyI9NEui3Z7Y5rseZP91S604dEUWkr+7r0JjDAH3LyNbWKP+fUQ8UbccBUt1f9PPxoaxmauwFu83AG5F77VQMRr0hN+yMM+Vm6aOJxM3TxBryf4ZxgGOUDmlOmM435glK/hOoZl7nWLWZHBquaIL3pgncSg0hIKPcefw6TgiMFUiKzYp8G0ZVUkwcZVT0nd/F/ihPqQ/eRdY+s+DtlQ48Kt9nzEnMv0F+MPq+vjjqBmnBu+IuedE3rAcC4er2Fn640vf7NNBcnlOR6G5JYc9qLQuuhBaAm8V2OIsFfZXpFbjzHEe/i3kBKCSTgNvb7529psHRPelqzLXTx8MGlPPZ9ECgcbcWxWZpxtfnBjRzLswHldZ02Wk2dOuPLHqJjxMVZ3an0s0CUgFETui2wnDwFOCxZbkqBjvzUon5+HtgozH2AhQDJXkRy5wBPIazYNCbuCtqzpHcDW3GtquamSitwtUxwPSd5RrGsQ7lA3Mlha6sLOnMCBsaBNQzWANLcKkApG0sdSaUvrhNu4owgMLPfjISa8v4lywdsEl2qznLN3Unt2r4tBA9sUZBF7r9ri7l9TEUo31N0s/pLU0ptBeMOxQE/qy/F17vBHZoXt0+OsmlW2a3+FFBdDoUw6iqfMwcNlbLs=" # encrypted value of your token
-
 jdk:
   - openjdk8
   
@@ -26,9 +25,8 @@ before_deploy:
 
 deploy:
   provider: heroku
-  api_key:
-    secure: zl7HoSvcIm5G94xrHD/OuLusT50oxP+CLxPSYawaE22iHDiFiyn812xLKaEaRFfLD27cp7ZYmBrWwTE5DuBQjktZPLVn9BvK7ypZLPbgLj2VvnEYGxXE5qUmJAb5YyTt62GQbscHbofxgskl5rYqkfGiKbbGKXvJNLAsLY/kaGIf2+cvlfhVmNzcE6d02Uw3pNn1i9vbeUWtd8wkW7X8NaXdD42jVWRfc+BDrhSRsEn+RzjuQgFrXE/54F42HxHsCRVGj12+Fhx6VUQKwxTMQMDBswnspD8cjtld8bJwFhSBf57MjL+eR51VmLQO3EB7FrQAxdotRPBmrGzeG4AukvlYIpKzcAptTA6BqS8N+rWRUlRG5604ij9CvAQ82pdE+xVxm6//B1S6bmC3BqkyeYCqaHRfm7IMmJv8nFTljiKl/rrbH9oIORhiKBLA5iL2ntV0huAYy0mDOPyPxRwJOtuMjyi3xBqI178j5OoGVycVz16eaFRxGAjrPgHs494StpSwQEeaHudBLfS2KUZ8Km/fqP4J6FHKG/kKSt/1FVV5YAavXIbjCMdCmNgzXz1X2Cy4jTndlxVpxgMGAJylMbKEpW4rXr6FMqcSe0Q+SkPTiAO7g97w+f8Lj7o3kN2C7HvTiaFF7jBTvPNDcgwX8bfld2CD0FTtw4t3adxPgJo=
-  app: petz-api
+  api_key: $HEROKU_API_KEY
+  app: desafio-petz-api
   on:
     repo: tperrut/petz-api
-  skip_cleanup: 'true'
+
