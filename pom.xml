@@ -221,11 +221,7 @@
 				<version>3.0.0-M1</version> <configuration> <skipTests>true</skipTests> </configuration> 
 				</plugin> -->
 
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.7.0.1746</version>
-			</plugin>
+		
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -290,7 +286,13 @@
 			</plugin>
 		</plugins>
 		<pluginManagement>
-
+			<plugins>
+		      <plugin>
+		        <groupId>org.sonarsource.scanner.maven</groupId>
+		        <artifactId>sonar-maven-plugin</artifactId>
+		        <version>3.7.0.1746</version>
+		      </plugin>
+		    </plugins>
 		</pluginManagement>
 	</build>
 </project>
