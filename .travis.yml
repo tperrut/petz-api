@@ -10,7 +10,7 @@ addons:
     token:
       secure: $SONAR_API_KEY
 jdk:
-- openjdk8
+- openjdk11
 
 cache:
   directories:
