@@ -19,6 +19,7 @@ cache:
 before_install:
   - chmod +x mvnw
   - chmod +x ./deployment/run-tests.sh
+  - mkdir logs
 
 before_deploy:
   - ./mvnw package -P prod -D skipTests=true
