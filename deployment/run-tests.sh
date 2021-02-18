@@ -7,7 +7,7 @@ echo '============ Verificando Regras de Coverage ========'
 # Rodando os testes
 # mvn clean test -P test -Djacoco.skip=true
 # mvn clean verify install sonar:sonar \
- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar  
+ mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=tperrut_petz-api 
 #-Pcoverage \
 #-Dsonar.projectKey=tperrut_petz-api \
 #-Dsonar.organization=tperrut \
