@@ -32,3 +32,5 @@ deploy:
   on:
     repo: tperrut/petz-api
 
+git:
+  depth: false
