@@ -61,7 +61,8 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	private void verificarSeClienteExiste(Long id) {
-		 dao.findById(id).orElseThrow(() ->  new ResourceNotFoundException("CLIENTE ID " + id.toString()));
+		Cliente cliente = dao.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id.toString()));
 	}
 
 	@Override
