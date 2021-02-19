@@ -2,11 +2,7 @@ package br.com.desafio.petz.api.web.handler;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +55,7 @@ import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
@@ -72,7 +68,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		titulo(HttpStatus.NOT_FOUND.getReasonPhrase()).
 		build();
 
-		LOGGER.error(ex.toString());
+		logger.error(ex.toString());
 
 		return ex;
 		
@@ -89,7 +85,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		titulo(HttpStatus.NOT_FOUND.getReasonPhrase()).
 		build();
 
-		LOGGER.error(ex.toString());
+		logger.error(ex.toString());
 
 		return ex;
 		
@@ -99,14 +95,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public @ResponseBody ErrorDetail duplicateEmailException(DataIntegrityViolationException e) {
 		DataIntegrityViolationExceptionDetails ex = DataIntegrityViolationExceptionDetails.builder().
-				detalhe(e.getRootCause().getMessage().substring(0, 46).concat(" ...")).
+				detalhe(e.getMessage().substring(0, 46).concat(" ...")).
 				developerMessage(BusinessException.class.getName()).
 				statusCode(HttpStatus.CONFLICT.value()).
 				timestamp(new Date()).
 				titulo("Erro: Email já cadastrado ou vazio!").
 				build();
 
-				LOGGER.error(ex.toString());
+				logger.error(ex.toString());
 				return ex;
     }
 	
@@ -123,7 +119,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 		e.printStackTrace();
 
-		LOGGER.error(e.toString());
+		logger.error(e.toString());
 
 		return ex;
 		
@@ -141,7 +137,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		build();
 		e.getCause().printStackTrace();
 
-		LOGGER.error(ex.toString());
+		logger.error(ex.toString());
 
 		return ex ;
     }
@@ -196,7 +192,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				 
 		ex.printStackTrace();
 
-		LOGGER.error(ex.toString());
+		logger.error(ex.toString());
 
 		return new ResponseEntity<>(jnr,statusName);
 
@@ -221,7 +217,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				build();
 		ex.printStackTrace();
 
-		LOGGER.error(ex.toString());
+		logger.error(ex.toString());
 
 		return new ResponseEntity<>(ved,status);
 		
@@ -239,7 +235,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 				build();
 
-		LOGGER.error(ise.toString());
+		logger.error(ise.toString());
 
 		return new ResponseEntity<>(ise,status);
 		
@@ -258,7 +254,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 		build();
 
-		LOGGER.error(ise.toString());
+		logger.error(ise.toString());
 
 		return new ResponseEntity<>(ise,status);
 		
@@ -276,7 +272,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 				build();
 
-		LOGGER.error(ise.toString());
+		logger.error(ise.toString());
 
 		return new ResponseEntity<>(ise,status);
 		
@@ -294,7 +290,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
 				build();
 
-				LOGGER.error(ise.toString());
+				logger.error(ise.toString());
 
 
 
