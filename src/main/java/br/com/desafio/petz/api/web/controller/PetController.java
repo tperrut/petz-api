@@ -35,7 +35,6 @@ import br.com.desafio.petz.api.web.exception.InternalServerException;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -79,7 +78,7 @@ public class PetController {
 	@GetMapping("/pets/{id}")
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
 		logger.info("BUSCAR PET POR ID " + id);
-		Optional<Pet> pet;
+		Optional<Pet> pet = Optional.empty();
 		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
 
 		pet = service.buscarPorId(id);
@@ -116,7 +115,7 @@ public class PetController {
 		logger.info("Criando PET " + dto.getNome());
 		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
 		List<PetDto> listDataTtoResponse = new ArrayList<PetDto>();
-		Pet pet = null; 
+		Pet pet; 
 		Optional<Pet> optPet = converter.converteDtoToEntity(dto);
 		if (optPet.isPresent()) {
 			pet = service.salvar(optPet.get());
@@ -133,12 +132,15 @@ public class PetController {
 	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
 		logger.info(String.format("UPDATE PET %s", id));
 
-		Optional<Pet> pet = null;
+		Optional<Pet> pet = Optional.empty();
 		pet = service.buscarPorId(id);
 		if (pet.isPresent()) {
 			pet = converter.converteDtoToEntity(dto, pet.get());
-			pet.get().setId(id);
-			service.salvar(pet.get());
+			
+			if (pet.isPresent()) {
+				pet.get().setId(id);
+				service.salvar(pet.get());
+			}	
 		}
 
 		return ResponseEntity.noContent().build();
