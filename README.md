@@ -5,10 +5,11 @@
 
 
 
-This project aims to create a **API Rest** to control and generation the to Entitys (Cliente and Pet), using technology [Java 8](http://java.com). It was developed using [Spring Boot](http://projects.spring.io/spring-boot/), [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
+This project aims to create a **API Rest** to control and generation the to Entitys (Cliente and Pet), using technology [Java 8](http://java.com). It was developed using [Spring Boot](http://projects.spring.io/spring-boot/), [Travis.ci](https://travis-ci.org) for build automation, highlighting the addition in the CI flow to Code Coverage ( [Jacoco](https://www.jacoco.org/)) along with Code Quality [Sonar](https://sonarcloud.io), [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
 
->The system has the following endpoint
-### CLiente e Pet	
+>The system has the following endpoint : http://server/rest/
+### Cliente e Pet
+ 	
  |VERB  | END_POINT      |
  |:---  |  :---          |
  | POST | createCliente  |  
@@ -42,9 +43,9 @@ To start this web application just follow these steps:
 	
    Build the project no Maven:
 
-	```shell
-	 $ ./mvnw clean package spring-boot:run 			
-	```  		
+	shell
+	$ ./mvnw clean package spring-boot:run 			
+	  		
 	
    Build the project via Maven:
 
