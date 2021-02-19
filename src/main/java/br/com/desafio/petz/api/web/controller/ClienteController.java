@@ -42,7 +42,7 @@ import br.com.desafio.petz.api.web.response.ResponseApiPaged;
 @RequestMapping("/rest")
 public class ClienteController {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ClienteService service;
@@ -53,7 +53,7 @@ public class ClienteController {
 	@GetMapping(path = "/clientes", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Response<ClienteDto>> listarClientes() {
-		LOGGER.info("LISTAR_CLIENTES");
+		logger.info("LISTAR_CLIENTES");
 		Response<ClienteDto> response;
 
 		List<Cliente> clientes = null;
@@ -73,17 +73,17 @@ public class ClienteController {
 
 	@GetMapping(path = "/clientes/pagedAndSorted", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarClientesPaged(@PageableDefault(size = 3) Pageable page) {
-		LOGGER.info(" LISTAR_CLIENTES_PAGED ");
+		logger.info(" LISTAR_CLIENTES_PAGED ");
 		ResponseApiPaged<Page<Cliente>> clienteResponse = new ResponseApiPaged<Page<Cliente>>();
 		Page<Cliente> clientes = null;
 		try {
 			clientes = service.findAll(page);
 			clienteResponse.setData(clientes);
 		} catch (BusinessException ex) {
-			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR + ex.getMessage() + "LISTAR_CLIENTES_PAGED");
+			logger.error(ConstanteUtil.INTERNAL_SERVER_ERROR + ex.getMessage() + "LISTAR_CLIENTES_PAGED");
 			throw new BusinessException(ex.getMessage(), ex);
 		} catch (Exception e) {
-			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR + e.getMessage() + "LISTAR_CLIENTES_PAGED");
+			logger.error(ConstanteUtil.INTERNAL_SERVER_ERROR + e.getMessage() + "LISTAR_CLIENTES_PAGED");
 			throw new InternalServerException(ConstanteUtil.ERRO + e.getMessage() + "ERRO_LISTAR_CLIENTE", e);
 		}
 
@@ -95,7 +95,7 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/{id}")
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
-		LOGGER.info("BUSCAR CLIENTE " + id);
+		logger.info("BUSCAR CLIENTE " + id);
 		Optional<Cliente> cliente;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
 
@@ -111,7 +111,7 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/nome/{nome}")
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
-		LOGGER.info("BUSCAR CLIENTE POR NOME " + nome);
+		logger.info("BUSCAR CLIENTE POR NOME " + nome);
 		Optional<List<Cliente>> clientes;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
 
@@ -127,17 +127,18 @@ public class ClienteController {
 	
 	@PostMapping(path = "/clientes", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarCliente(@RequestBody @Valid ClienteDto dto) {
-		LOGGER.info("Criando CLIENTE " + dto.getNome());
+		logger.info("Criando CLIENTE " + dto.getNome());
 
-		Optional<Cliente> clienteOpt = null;
+		Optional<Cliente> clienteOpt = Optional.empty();;
 		List<ClienteDto> listDataTtoResponse = new ArrayList<ClienteDto>();
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
 
-		clienteOpt = Optional.of(service.salvar(converter.converteDtoToEntity(dto, new Cliente()).get()));
-	
-		listDataTtoResponse.add(converter.convertToDto(clienteOpt.get()));
-		clienteResponse.setData(listDataTtoResponse);
-		
+		clienteOpt = converter.converteDtoToEntity(dto);
+		if(clienteOpt.isPresent()) {
+			Cliente cliente = service.salvar(clienteOpt.get());
+			listDataTtoResponse.add(converter.convertToDto(cliente));
+			clienteResponse.setData(listDataTtoResponse);
+		}
 
 		return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
 	}
@@ -155,12 +156,13 @@ public class ClienteController {
 	@PutMapping("/clientes/{id}")
 	
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
-		LOGGER.info("UPDATE CLIENTE " + id);
-		Optional<Cliente> cliente;
-		cliente = service.buscarPorId(id);
-		if (cliente.isPresent()) {
-			cliente = converter.converteDtoToEntity(dto, cliente.get());
-			service.alterar(cliente.get());
+		logger.info("UPDATE CLIENTE " + id);
+		Optional<Cliente> clienteOpt;
+		clienteOpt = service.buscarPorId(id);
+		if (clienteOpt.isPresent()) {
+			clienteOpt = converter.converteDtoToEntity(dto, clienteOpt.get());
+			if (clienteOpt.isPresent()) 
+				service.alterar(clienteOpt.get());
 		}
 		
 		return ResponseEntity.noContent().build();
@@ -169,7 +171,7 @@ public class ClienteController {
 
 	@DeleteMapping("/clientes/{id}")
 	public ResponseEntity<Object> excluirCliente(@PathVariable Long id) {
-		LOGGER.info("Excluir cliente: {}", id);
+		logger.info("Excluir cliente: {}", id);
 
 		Optional<Cliente> cliente = service.buscarPorId(id);
 		if (cliente.isPresent()) {
