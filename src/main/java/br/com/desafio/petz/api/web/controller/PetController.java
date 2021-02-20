@@ -52,8 +52,7 @@ public class PetController {
 
 	@GetMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody Response<PetDto> listarPets() {
+	public @ResponseBody ResponseEntity<?> listarPets() {
 		logger.info("LISTAR_PETS");
 		Response<PetDto> response;
 
@@ -62,13 +61,13 @@ public class PetController {
 		pets = service.findAll();
 
 		if (pets.isEmpty())
-			return response;
+			return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
 
 		List<PetDto> dtos = converter.convertListToListDto(pets);
 		response.setData(dtos);
 	
 
-		return response;
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping("/pets/{id}")
