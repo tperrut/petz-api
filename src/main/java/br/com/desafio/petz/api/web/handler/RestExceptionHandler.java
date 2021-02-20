@@ -95,7 +95,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public @ResponseBody ErrorDetail duplicateEmailException(DataIntegrityViolationException e) {
 		DataIntegrityViolationExceptionDetails ex = DataIntegrityViolationExceptionDetails.builder().
-				detalhe(e.getMessage().substring(0, 46).concat(" ...")).
+				detalhe(e.getRootCause().getMessage().substring(0, 46).concat(" ...")).
 				developerMessage(BusinessException.class.getName()).
 				statusCode(HttpStatus.CONFLICT.value()).
 				timestamp(new Date()).
