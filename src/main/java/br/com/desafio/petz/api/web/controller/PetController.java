@@ -53,10 +53,10 @@ public class PetController {
 	@GetMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ApiResponses(value = { 
-            @ApiResponse(code = 200, message = "Success|OK"),
-            @ApiResponse(code = 401, message = "not authorized!"), 
-            @ApiResponse(code = 403, message = "forbidden!!!"),
-            @ApiResponse(code = 404, message = "not found!!!") })
+    @ApiResponse(code = 200, message = "Success|OK"),
+    @ApiResponse(code = 401, message = "not authorized!"), 
+    @ApiResponse(code = 403, message = "forbidden!!!"),
+    @ApiResponse(code = 404, message = "not found!!!") })
 	public ResponseEntity<ResponseApi<PetDto>> listarPets() {
 		logger.info("LISTAR_PETS");
 		Response<PetDto> response;
@@ -115,13 +115,13 @@ public class PetController {
 		logger.info("Criando PET " + dto.getNome());
 		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
 		List<PetDto> listDataTtoResponse = new ArrayList<PetDto>();
-		Pet pet; 
-		Optional<Pet> optPet = converter.converteDtoToEntity(dto);
-		if (optPet.isPresent()) {
-			pet = service.salvar(optPet.get());
-			listDataTtoResponse.add(converter.convertToDto(pet));
-			petResponse.setData(listDataTtoResponse);
-		}	
+		
+		Pet pet = converter.converteDtoToEntity(dto);
+		pet = service.salvar(pet);
+		
+		listDataTtoResponse.add(converter.convertToDto(pet));
+		petResponse.setData(listDataTtoResponse);
+
 		return new ResponseEntity<>(petResponse, HttpStatus.CREATED);
 	}
 
@@ -132,15 +132,12 @@ public class PetController {
 	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
 		logger.info(String.format("UPDATE PET %s", id));
 
-		Optional<Pet> pet = Optional.empty();
-		pet = service.buscarPorId(id);
-		if (pet.isPresent()) {
-			pet = converter.converteDtoToEntity(dto, pet.get());
-			
-			if (pet.isPresent()) {
-				pet.get().setId(id);
-				service.salvar(pet.get());
-			}	
+		Optional<Pet> petOpt = service.buscarPorId(id);
+		Pet pet = new Pet();
+		if (petOpt.isPresent()) {
+			pet = converter.converteDtoToEntity(dto, petOpt.get());
+			pet.setId(id);
+			service.salvar(pet);
 		}
 
 		return ResponseEntity.noContent().build();
