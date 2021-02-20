@@ -14,26 +14,7 @@ public class ResourceNotFoundDetails extends ErrorDetail{
 	
 	public ResourceNotFoundDetails() {
 	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-	public String getDetalhe() {
-		return detalhe;
-	}
-	public int getStatusCode() {
-		return statusCode;
-	}
-
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-
+	
 	public static Builder builder() {
 		return new Builder();
 	}

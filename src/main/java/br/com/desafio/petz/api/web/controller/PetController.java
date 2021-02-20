@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.desafio.petz.api.dto.PetDto;
@@ -35,8 +37,6 @@ import br.com.desafio.petz.api.web.exception.InternalServerException;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/rest")
@@ -52,34 +52,31 @@ public class PetController {
 
 	@GetMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-	@ApiResponses(value = { 
-    @ApiResponse(code = 200, message = "Success|OK"),
-    @ApiResponse(code = 401, message = "not authorized!"), 
-    @ApiResponse(code = 403, message = "forbidden!!!"),
-    @ApiResponse(code = 404, message = "not found!!!") })
-	public ResponseEntity<ResponseApi<PetDto>> listarPets() {
+    @ResponseStatus(value = HttpStatus.OK)
+	public @ResponseBody Response<PetDto> listarPets() {
 		logger.info("LISTAR_PETS");
 		Response<PetDto> response;
 
 		List<Pet> pets = null;
-		response = new ResponseApi<PetDto>();
+		response = new ResponseApi<>();
 		pets = service.findAll();
 
 		if (pets.isEmpty())
-			return new ResponseEntity<ResponseApi<PetDto>>((ResponseApi<PetDto>) response, HttpStatus.NO_CONTENT);
+			return response;
 
 		List<PetDto> dtos = converter.convertListToListDto(pets);
 		response.setData(dtos);
 	
 
-		return new ResponseEntity<ResponseApi<PetDto>>((ResponseApi<PetDto>) response, HttpStatus.OK);
+		return response;
 	}
 	
 	@GetMapping("/pets/{id}")
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
-		logger.info("BUSCAR PET POR ID " + id);
+		logger.info(String.format("BUSCAR PET POR ID %d", id));
+
 		Optional<Pet> pet = Optional.empty();
-		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
+		ResponseApi<PetDto> petResponse = new ResponseApi<>();
 
 		pet = service.buscarPorId(id);
 		if (pet.isPresent()) {
@@ -112,8 +109,9 @@ public class PetController {
 
 	@PostMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarPet(@RequestBody @Valid PetDto dto) {
-		logger.info("Criando PET " + dto.getNome());
-		ResponseApi<PetDto> petResponse = new ResponseApi<PetDto>();
+		logger.info(String.format("Criando PET : %s", dto.getNome()));
+
+		ResponseApi<PetDto> petResponse = new ResponseApi<>();
 		List<PetDto> listDataTtoResponse = new ArrayList<PetDto>();
 		
 		Pet pet = converter.converteDtoToEntity(dto);
@@ -150,7 +148,8 @@ public class PetController {
 	 */
 	@DeleteMapping("/pets/{id}")
 	public ResponseEntity<Void> excluirPet(@PathVariable Long id) {
-		logger.info("Cancelar pet: " + id);
+		logger.info(String.format("Excluir Pet id: %d", id));
+
 		Optional<Pet> pet = service.buscarPorId(id);
 		if (pet.isPresent()) 
 			service.excluir(id);
