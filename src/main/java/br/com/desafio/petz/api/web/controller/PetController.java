@@ -70,7 +70,7 @@ public class PetController {
 	
 	@GetMapping("/pets/{id}")
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
-		logger.info("BUSCAR PET POR ID %d", id);
+		logger.info("BUSCAR PET POR ID: {0}", id);
 
 		Optional<Pet> pet = Optional.empty();
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
@@ -106,7 +106,7 @@ public class PetController {
 
 	@PostMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarPet(@RequestBody @Valid PetDto dto) {
-		logger.info("Criando PET : %s", dto.getNome());
+		logger.info("Criando PET : {0}", dto.getNome());
 
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
 		List<PetDto> listDataTtoResponse = new ArrayList<>();
@@ -125,7 +125,7 @@ public class PetController {
 	 */
 	@PutMapping("/pets/{id}")
 	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
-		logger.info("UPDATE PET %d", id);
+		logger.info("UPDATE PET {0}", id);
 
 		Optional<Pet> petOpt = service.buscarPorId(id);
 		Pet pet = null;
@@ -145,7 +145,7 @@ public class PetController {
 	 */
 	@DeleteMapping("/pets/{id}")
 	public ResponseEntity<Void> excluirPet(@PathVariable Long id) {
-		logger.info("Excluir Pet id: %d", id);
+		logger.info("Excluir Pet id: {0}", id);
 
 		Optional<Pet> pet = service.buscarPorId(id);
 		if (pet.isPresent()) 
