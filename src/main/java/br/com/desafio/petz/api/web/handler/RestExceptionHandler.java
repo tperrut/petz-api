@@ -55,8 +55,6 @@ import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	@ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public @ResponseBody ResourceNotFoundDetails handleResourceNotFoundException (ResourceNotFoundException e){
