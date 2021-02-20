@@ -73,7 +73,7 @@ public class ClienteController {
 
 	@GetMapping(path = "/clientes/pagedAndSorted", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarClientesPaged(@PageableDefault(size = 3) Pageable page) {
-		logger.info(" LISTAR_CLIENTES_PAGED ");
+		logger.info(String.format(" LISTAR_CLIENTES_PAGED "));
 		ResponseApiPaged<Page<Cliente>> clienteResponse = new ResponseApiPaged<Page<Cliente>>();
 		Page<Cliente> clientes = null;
 		try {
@@ -93,7 +93,7 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/{id}")
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
-		logger.info("BUSCAR CLIENTE %d" , id);
+		logger.info(String.format("BUSCAR CLIENTE %d" , id));
 		
 		Optional<Cliente> cliente;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
@@ -110,7 +110,7 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/nome/{nome}")
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
-		logger.info("BUSCAR CLIENTE  POR NOME %s" , nome);
+		logger.info(String.format("BUSCAR CLIENTE  POR NOME %s" , nome));
 
 		Optional<List<Cliente>> clientes;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
@@ -127,7 +127,7 @@ public class ClienteController {
 	
 	@PostMapping(path = "/clientes", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarCliente(@RequestBody @Valid ClienteDto dto) {
-		logger.info("Criando CLIENTE %s ", dto.getNome());
+		logger.info(String.format("Criando CLIENTE %s ", dto.getNome()));
 
 		Optional<Cliente> clienteOpt = Optional.empty();;
 		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
@@ -156,7 +156,7 @@ public class ClienteController {
 	@PutMapping("/clientes/{id}")
 	
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
-		logger.info("UPDATE CLIENTE id: %d" , id);
+		logger.info(String.format("UPDATE CLIENTE id: %d" , id));
 		Optional<Cliente> clienteOpt;
 		clienteOpt = service.buscarPorId(id);
 		if (clienteOpt.isPresent()) {
@@ -171,7 +171,7 @@ public class ClienteController {
 
 	@DeleteMapping("/clientes/{id}")
 	public ResponseEntity<Object> excluirCliente(@PathVariable Long id) {
-		logger.info("Excluir cliente id: %d", id);
+		logger.info(String.format("Excluir cliente id: %d", id));
 
 		Optional<Cliente> cliente = service.buscarPorId(id);
 		if (cliente.isPresent()) {
