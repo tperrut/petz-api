@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,10 +80,8 @@ public class ClienteController {
 			clientes = service.findAll(page);
 			clienteResponse.setData(clientes);
 		} catch (BusinessException ex) {
-			logger.error(ConstanteUtil.INTERNAL_SERVER_ERROR + ex.getMessage() + "LISTAR_CLIENTES_PAGED");
-			throw new BusinessException(ex.getMessage(), ex);
+			throw ex;
 		} catch (Exception e) {
-			logger.error(ConstanteUtil.INTERNAL_SERVER_ERROR + e.getMessage() + "LISTAR_CLIENTES_PAGED");
 			throw new InternalServerException(ConstanteUtil.ERRO + e.getMessage() + "ERRO_LISTAR_CLIENTE", e);
 		}
 
@@ -94,7 +93,8 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/{id}")
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
-		logger.info("BUSCAR CLIENTE " + id);
+		logger.info("BUSCAR CLIENTE %d" , id);
+		
 		Optional<Cliente> cliente;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
@@ -110,7 +110,8 @@ public class ClienteController {
 	
 	@GetMapping("/clientes/nome/{nome}")
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
-		logger.info("BUSCAR CLIENTE POR NOME " + nome);
+		logger.info("BUSCAR CLIENTE  POR NOME %s" , nome);
+
 		Optional<List<Cliente>> clientes;
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
@@ -126,7 +127,7 @@ public class ClienteController {
 	
 	@PostMapping(path = "/clientes", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarCliente(@RequestBody @Valid ClienteDto dto) {
-		logger.info("Criando CLIENTE " + dto.getNome());
+		logger.info("Criando CLIENTE %s ", dto.getNome());
 
 		Optional<Cliente> clienteOpt = Optional.empty();;
 		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
@@ -155,7 +156,7 @@ public class ClienteController {
 	@PutMapping("/clientes/{id}")
 	
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
-		logger.info("UPDATE CLIENTE " + id);
+		logger.info("UPDATE CLIENTE id: %d" , id);
 		Optional<Cliente> clienteOpt;
 		clienteOpt = service.buscarPorId(id);
 		if (clienteOpt.isPresent()) {
@@ -170,7 +171,7 @@ public class ClienteController {
 
 	@DeleteMapping("/clientes/{id}")
 	public ResponseEntity<Object> excluirCliente(@PathVariable Long id) {
-		logger.info("Excluir cliente: {}", id);
+		logger.info("Excluir cliente id: %d", id);
 
 		Optional<Cliente> cliente = service.buscarPorId(id);
 		if (cliente.isPresent()) {
