@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.desafio.petz.api.dto.PetDto;
@@ -72,7 +71,7 @@ public class PetController {
 	
 	@GetMapping("/pets/{id}")
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
-		logger.info(String.format("BUSCAR PET POR ID %d", id));
+		logger.info("BUSCAR PET POR ID %d", id);
 
 		Optional<Pet> pet = Optional.empty();
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
@@ -89,7 +88,7 @@ public class PetController {
 
 	@GetMapping(path = "/pets/pagedAndSorted", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarPetsPaged(@PageableDefault(size = 3) Pageable page) {
-		logger.info(" LISTAR_PETS_PAGED ");
+		logger.info("LISTAR_PETS_PAGED ");
 		ResponseApiPaged<Page<Pet>> petResponse = new ResponseApiPaged<Page<Pet>>();
 		Page<Pet> pets = null;
 		try {
@@ -108,10 +107,10 @@ public class PetController {
 
 	@PostMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarPet(@RequestBody @Valid PetDto dto) {
-		logger.info(String.format("Criando PET : %s", dto.getNome()));
+		logger.info("Criando PET : %s", dto.getNome());
 
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
-		List<PetDto> listDataTtoResponse = new ArrayList<PetDto>();
+		List<PetDto> listDataTtoResponse = new ArrayList<>();
 		
 		Pet pet = converter.converteDtoToEntity(dto);
 		pet = service.salvar(pet);
@@ -127,10 +126,10 @@ public class PetController {
 	 */
 	@PutMapping("/pets/{id}")
 	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
-		logger.info(String.format("UPDATE PET %s", id));
+		logger.info("UPDATE PET %d", id);
 
 		Optional<Pet> petOpt = service.buscarPorId(id);
-		Pet pet = new Pet();
+		Pet pet = null;
 		if (petOpt.isPresent()) {
 			pet = converter.converteDtoToEntity(dto, petOpt.get());
 			pet.setId(id);
@@ -147,7 +146,7 @@ public class PetController {
 	 */
 	@DeleteMapping("/pets/{id}")
 	public ResponseEntity<Void> excluirPet(@PathVariable Long id) {
-		logger.info(String.format("Excluir Pet id: %d", id));
+		logger.info("Excluir Pet id: %d", id);
 
 		Optional<Pet> pet = service.buscarPorId(id);
 		if (pet.isPresent()) 
