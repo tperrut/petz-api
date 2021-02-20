@@ -8,12 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.dto.PetDto;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
 import br.com.desafio.petz.api.service.ClienteService;
-import br.com.desafio.petz.api.service.PetService;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 @Service 
@@ -30,7 +28,7 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 	@Override
 	public List<PetDto> convertListToListDto(List<Pet> pets) {
 		if(pets == null) 
-			return new ArrayList<PetDto>(); 
+			return new ArrayList<>(); 
 		
 		List<PetDto>  lista = null;
 		lista = pets.stream().map(pet -> {
@@ -53,9 +51,10 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 				dataNascimento(entry.getDataNascimento()).
 				build();
 	}
+	
 	@Override
-	public Optional<Pet> converteDtoToEntity(PetDto dto, Pet pet) {
-		if(dto== null) return Optional.of(new Pet());
+	public Pet converteDtoToEntity(PetDto dto, Pet pet) {
+		if(dto== null) return new Pet();
 		
 		Optional<Cliente> dono;
 		dono = clienteService.buscarPorId(Long.valueOf(dto.getIdDono()));
@@ -64,14 +63,14 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 			throw new ResourceNotFoundException("Id do dono não encontrado");
 		
 		setValidFields(dto, pet);
-		return  Optional.of(pet);
+		return  pet;
 	}
 
 	
 	@Override
-	public Optional<Pet> converteDtoToEntity(PetDto dto) {
+	public Pet converteDtoToEntity(PetDto dto) {
 		Pet pet = new Pet();
-		if(dto== null) return Optional.of(pet);
+		if(dto== null) return pet;
 		
 		Optional<Cliente> dono;
 		dono = clienteService.buscarPorId(Long.valueOf(dto.getIdDono()));
@@ -80,7 +79,7 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 			throw new ResourceNotFoundException("Id do dono não encontrado");
 		
 		setValidFields(dto, pet);
-		return  Optional.of(pet);
+		return  pet;
 	
 	}
 	
@@ -89,17 +88,6 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 		if(dto.getRaca() != null) pet.setRaca(dto.getRaca());
 		if(dto.getTipo() != null) pet.setTipo(dto.getTipo());
 		if(dto.getDataNascimento() != null) pet.setDataNascimento(dto.getDataNascimento());
-		
-				
 	}
-
-	@Override
-	public List<Pet> convertListDtoToListEntity(List<PetDto> dtos) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	
 
 }

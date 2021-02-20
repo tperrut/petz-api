@@ -14,9 +14,6 @@ import br.com.desafio.petz.api.web.exception.BusinessException;
 @Service 
 public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	
-	/*@Autowired
-	private Converter<Pet, PetDto> petConveter;*/
-	
 	/**
 	 * Nesse converter o Dto não usa o Padrão Builder
 	 */
@@ -44,22 +41,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		return new ClienteDto(cliente.getNome(),
 				cliente.getEmail(),
 				cliente.getDataNascimento());
-          		/*convertListPetToListDto(getPets(cliente)));*/
 	}
-
-
-	/*private List<Pet> getPets(Cliente cliente) {
-		if(cliente.getPets() == null) 
-			return new ArrayList<Pet>();
-		
-		return cliente.getPets();
-	}*/
-
-	/*	private List<PetDto> convertListPetToListDto(List<Pet> lista) {
-		return petConveter.convertListToListDto(lista);
-	}*/
-	
-	
 
 	@Override
 	public ClienteDto convertToDto(Cliente cliente) {
@@ -72,7 +54,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	
 
 	@Override
-	public Optional<Cliente> converteDtoToEntity(ClienteDto dto, Cliente cliente) {
+	public Cliente converteDtoToEntity(ClienteDto dto, Cliente cliente) {
 		 try {
 			return	createClienteForUpdate(dto,cliente);
 		} catch (Exception e) {
@@ -81,7 +63,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	}
 	
 	@Override
-	public Optional<Cliente> converteDtoToEntity(ClienteDto dto) {
+	public Cliente converteDtoToEntity(ClienteDto dto) {
 		 try {
 			return	createClienteForSave(dto);
 		} catch (Exception e) {
@@ -89,15 +71,15 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		}
 	}
 	
-	private Optional<Cliente> createClienteForSave(ClienteDto dto) throws Exception {
+	private Cliente createClienteForSave(ClienteDto dto) throws Exception {
 		Cliente cliente = new Cliente(); 
 		setValidFields(dto, cliente);
-		return Optional.of(cliente);
+		return cliente;
 	}
 	
-	private Optional<Cliente> createClienteForUpdate(ClienteDto dto, Cliente cliente) throws Exception {
+	private Cliente createClienteForUpdate(ClienteDto dto, Cliente cliente) throws Exception {
 		setValidFields(dto, cliente);
-		return Optional.of(cliente);
+		return cliente;
 	}
 
 	private void setValidFields(ClienteDto dto, Cliente cliente) {
@@ -105,12 +87,6 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		if(dto.getEmail()!= null) cliente.setEmail(dto.getEmail());
 		if(dto.getDataNascimento() != null) cliente.setDataNascimento(dto.getDataNascimento());
 				
-	}
-
-	@Override
-	public List<Cliente> convertListDtoToListEntity(List<ClienteDto> dtos) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

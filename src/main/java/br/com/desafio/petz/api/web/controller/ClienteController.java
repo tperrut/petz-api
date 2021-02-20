@@ -129,16 +129,14 @@ public class ClienteController {
 	public ResponseEntity<Object> criarCliente(@RequestBody @Valid ClienteDto dto) {
 		logger.info(String.format("Criando CLIENTE %s ", dto.getNome()));
 
-		Optional<Cliente> clienteOpt = Optional.empty();;
+		Cliente cliente = null;
 		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
-		clienteOpt = converter.converteDtoToEntity(dto);
-		if(clienteOpt.isPresent()) {
-			Cliente cliente = service.salvar(clienteOpt.get());
-			listDataTtoResponse.add(converter.convertToDto(cliente));
-			clienteResponse.setData(listDataTtoResponse);
-		}
+		cliente = converter.converteDtoToEntity(dto);
+		cliente = service.salvar(cliente);
+		listDataTtoResponse.add(converter.convertToDto(cliente));
+		clienteResponse.setData(listDataTtoResponse);
 
 		return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
 	}
@@ -158,11 +156,12 @@ public class ClienteController {
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
 		logger.info(String.format("UPDATE CLIENTE id: %d" , id));
 		Optional<Cliente> clienteOpt;
+		Cliente cliente ;
+
 		clienteOpt = service.buscarPorId(id);
 		if (clienteOpt.isPresent()) {
-			clienteOpt = converter.converteDtoToEntity(dto, clienteOpt.get());
-			if (clienteOpt.isPresent()) 
-				service.alterar(clienteOpt.get());
+			cliente = converter.converteDtoToEntity(dto, clienteOpt.get());
+			service.alterar(cliente);
 		}
 		
 		return ResponseEntity.noContent().build();
