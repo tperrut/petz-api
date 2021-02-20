@@ -2,7 +2,6 @@ package br.com.desafio.petz.api.service.conveter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -20,13 +19,10 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	@Override
 	public List<ClienteDto> convertListToListDto(List<Cliente> clientes) {
 		try {
-			if(clientes.isEmpty()) return new ArrayList<ClienteDto>(); 
+			if(clientes.isEmpty()) return new ArrayList<>(); 
 			
 			List<ClienteDto>  lista = null;
-			lista = clientes.stream().map(cliente -> {
-				return createNewDto(cliente);
-				
-			}).collect(Collectors.toList());
+			lista = clientes.stream().map(cliente -> createNewDto(cliente)).collect(Collectors.toList());
 						
 			return lista;
 		} catch (Exception e) {
@@ -71,13 +67,13 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		}
 	}
 	
-	private Cliente createClienteForSave(ClienteDto dto) throws Exception {
+	private Cliente createClienteForSave(ClienteDto dto) {
 		Cliente cliente = new Cliente(); 
 		setValidFields(dto, cliente);
 		return cliente;
 	}
 	
-	private Cliente createClienteForUpdate(ClienteDto dto, Cliente cliente) throws Exception {
+	private Cliente createClienteForUpdate(ClienteDto dto, Cliente cliente) {
 		setValidFields(dto, cliente);
 		return cliente;
 	}

@@ -72,7 +72,7 @@ public class PetController {
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
 		logger.info("BUSCAR PET POR ID: {}", id);
 
-		Optional<Pet> pet = Optional.empty();
+		Optional<Pet> pet;
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
 
 		pet = service.buscarPorId(id);
@@ -88,15 +88,11 @@ public class PetController {
 	@GetMapping(path = "/pets/pagedAndSorted", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarPetsPaged(@PageableDefault(size = 3) Pageable page) {
 		logger.info("LISTAR_PETS_PAGED ");
-		ResponseApiPaged<Page<Pet>> petResponse = new ResponseApiPaged<Page<Pet>>();
+		ResponseApiPaged<Page<Pet>> petResponse = new ResponseApiPaged<>();
 		Page<Pet> pets = null;
-		try {
-			pets = service.findAll(page);
-			petResponse.setData(pets);
-		} catch (Exception e) {
-			logger.error(ConstanteUtil.INTERNAL_SERVER_ERROR + e.getMessage() + "LISTAR_PETS_PAGED");
-			throw new InternalServerException(ConstanteUtil.ERRO + e.getMessage() + "ERRO_LISTAR_PET", e);
-		}
+	
+		pets = service.findAll(page);
+		petResponse.setData(pets);
 
 		if (!petResponse.getDataPaged().hasContent())
 			return new ResponseEntity<>(petResponse, HttpStatus.NO_CONTENT);

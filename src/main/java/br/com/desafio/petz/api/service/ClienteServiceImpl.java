@@ -23,8 +23,6 @@ import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
 	@Autowired
 	private ClienteRepository dao;
 
