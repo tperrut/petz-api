@@ -33,7 +33,6 @@ import br.com.desafio.petz.api.service.conveter.Converter;
 import br.com.desafio.petz.api.util.ConstanteUtil;
 import br.com.desafio.petz.api.web.exception.BusinessException;
 import br.com.desafio.petz.api.web.exception.InternalServerException;
-import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
@@ -57,11 +56,11 @@ public class ClienteController {
 		Response<ClienteDto> response;
 
 		List<Cliente> clientes = null;
-		response = new ResponseApi<ClienteDto>();
+		response = new ResponseApi<>();
 
 			clientes = service.findAll();
 			if (clientes.isEmpty())
-				return new ResponseEntity<Response<ClienteDto>>(response, HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
 
 			List<ClienteDto> dtos = converter.convertListToListDto(clientes);
 
@@ -97,7 +96,7 @@ public class ClienteController {
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
 		logger.info("BUSCAR CLIENTE " + id);
 		Optional<Cliente> cliente;
-		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
+		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
 		cliente = service.buscarPorId(id);
 		if (cliente.isPresent()) {
@@ -113,7 +112,7 @@ public class ClienteController {
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
 		logger.info("BUSCAR CLIENTE POR NOME " + nome);
 		Optional<List<Cliente>> clientes;
-		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
+		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
 		clientes = service.buscarPorNome(nome);
 		if (clientes.isPresent()) {
@@ -130,8 +129,8 @@ public class ClienteController {
 		logger.info("Criando CLIENTE " + dto.getNome());
 
 		Optional<Cliente> clienteOpt = Optional.empty();;
-		List<ClienteDto> listDataTtoResponse = new ArrayList<ClienteDto>();
-		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<ClienteDto>();
+		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
+		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
 		clienteOpt = converter.converteDtoToEntity(dto);
 		if(clienteOpt.isPresent()) {
