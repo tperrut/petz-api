@@ -4,8 +4,6 @@ install: true
 
 script:
   - ./deployment/run-tests.sh
-#  - ./deployment/docker-build.sh
-#  - ./deployment/docker-push.sh
   - ./deployment/docker-run.sh
 
 addons:
@@ -26,7 +24,9 @@ cache:
     - '$HOME/.sonar/cache'  
 
 before_install:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "DOCKER_PASSWORD  ---> $DOCKER_PASSWORD"
+  - echo "DOCKER_USERNAME  ---> $DOCKER_USERNAME"
+  - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
   - chmod +x mvnw ./deployment/*
   
 before_deploy:
