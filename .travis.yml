@@ -4,10 +4,16 @@ sudo: required
 
 install: true
 
+before_scrip:
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin   #login to dockerhub
+  - curl https://cli-assets.heroku.com/install.sh | sh  #install heroku
+  - docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com  #login to registry.heroku.com 
+  
 script:
   - ./deployment/run-tests.sh
-  - ./deployment/docker-run.sh
-
+  - docker build -t petz-api .
+  - docker tag petz-api registry.heroku.com/$HEROKU_APP/web 
+ 
 addons:
   sonarcloud:
     organization: tperrut
@@ -26,25 +32,26 @@ cache:
     - '$HOME/.sonar/cache'  
 
 before_install:
-  - echo "DOCKER_PASSWORD  ---> $DOCKER_PASSWORD"
-  - echo "DOCKER_USERNAME  ---> $DOCKER_USERNAME"
+  - echo "DOCKER_PASSWORD  ---> "
+  - echo "DOCKER_USERNAME  ---> "
+  - echo $$DOCKER_USERNAME
+  
   - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
   - chmod +x mvnw ./deployment/*
   
 before_deploy:
   - ./mvnw package -P prod -DskipTests=true
 
-deploy:
-  provider: heroku
-  api_key: $HEROKU_API_KEY
-  app: desafio-petz-api
-  skip_cleanup: true
+
+deploy:   
+  provider: script
+  script: 
+         docker push petz-api;
+         docker push registry.heroku.com/$HEROKU_APP/web;
+         heroku container:release web --app $HEROKU_APP
   on:
-    repo: tperrut/petz-api
+    branch: feature/add-docker
 
 git:
   depth: false
   
-env:
-  global:
-    secure: PoztS9b/5CqeVnMz6u5icmNvK/howKdFshcIfdm9LzXJFNbSOc1pMRzLtZh9SwfAbZdvT5oHE4D0ZYIIAUYe9YwOjmS2f0UdlE9Wkk/iv+wNXCTC2Pe9lRP+WMFsxPt+bXEglG2g/fWK8PabHi9f07TWUh79IIKzJnW5pXcYdWXtzfmtDH1R4DPju1nDgdeH+5jvyDbDVgtKzsLdrONiL2rxvu8OmrAhFqp6PygmZML8pX0dpZ189Ugo6YDu6aSKpMhplqCMkA+F8aASPBAHkm4CSHauIYCZu+nJSl3grcXCAl1KOzK0KxwB6BEuge02Cf4z97t3DxKmUvVVQ0A2sOsJgvdke5JMf5xUn77dSPxiY4/LPS2inKmT4MV4tv9/sKyr2bQg8ccYk0+ZmYu/rEu5/iI+TTBufsoGT1ITNRkWj47xzqBnzzpjATThmm7G06z36k+lj4pC1haOMFV7a1gPbu6tUEf3n012pZeMYNIJ0r2Hg36Jtg4R6jkLAimIat0H8+y/kiWvgjFA6EQBpc9hqayOpi+cAnqvr/TmDTPgRZRmqK839tLoly2HMeqqQGo6v43aYaiHVj0nOKjb9QJAZEkSEG8wPi3TKPXGRjUSTrTMLocNdcs6jEr+xZyBkImIlrexya4ltRQ6a+Ggu+KoW8ArtL6rotJc+THOPsE=
