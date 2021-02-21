@@ -4,11 +4,16 @@ install: true
 
 script:
   - ./deployment/run-tests.sh
+  
 addons:
   sonarcloud:
     organization: tperrut
     token:
       secure: $SONAR_API_KEY
+
+services:
+  - docker
+      
 jdk:
 - openjdk11
 
@@ -18,10 +23,11 @@ cache:
     - '$HOME/.sonar/cache'  
 
 before_install:
-  - chmod +x mvnw
-  - chmod +x ./deployment/run-tests.sh
-  - mkdir logs
-
+  - ./deployment/init-config.sh 
+  - docker pull tperrut/petz-api
+  - docker run -d -p 8080:8080 tperrut/petz-api 
+  
+ 
 before_deploy:
   - ./mvnw package -P prod -DskipTests=true
 

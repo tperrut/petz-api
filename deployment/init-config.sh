@@ -1,7 +1,11 @@
-echo 'Install java 11 --->>>'
+echo 'Configurando Permissões --->>>'
 
-#apt update
-apt install -y sudo
+chmod +x mvnw
+chmod +x ./deployment/run-tests.sh
 
-#Create a sudo user
+echo 'Criando pasta de log --->>>'  
+  
+mkdir logs
+
+
 

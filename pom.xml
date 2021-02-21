@@ -6,7 +6,7 @@
 
 	<groupId>desafio.petz</groupId>
 	<artifactId>petz</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>petz</name>
 	<description>Desafio interview </description>
 
@@ -20,14 +20,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-				
-		
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!-- Organization and project keys are displayed in the right sidebar of the project homepage -->
 		<sonar.organization>tperrut</sonar.organization>
 		<sonar.projectKey>tperrut_petz-api</sonar.projectKey>
 		
-		
+		<jib-maven-plugin.version>2.6.0</jib-maven-plugin.version>
+		<!-- lib de segurança pra impedir que tenha acesso como root -->
+        <docker.distroless.image>gcr.io/distroless/java:11</docker.distroless.image>
+        <docker.repo.url>tperrut</docker.repo.url>
+        <docker.repo.project>petz-api</docker.repo.project>
+        <docker.image.name>${docker.repo.url}/${docker.repo.project}</docker.image.name>
 	</properties>
 	
 	<scm>
@@ -36,106 +38,6 @@
         <url>https://sonarcloud.io</url>
     </scm>
     
-	<profiles>
-		<profile>
-			<id>prod</id>
-			<activation>
-				<!-- this profile is active by default -->
-				<activeByDefault>false</activeByDefault>
-				<!-- activate if system properties 'env=prod' -->
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-
-			</activation>
-			<properties>
-				<env>prod</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<!-- this profile is active by default -->
-				<activeByDefault>false</activeByDefault>
-				<!-- activate if system properties 'env=dev' -->
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-
-			</activation>
-			<properties>
-				<env>dev</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>test</id>
-			<activation>
-				<!-- this profile is active by default -->
-				<activeByDefault>true</activeByDefault>
-				<!-- activate if system properties 'env=test' -->
-				<property>
-					<name>env</name>
-					<value>test</value>
-				</property>
-
-			</activation>
-			<properties>
-				<env>test</env>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-heroku</id>
-			<properties>
-				<maven.deploy.skip>false</maven.deploy.skip>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.heroku.sdk</groupId>
-						<artifactId>heroku-maven-plugin</artifactId>
-						<version>3.0.2</version>
-						<configuration>
-							<appName>desafio-petz-api</appName>
-							<processTypes>
-								<web>java $JAVA_OPTS -jar -Dserver.port=$PORT
-									target/${project.build.finalName}.jar</web>
-							</processTypes>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>coverage</id>
-			<build>
-				<plugins>
-					<plugin>
-				        <groupId>org.jacoco</groupId>
-				        <artifactId>jacoco-maven-plugin</artifactId>
-				        <version>0.8.6</version>
-				        <executions>
-				            <execution>
-				                <goals>
-				                    <goal>prepare-agent</goal>
-				                </goals>
-				            </execution>
-				            <!-- attached to Maven test phase -->
-				            <execution>
-				                <id>report</id>
-				                <phase>test</phase>
-				                <goals>
-				                    <goal>report</goal>
-				                </goals>
-					            
-				            </execution>
-				        </executions>
-				    </plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -219,8 +121,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-help-plugin</artifactId><!--$NO-MVN-MAN-VER$-->
-				<version>3.2.0</version>
+				<artifactId>maven-help-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>show-profiles</id>
@@ -232,11 +133,6 @@
 				</executions>
 			</plugin>
 
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId> 
-				<version>3.0.0-M1</version> <configuration> <skipTests>true</skipTests> </configuration> 
-				</plugin> -->
-
-			
 		      
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -282,20 +178,6 @@
 									   </limit>
 			                        </limits>
 		                        </rule>
-		                        <!-- Regra ousada 
-		                         <rule>
-								    <element>CLASS</element>
-								    <excludes>
-								      <exclude>*Test</exclude>
-								    </excludes>
-								    <limits>
-								      <limit>
-								        <counter>LINE</counter>
-								        <value>COVEREDRATIO</value>
-								        <minimum>50%</minimum>
-								      </limit>
-								    </limits>
-								  </rule> -->
 		                    </rules>
 		                </configuration>
 					</execution>
@@ -313,7 +195,142 @@
 		          <goalPrefix>sonar</goalPrefix>
 		        </configuration>
 		      </plugin>
+		      
+		       <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>${docker.distroless.image}</image>
+                    </from>
+                    <to>
+                        <image>${docker.image.name}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <mainClass>br.com.desafio.petz.api.PetzApplication</mainClass>
+                    </container>
+                </configuration>
+            </plugin>
 		    </plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<!-- this profile is active by default -->
+				<activeByDefault>false</activeByDefault>
+				<!-- activate if system properties 'env=prod' -->
+				<property>
+					<name>env</name>
+					<value>prod</value>
+				</property>
+			</activation>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>docker</id>
+			<activation>
+				<!-- this profile is active by default -->
+				<activeByDefault>false</activeByDefault>
+				<!-- activate if system properties 'env=prod' -->
+				<property>
+					<name>env</name>
+					<value>docker</value>
+				</property>
+			</activation>
+			<properties>
+				<env>docker</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<!-- this profile is active by default -->
+				<activeByDefault>false</activeByDefault>
+				<!-- activate if system properties 'env=dev' -->
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+
+			</activation>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<activation>
+				<!-- this profile is active by default -->
+				<activeByDefault>false</activeByDefault>
+				<!-- activate if system properties 'env=test' -->
+				<property>
+					<name>env</name>
+					<value>test</value>
+				</property>
+
+			</activation>
+			<properties>
+				<env>test</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-heroku</id>
+			<properties>
+				<maven.deploy.skip>false</maven.deploy.skip>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.heroku.sdk</groupId>
+						<artifactId>heroku-maven-plugin</artifactId>
+						<version>3.0.2</version>
+						<configuration>
+							<appName>desafio-petz-api</appName>
+							<processTypes>
+								<web>java $JAVA_OPTS -jar -Dserver.port=$PORT
+									target/${project.build.finalName}.jar</web>
+							</processTypes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+				        <groupId>org.jacoco</groupId>
+				        <artifactId>jacoco-maven-plugin</artifactId>
+				        <version>0.8.6</version>
+				        <executions>
+				            <execution>
+				                <goals>
+				                    <goal>prepare-agent</goal>
+				                </goals>
+				            </execution>
+				            <!-- attached to Maven test phase -->
+				            <execution>
+				                <id>report</id>
+				                <phase>test</phase>
+				                <goals>
+				                    <goal>report</goal>
+				                </goals>
+					            
+				            </execution>
+				        </executions>
+				    </plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
