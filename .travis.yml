@@ -11,10 +11,7 @@ sudo: required
 install: true
 
 before_install:
-  - echo "DOCKER_PASSWORD  ---> "
-  - echo "DOCKER_USERNAME  ---> "
-  - echo $DOCKER_USERNAME
-  
+  - echo "before_install  ---> "
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - sudo chmod +x docker-compose
@@ -23,13 +20,17 @@ before_install:
   - sudo chmod +x mvnw ./deployment/*
   - ./mvnw clean package -DskipTests=true
 
-before_scrip:
-  - docker-compose up -d --build
+before_script:
+  - echo "before_script  ---> "
+
+  - sudo docker-compose up -d --build
   - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin   #login to dockerhub
   - curl https://cli-assets.heroku.com/install.sh | sh  #install heroku
   - docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com  #login to registry.heroku.com 
   
 script:
+  - echo "_script  ---> "
+
   - ./deployment/run-tests.sh
   - docker image ls;
   - docker build -t tperrut/petz-api . #mvn jib:dockerBuild 
@@ -38,6 +39,8 @@ script:
   - docker push registry.heroku.com/$HEROKU_APP/web;
 
 before_deploy:
+  - echo "before_deploy  ---> "
+
   - ./mvnw package -P prod -DskipTests=true
 
 
