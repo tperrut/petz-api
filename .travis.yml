@@ -18,19 +18,20 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   
   - sudo chmod +x mvnw ./deployment/*
-  - ./mvnw clean package -DskipTests=true
+  
+  
+#  - ./mvnw clean package -DskipTests=true
 
 before_script:
   - echo "before_script  ---> "
 
-  - sudo docker-compose up -d --build
   - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin   #login to dockerhub
   - curl https://cli-assets.heroku.com/install.sh | sh  #install heroku
   - docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com  #login to registry.heroku.com 
   
 script:
   - echo "_script  ---> "
-
+  - sudo docker-compose up -d --build
   - ./deployment/run-tests.sh
   - docker image ls;
   - docker build -t tperrut/petz-api . #mvn jib:dockerBuild 
