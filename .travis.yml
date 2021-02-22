@@ -11,7 +11,9 @@ before_scrip:
   
 script:
   - ./deployment/run-tests.sh
-  - docker build -t petz-api .
+  - docker image ls;
+  - docker build -t tperrut/petz-api .
+  - docker image ls;
   - docker tag petz-api registry.heroku.com/$HEROKU_APP/web 
  
 addons:
