@@ -17,8 +17,10 @@ before_install:
   - sudo chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - sudo chmod +x mvnw ./deployment/*
-  - ./mvnw package -P prod -DskipTests=true
-  
+  - ./mvnw package -P test -DskipTests=true
+  - docker-compose up -d
+  # Verify service availability
+  - docker-compose ps
   
 #  - ./mvnw clean package -DskipTests=true
 
