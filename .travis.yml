@@ -35,7 +35,7 @@ script:
   - echo "_script  ---> "
   - ./deployment/run-tests.sh
   - docker image ls;
-  - docker build -t tperrut/petz-api . #mvn jib:dockerBuild 
+  - docker build -t tperrut/petz-api .  registry.heroku.com/$HEROKU_APP; #mvn jib:dockerBuild 
   - docker image ls;
   - docker tag petz-api registry.heroku.com/$HEROKU_APP;
   - docker push registry.heroku.com/$HEROKU_APP/web;
