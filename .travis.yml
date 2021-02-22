@@ -37,6 +37,7 @@ before_install:
   - echo $DOCKER_USERNAME
   
   - chmod +x mvnw ./deployment/*
+  - ./mvnw clean package -DskipTests=true
   
 before_deploy:
   - ./mvnw package -P prod -DskipTests=true
