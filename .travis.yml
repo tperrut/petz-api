@@ -17,11 +17,10 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - sudo chmod +x /usr/local/bin/docker-compose
   - sudo chmod +x mvnw ./deployment/*
-  - ./mvnw package -P test -DskipTests=true
+  - ./mvnw package -Ptest -DskipTests=true
   - ls -l /usr/local/bin/d*
-  - docker-compose up -d
   # Verify service availability
-  - docker-compose ps
+
   
 #  - ./mvnw clean package -DskipTests=true
 
@@ -40,8 +39,9 @@ script:
   - docker image ls;
   - docker tag petz-api registry.heroku.com/$HEROKU_APP;
   - docker push registry.heroku.com/$HEROKU_APP/web;
-#  - sudo docker-compose up -d --build
-
+  - sudo docker-compose up -d --build
+#  - docker-compose up -d
+  - docker-compose ps
 before_deploy:
   - echo "before_deploy  ---> "
   - ./mvnw package -P prod -DskipTests=true
