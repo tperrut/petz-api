@@ -14,10 +14,11 @@ before_install:
   - echo "before_install  ---> "
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - sudo chmod +x docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
   - sudo mv docker-compose /usr/local/bin
   - sudo chmod +x mvnw ./deployment/*
   - ./mvnw package -P test -DskipTests=true
+  - ls -l /usr/local/bin/d*
   - docker-compose up -d
   # Verify service availability
   - docker-compose ps
