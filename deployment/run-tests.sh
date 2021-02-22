@@ -5,7 +5,7 @@ echo '============ Verificando Regras de Coverage ========'
 
 
 # Rodando os testes
-mvn clean verify sonar:sonar -Dsonar.login=$SONAR_API_KEY 
+mvn -P test clean verify sonar:sonar -Dsonar.login=$SONAR_API_KEY 
 
 
 
