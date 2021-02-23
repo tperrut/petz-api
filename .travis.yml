@@ -18,15 +18,13 @@ before_install:
   - echo "Docker pull da imagem ---> "
   - docker pull tperrut/petz-api:0.0.4-SNAPSHOT
  
-  - echo "Dando permissão de execução pra o mvnw e scripts .sh ---> "
+  - echo "Dando permissão de exec pra o mvnw e scripts .sh ---> "
   - sudo chmod +x mvnw ./deployment/*
    
 script:
   - echo "Iniciando Fase d _script ---> "
   - echo "Build e testes da aplicação ---> "
-  - echo "=======  ---> "
-  - echo "====  ---> "
-  - echo "=   --> "
+  
   
   - ./deployment/run-tests.sh
   - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install
