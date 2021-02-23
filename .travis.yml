@@ -50,7 +50,7 @@ deploy:
   script: 
     # push to dockerhub & heroku
     - echo "Deployanduuuuuu no Heroku ======================--> "
-    - ./mvnw heroku:deploy jib:dockerbuild -P deploy-heroku 
+    - ./mvnw heroku:deploy jib:dockerBuild -P deploy-heroku 
     
     #- docker push ${TAG_IMAGE_HEROKU_NAME};
    # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
