@@ -12,25 +12,43 @@ install: true
 
 before_install:
   - echo "before_install  ---> "
-  - echo "login no docker ---> "
+  # install heroku CLI
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+  # login to docker registries (dockerhub + heroku)
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
- 
-  - echo "Docker pull da imagem ---> "
-  - docker pull tperrut/petz-api:0.0.4-SNAPSHOT
+  - echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_LOGIN" --password-stdin registry.heroku.com  
  
   - echo "Dando permissão de exec pra o mvnw e scripts .sh ---> "
   - sudo chmod +x mvnw ./deployment/*
-   
+  - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  - echo $BUILD_VERSION
 script:
-  - echo "Iniciando Fase d _script ---> "
-  - echo "Build e testes da aplicação ---> "
+  - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
+ 
+  
   - ./mvnw clean package install -DskipTests=true
   - ./deployment/run-tests.sh
  
-  - ./mvnw clean package -Pprod
+  # build docker images
+  - ./mvnw clean package -Pprod -DskipTests=true
+  - docker build -t $HEROKU_APP_NAME/$BUILD_VERSION .
+  - docker build -t registry.heroku.com/${YOUR_APP_NAME}/web .
+  - docker tag $HEROKU_APP_NAME/$BUILD_VERSION registry.heroku.com/$HEROKU_APP_NAME/web
   
-  - echo "Deployanduuuuuu no Heroku ======================--> "
-  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
+#  - echo "Deployanduuuuuu no Heroku ======================--> "
+#  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
+
+deploy:
+  provider: script
+  script: 
+    # push to dockerhub & heroku
+    docker push $HEROKU_APP_NAME/$BUILD_VERSION;
+    docker push registry.heroku.com/$HEROKU_APP/web;
+    
+    
+  on:
+    branch: feature/add-docker
+    
 addons:
   sonarcloud:
     organization: tperrut
