@@ -24,18 +24,13 @@ before_install:
 script:
   - echo "Iniciando Fase d _script ---> "
   - echo "Build e testes da aplicação ---> "
-  
-  
+  - ./mvnw mvn clean package install -DskipTests=true
   - ./deployment/run-tests.sh
-  - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+ 
+  - ./mvnw mvn clean package -Pprod
   
   - echo "Deployanduuuuuu no Heroku ======================--> "
   - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
-
-after_success:
-  - echo "Report codecov ---> "
-  - bash <(curl -s https://codecov.io/bash)
-    
 addons:
   sonarcloud:
     organization: tperrut

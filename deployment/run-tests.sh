@@ -6,7 +6,7 @@ echo '============ Integração com SonarCloud ========'
 
 
 # Rodando os testes
-mvn -P test clean  sonar:sonar -Dsonar.login=$SONAR_API_KEY -Dsonar.java.binaries=target/classes
+mvn -Ptest sonar:sonar -Dsonar.login=$SONAR_API_KEY -Dsonar.java.binaries=target/classes 
 
 
 
