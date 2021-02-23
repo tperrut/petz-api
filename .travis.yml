@@ -35,10 +35,12 @@ script:
  
   # build docker images
   - ./mvnw clean package -Pprod -DskipTests=true
+ 
   - docker build -t ${TAG_IMAGE_NAME} .
-  - docker build -t ${TAG_IMAGE_HEROKU} .
-  
-  - docker build -t registry.heroku.com/${HEROKU_APP}/web .
+  - docker build -t ${TAG_IMAGE_HEROKU} registry.heroku.com/${HEROKU_APP}/web
+
+ # - docker build -t registry.heroku.com/${HEROKU_APP}/web .
+
   - docker tag ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web
   
 #  - echo "Deployanduuuuuu no Heroku ======================--> "
