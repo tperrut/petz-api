@@ -24,10 +24,10 @@ before_install:
 script:
   - echo "Iniciando Fase d _script ---> "
   - echo "Build e testes da aplicação ---> "
-  - ./mvnw mvn clean package install -DskipTests=true
+  - ./mvnw clean package install -DskipTests=true
   - ./deployment/run-tests.sh
  
-  - ./mvnw mvn clean package -Pprod
+  - ./mvnw clean package -Pprod
   
   - echo "Deployanduuuuuu no Heroku ======================--> "
   - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
