@@ -25,8 +25,8 @@ script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo $BUILD_VERSION
-  - TAG_IMAGE_NAME = $LOGIN_DEFAULT/$APP_NAME/$BUILD_VERSION
-  - TAG_IMAGE_HEROKU_NAME = $HEROKU_APP/$APP_NAME/$BUILD_VERSION
+  - export TAG_IMAGE_NAME=$LOGIN_DEFAULT/$APP_NAME/$BUILD_VERSION
+  - export TAG_IMAGE_HEROKU_NAME = $HEROKU_APP/$APP_NAME/$BUILD_VERSION
   - ./mvnw clean package install -DskipTests=true
   - ./deployment/run-tests.sh
  

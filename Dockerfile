@@ -5,7 +5,7 @@ FROM openjdk:8-jdk-alpine
 LABEL maintainer="thi.perrut@gmail.com"
 
 # The application's jar file
-ARG JAR_FILE=target/petz-0.0.4-SNAPSHOT.jar
+ARG JAR_FILE=target/petz-api-0.0.4-SNAPSHOT.jar
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
