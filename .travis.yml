@@ -20,20 +20,23 @@ before_install:
  
   - echo "Dando permissão de exec pra o mvnw e scripts .sh ---> "
   - sudo chmod +x mvnw ./deployment/*
-  - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-  - echo $BUILD_VERSION
+
 script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
- 
-  
+  - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  - echo $BUILD_VERSION
+  - TAG_IMAGE_NAME = $LOGIN_DEFAULT/$APP_NAME/$BUILD_VERSION
+  - TAG_IMAGE_HEROKU_NAME = $HEROKU_APP/$APP_NAME/$BUILD_VERSION
   - ./mvnw clean package install -DskipTests=true
   - ./deployment/run-tests.sh
  
   # build docker images
   - ./mvnw clean package -Pprod -DskipTests=true
-  - docker build -t $HEROKU_APP_NAME/$BUILD_VERSION .
-  - docker build -t registry.heroku.com/${YOUR_APP_NAME}/web .
-  - docker tag $HEROKU_APP/$BUILD_VERSION registry.heroku.com/$HEROKU_APP_NAME/web
+  - docker build -t $TAG_IMAGE_NAME .
+  - docker build -t $TAG_IMAGE_HEROKU .
+  
+  - docker build -t registry.heroku.com/$HEROKU_APP/web .
+  - docker tag $HEROKU_APP/$APP_NAME/$BUILD_VERSION registry.heroku.com/$HEROKU_APP/web
   
 #  - echo "Deployanduuuuuu no Heroku ======================--> "
 #  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
@@ -42,7 +45,7 @@ deploy:
   provider: script
   script: 
     # push to dockerhub & heroku
-    docker push $HEROKU_APP_NAME/$BUILD_VERSION;
+    docker push $HEROKU_APP/$BUILD_VERSION;
     docker push registry.heroku.com/$HEROKU_APP/web;
     
     

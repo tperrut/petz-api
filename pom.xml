@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>desafio.petz</groupId>
-	<artifactId>petz</artifactId>
+	<artifactId>petz-api</artifactId>
 	<version>0.0.4-SNAPSHOT</version>
-	<name>petz</name>
+	<name>petz-api</name>
 	<description>Desafio interview </description>
 
 	<parent>
