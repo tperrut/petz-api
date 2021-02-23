@@ -50,9 +50,10 @@ deploy:
   script: 
     # push to dockerhub & heroku
     - echo "Deployanduuuuuu no Heroku ======================--> "
+    - ./mvnw heroku:deploy jib:dockerbuild -P deploy-heroku 
     
-    - docker push ${TAG_IMAGE_HEROKU_NAME};
-    - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
+    #- docker push ${TAG_IMAGE_HEROKU_NAME};
+   # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
   on:
     branch: feature/add-docker
     
