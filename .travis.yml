@@ -12,15 +12,30 @@ install: true
 
 before_install:
   - echo "before_install  ---> "
+  - echo "login no docker ---> "
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+ 
+  - echo "Docker pull da imagem ---> "
   - docker pull tperrut/petz-api:0.0.4-SNAPSHOT
+ 
+  - echo "Dando permissão de execução pra o mvnw e scripts .sh ---> "
+  - sudo chmod +x mvnw ./deployment/*
    
 script:
-  - echo "_script ---> "
+  - echo "Iniciando Fase d _script ---> "
+  - echo "Build e testes da aplicação ---> "
+  - echo "=======  ---> "
+  - echo "====  ---> "
+  - echo "=   --> "
+  
+  - ./deployment/run-tests.sh
   - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+  
+  - echo "Deployanduuuuuu no Heroku ======================--> "
   - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
 
 after_success:
+  - echo "Report codecov ---> "
   - bash <(curl -s https://codecov.io/bash)
     
 addons:

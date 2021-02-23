@@ -2,10 +2,12 @@ echo '========================================================'
 echo '====================  ¯\_༼ᴼل͜ᴼ༽_/¯‍  ======================'
 echo '================= Iniciando os Testes =================='
 echo '============ Verificando Regras de Coverage ========'
+echo '============ Integração com SonarCloud ========'
 
 
 # Rodando os testes
-mvn -P test clean verify sonar:sonar -Dsonar.login=$SONAR_API_KEY 
+mvn -P test clean  sonar:sonar -Dsonar.login=$SONAR_API_KEY 
+
 
 
 
