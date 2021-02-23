@@ -12,54 +12,17 @@ install: true
 
 before_install:
   - echo "before_install  ---> "
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - sudo chmod +x /usr/local/bin/docker-compose
-  - sudo chmod +x mvnw ./deployment/*
-  - ./mvnw package -Ptest -DskipTests=true
-  - ls -l /usr/local/bin/d*
-  # Verify service availability
-
-  
-#  - ./mvnw clean package -DskipTests=true
-
-before_script:
-  - echo "before_script  ---> "
-
-  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin   #login to dockerhub
-  - curl https://cli-assets.heroku.com/install.sh | sh  #install heroku
-  - docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com  #login to registry.heroku.com 
-  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker pull tperrut/petz-api:0.0.4-SNAPSHOT
+   
 script:
-  - echo "_script  ---> "
-  - ./deployment/run-tests.sh
-  - docker image ls;
-  - docker build -t tperrut/petz-api .  registry.heroku.com/$HEROKU_APP; #mvn jib:dockerBuild 
-  - docker image ls;
-  - docker tag petz-api registry.heroku.com/$HEROKU_APP;
-  - docker push registry.heroku.com/$HEROKU_APP/web;
-  - sudo docker-compose up -d --build
-#  - docker-compose up -d
-  - docker-compose ps
-before_deploy:
-  - echo "before_deploy  ---> "
-  - ./mvnw package -P prod -DskipTests=true
+  - echo "_script ---> "
+  - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
 
-
-deploy:   
-  provider: script
-  script: 
-    - echo 'HEROKU_APP'
-    - echo '$HEROKU_APP'  
-    - docker push tperrut/petz-api;
-    - docker push registry.heroku.com/$HEROKU_APP/web;
-    - heroku container:release web --app $HEROKU_APP
-  on:
-    branch: feature/add-docker
-
-
-  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+    
 addons:
   sonarcloud:
     organization: tperrut
@@ -71,8 +34,6 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'  
-
-
 
 git:
   depth: false

@@ -221,6 +221,32 @@
 
 	<profiles>
 		<profile>
+		    <id>deploy-docker</id>
+		    <properties>
+		        <maven.deploy.skip>true</maven.deploy.skip>
+		    </properties>
+		    <build>
+		        <plugins>
+		            <plugin>
+		                <groupId>com.google.cloud.tools</groupId>
+		                <artifactId>jib-maven-plugin</artifactId>
+		                <version>2.2.0</version>
+		                <configuration>
+		                    <to>
+		                        <image>${docker.image.name}</image>
+		                        <tags>
+		                            <tag>${project.version}</tag>
+		                            <tag>latest</tag>
+		                        </tags>
+		                    </to>
+		                    
+		                    
+		                </configuration>
+		            </plugin>
+		        </plugins>
+		    </build>
+		</profile>
+		<profile>
 			<id>prod</id>
 			<activation>
 				<!-- this profile is active by default -->
@@ -250,6 +276,7 @@
 				<env>docker</env>
 			</properties>
 		</profile>
+			
 		<profile>
 			<id>dev</id>
 			<activation>
@@ -304,33 +331,6 @@
 				</plugins>
 			</build>
 		</profile>
-		<profile>
-			<id>coverage</id>
-			<build>
-				<plugins>
-					<plugin>
-				        <groupId>org.jacoco</groupId>
-				        <artifactId>jacoco-maven-plugin</artifactId>
-				        <version>0.8.6</version>
-				        <executions>
-				            <execution>
-				                <goals>
-				                    <goal>prepare-agent</goal>
-				                </goals>
-				            </execution>
-				            <!-- attached to Maven test phase -->
-				            <execution>
-				                <id>report</id>
-				                <phase>test</phase>
-				                <goals>
-				                    <goal>report</goal>
-				                </goals>
-					            
-				            </execution>
-				        </executions>
-				    </plugin>
-				</plugins>
-			</build>
-		</profile>
+		
 	</profiles>
 </project>

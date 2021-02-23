@@ -16,7 +16,7 @@ services:
     volumes:
       - petz_data:/var/lib/mysql
     restart: always
-    image: tperrut/petz-api:0.0.3-SNAPSHOT    
+    image: tperrut/petz-api:0.0.4-SNAPSHOT    
     environment:
       <<: *database-variables
     depends_on:
