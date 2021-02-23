@@ -40,7 +40,7 @@ script:
 
   - docker build -t registry.heroku.com/${HEROKU_APP}/web .
 
-  - docker tag ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
+  - docker tag ${TAG_IMAGE_NAME} ${TAG_IMAGE_HEROKU_NAME};
   
 #  - echo "Deployanduuuuuu no Heroku ======================--> "
 #  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
