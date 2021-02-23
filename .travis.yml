@@ -26,8 +26,8 @@ script:
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo $BUILD_VERSION
   
-  - export TAG_IMAGE_NAME=${APP_NAME}:${BUILD_VERSION}
-  - export TAG_IMAGE_HEROKU_NAME=${HEROKU_APP}:${BUILD_VERSION}
+  - export TAG_IMAGE_NAME=${LOGIN_DEFAULT}/${APP_NAME}:${BUILD_VERSION}
+  - export TAG_IMAGE_HEROKU_NAME=${HEROKU_APP}/${APP_NAME}:${BUILD_VERSION}
   - echo ${TAG_IMAGE_NAME} - ${TAG_IMAGE_HEROKU_NAME}  
     
   - ./mvnw clean package install -DskipTests=true
@@ -37,11 +37,10 @@ script:
   - ./mvnw clean package -Pprod -DskipTests=true
  
   - docker build -t ${TAG_IMAGE_NAME} .
-  #- docker build -t ${TAG_IMAGE_HEROKU} registry.heroku.com/${HEROKU_APP}/web
 
-  - docker build -t registry.heroku.com/${HEROKU_APP}/web 
+  - docker build -t registry.heroku.com/${HEROKU_APP}/web .
 
-  - docker tag ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web
+  - docker tag ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web .
   
 #  - echo "Deployanduuuuuu no Heroku ======================--> "
 #  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
