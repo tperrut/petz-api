@@ -53,7 +53,7 @@ deploy:
     - ./mvnw heroku:deploy jib:dockerBuild -P deploy-heroku 
     
     #- docker push ${TAG_IMAGE_HEROKU_NAME};
-   # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
+    # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
   on:
     branch: feature/add-docker
     
