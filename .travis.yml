@@ -33,7 +33,7 @@ script:
   - ./mvnw clean package -Pprod -DskipTests=true
   - docker build -t $HEROKU_APP_NAME/$BUILD_VERSION .
   - docker build -t registry.heroku.com/${YOUR_APP_NAME}/web .
-  - docker tag $HEROKU_APP_NAME/$BUILD_VERSION registry.heroku.com/$HEROKU_APP_NAME/web
+  - docker tag $HEROKU_APP/$BUILD_VERSION registry.heroku.com/$HEROKU_APP_NAME/web
   
 #  - echo "Deployanduuuuuu no Heroku ======================--> "
 #  - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
