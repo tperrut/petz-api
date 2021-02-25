@@ -44,7 +44,7 @@ script:
   
  # - echo "Deploy no Heroku ======================--> "
  # - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
-  - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
+ # - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
   
 deploy:
   provider: script
