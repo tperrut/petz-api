@@ -36,5 +36,5 @@ services:
       - "3306:3306"
     volumes:
       - petz_data:/var/lib/mysql
-    mem_limit: 512m  
+    mem_limit: 256m  
     

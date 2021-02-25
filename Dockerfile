@@ -14,4 +14,4 @@ EXPOSE 8080
 COPY ${JAR_FILE} app.jar
 
 # Run the jar file
-ENTRYPOINT ["java","-jar","/app.jar", "-Xmx256m"]
+ENTRYPOINT ["java","-jar","/app.jar", "-Xmx256m", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap"]

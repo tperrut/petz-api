@@ -42,15 +42,18 @@ script:
 
   - docker tag ${TAG_IMAGE_NAME} ${TAG_IMAGE_HEROKU_NAME};
   
-  - echo "Deployanduuuuuu no Heroku ======================--> "
-  #- ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
-
+ # - echo "Deploy no Heroku ======================--> "
+ # - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
+  - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
+  
 deploy:
   provider: script
   script: 
     # push to dockerhub & heroku
     - echo "Deployanduuuuuu no Heroku ======================--> "
-    - ./mvnw heroku:deploy jib:dockerBuild -P deploy-heroku 
+    - ./mvnw jib:build -P deploy-heroku,deploy-docker
+#   - ./mvnw jib:dockerBuild -Pdeploy-heroku 
+    - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
     
     #- docker push ${TAG_IMAGE_HEROKU_NAME};
     # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
