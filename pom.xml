@@ -6,7 +6,7 @@
 
 	<groupId>desafio.petz</groupId>
 	<artifactId>petz-api</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<name>petz-api</name>
 	<description>Desafio interview </description>
 
