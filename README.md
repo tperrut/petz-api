@@ -55,7 +55,7 @@ To start this web application just follow these steps:
         In your IDE invoke the class method Application#main to start the server , or
         From command line execute:
 
-    $ java -jar target/petz-0.0.1-SNAPSHOT.jar
+    $ java -jar target/petz-0.0.5-SNAPSHOT.jar
 
    Browse to the application root for API documentation:
 

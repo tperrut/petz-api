@@ -1,30 +1,23 @@
 language: java
 
+jdk:
+  - openjdk11
+  
+sudo: required
+
 install: true
 
-script:
-  - ./deployment/run-tests.sh
-addons:
-  sonarcloud:
-    organization: tperrut
-    token:
-      secure: $SONAR_API_KEY
-jdk:
-- openjdk11
-
-cache:
-  directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'  
-
 before_install:
-  - chmod +x mvnw
-  - chmod +x ./deployment/run-tests.sh
-  - mkdir logs
+  - echo "before_install  ---> Dando permissão de exec pra o mvnw e scripts .sh ---> "
+  - sudo chmod +x mvnw ./deployment/*
 
-before_deploy:
-  - ./mvnw package -P prod -DskipTests=true
-
+script:
+  - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
+  - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+  - echo "Versão da API - ${BUILD_VERSION}" 
+ 
+  - ./mvnw clean package install -DskipTests=true
+ 
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
@@ -33,5 +26,18 @@ deploy:
   on:
     repo: tperrut/petz-api
 
+    
+addons:
+  sonarcloud:
+    organization: tperrut
+    token:
+      secure: $SONAR_API_KEY
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'  
+
 git:
   depth: false
+  
