@@ -1,8 +1,5 @@
 language: java
 
-services:
-  - docker
-      
 jdk:
   - openjdk11
   
@@ -11,54 +8,24 @@ sudo: required
 install: true
 
 before_install:
-  - echo "before_install  ---> "
-  # install heroku CLI
-  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-  # login to docker registries (dockerhub + heroku)
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_LOGIN" --password-stdin registry.heroku.com  
- 
-  - echo "Dando permissão de exec pra o mvnw e scripts .sh ---> "
+  - echo "before_install  ---> Dando permissão de exec pra o mvnw e scripts .sh ---> "
   - sudo chmod +x mvnw ./deployment/*
 
 script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-  - echo $BUILD_VERSION
-  
-  - export TAG_IMAGE_NAME=${LOGIN_DEFAULT}/${APP_NAME}:${BUILD_VERSION}
-  - export TAG_IMAGE_HEROKU_NAME=${HEROKU_APP}/${APP_NAME}:${BUILD_VERSION}
-  - echo ${TAG_IMAGE_NAME} - ${TAG_IMAGE_HEROKU_NAME}  
-    
+  - echo "Versão da API - ${BUILD_VERSION}" 
+ 
   - ./mvnw clean package install -DskipTests=true
-  - ./deployment/run-tests.sh
  
-  # build docker images
-  - ./mvnw clean package -Pprod -DskipTests=true
- 
-  - docker build -t ${TAG_IMAGE_NAME} .
-
-  - docker build -t registry.heroku.com/${HEROKU_APP}/web .
-
-  - docker tag ${TAG_IMAGE_NAME} ${TAG_IMAGE_HEROKU_NAME};
-  
- # - echo "Deploy no Heroku ======================--> "
- # - ./mvnw heroku:deploy jib:build -P deploy-heroku,deploy-docker 
- # - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
-  
 deploy:
-  provider: script
-  script: 
-    # push to dockerhub & heroku
-    - echo "Deployanduuuuuu no Heroku ======================--> "
-    - ./mvnw jib:build -P deploy-heroku,deploy-docker
-#   - ./mvnw jib:dockerBuild -Pdeploy-heroku 
-    - ./mvnw heroku:deploy jib:dockerBuild -Pdeploy-heroku 
-    
-    #- docker push ${TAG_IMAGE_HEROKU_NAME};
-    # - docker push ${TAG_IMAGE_HEROKU_NAME} registry.heroku.com/${HEROKU_APP}/web;
+  provider: heroku
+  api_key: $HEROKU_API_KEY
+  app: desafio-petz-api
+  skip_cleanup: true
   on:
-    branch: feature/add-docker
+    repo: tperrut/petz-api
+
     
 addons:
   sonarcloud:
