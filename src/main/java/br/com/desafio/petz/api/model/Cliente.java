@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,16 +22,18 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "Cliente")
 @Getter @Setter @NoArgsConstructor
 public class Cliente implements Serializable {
 	
+	private static final long serialVersionUID = 4257771624784337787L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
@@ -50,6 +54,12 @@ public class Cliente implements Serializable {
 	@Column(nullable = false)
 	private String nome;
 	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PerfilEnum perfil;
+	
+	@Column(nullable = false)
+	private String senha;
 	
 	public Cliente(Long id) {
 		this.id = id;

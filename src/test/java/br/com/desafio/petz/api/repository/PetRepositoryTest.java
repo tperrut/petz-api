@@ -18,9 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dao.PetRepository;
+import br.com.desafio.petz.api.enuns.EnumTipo;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
-import br.com.desafio.petz.api.model.enuns.EnumTipo;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

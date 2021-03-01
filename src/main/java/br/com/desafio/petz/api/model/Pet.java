@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import br.com.desafio.petz.api.model.enuns.EnumTipo;
+import br.com.desafio.petz.api.enuns.EnumTipo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

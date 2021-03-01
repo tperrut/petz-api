@@ -1,4 +1,4 @@
-package br.com.desafio.petz.api.model.enuns;
+package br.com.desafio.petz.api.enuns;
 
 public enum EnumTipo {
 	AVE(1), CACHORRO(2), GATO(3), PEIXE(4), OUTROS(5);

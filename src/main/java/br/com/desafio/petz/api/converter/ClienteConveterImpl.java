@@ -1,4 +1,4 @@
-package br.com.desafio.petz.api.service.conveter;
+package br.com.desafio.petz.api.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.util.PasswordUtils;
 import br.com.desafio.petz.api.web.exception.BusinessException;
 
 @Service 
@@ -82,7 +83,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		if(dto.getNome() != null) cliente.setNome(dto.getNome());
 		if(dto.getEmail()!= null) cliente.setEmail(dto.getEmail());
 		if(dto.getDataNascimento() != null) cliente.setDataNascimento(dto.getDataNascimento());
-				
+		if(dto.getSenha() != null) cliente.setSenha(PasswordUtils.gerarBCrypt(dto.getNome()));		
 	}
 
 }

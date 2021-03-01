@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,18 @@ public class ClienteDto {
 
 	@DateTimeFormat(iso = ISO.TIME, pattern = "yyyy-MM-dd")
 	private LocalDate dataNascimento;
+	
+	private PerfilEnum perfil;
+	
+	@NotEmpty(message = "Senha é obrigatória!")
+	private String senha;
+	
+	public ClienteDto(String nome, String email, LocalDate date) {
+		this.nome = nome;
+		this.dataNascimento = date;
+		this.email = email;
+	}
+	
+
 
 }

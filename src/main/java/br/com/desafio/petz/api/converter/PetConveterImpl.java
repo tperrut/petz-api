@@ -1,4 +1,4 @@
-package br.com.desafio.petz.api.service.conveter;
+package br.com.desafio.petz.api.converter;
 
 import java.util.ArrayList;
 import java.util.List;

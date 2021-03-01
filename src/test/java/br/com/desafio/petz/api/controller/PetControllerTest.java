@@ -25,9 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dao.PetRepository;
 import br.com.desafio.petz.api.dto.PetDto;
+import br.com.desafio.petz.api.enuns.EnumTipo;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
-import br.com.desafio.petz.api.model.enuns.EnumTipo;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
 
 public class PetControllerTest extends AbstractTest {

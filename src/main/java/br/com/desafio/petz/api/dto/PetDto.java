@@ -11,8 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import br.com.desafio.petz.api.enuns.EnumTipo;
 import br.com.desafio.petz.api.model.Cliente;
-import br.com.desafio.petz.api.model.enuns.EnumTipo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

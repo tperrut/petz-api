@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.desafio.petz.api.converter.Converter;
 import br.com.desafio.petz.api.dto.PetDto;
 import br.com.desafio.petz.api.model.Pet;
 import br.com.desafio.petz.api.service.PetService;
-import br.com.desafio.petz.api.service.conveter.Converter;
 import br.com.desafio.petz.api.util.ConstanteUtil;
 import br.com.desafio.petz.api.web.exception.InternalServerException;
 import br.com.desafio.petz.api.web.response.Response;
@@ -69,6 +69,7 @@ public class PetController {
 	}
 	
 	@GetMapping("/pets/{id}")
+	@PreAuthorize("hasRole('USUARIO')")
 	public ResponseEntity<Object> getPetById(@PathVariable Long id) {
 		logger.info("BUSCAR PET POR ID: {}", id);
 
@@ -84,7 +85,8 @@ public class PetController {
 		return new ResponseEntity<>(petResponse, HttpStatus.OK);
 		
 	}	
-
+	
+	@PreAuthorize("hasRole('USUARIO')")
 	@GetMapping(path = "/pets/pagedAndSorted", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarPetsPaged(@PageableDefault(size = 3) Pageable page) {
 		logger.info("LISTAR_PETS_PAGED ");
@@ -100,6 +102,7 @@ public class PetController {
 		return new ResponseEntity<>(petResponse, HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasRole('USUARIO')")
 	@PostMapping(path = "/pets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarPet(@RequestBody @Valid PetDto dto) {
 		logger.info("Criando PET : {}", dto.getNome());
@@ -120,6 +123,7 @@ public class PetController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/pets/{id}")
+	@PreAuthorize("hasRole('USUARIO')")
 	public ResponseEntity<Object> alterarPet(@RequestBody PetDto dto, @PathVariable Long id) {
 		logger.info("UPDATE PET {}", id);
 
@@ -140,6 +144,7 @@ public class PetController {
 	 * @return Pet
 	 */
 	@DeleteMapping("/pets/{id}")
+	@PreAuthorize("hasRole('USUARIO')")
 	public ResponseEntity<Void> excluirPet(@PathVariable Long id) {
 		logger.info("Excluir Pet id: {}", id);
 

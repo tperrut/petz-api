@@ -26,4 +26,6 @@ public interface ClienteService {
 
 	List<Cliente> findAll() throws BusinessException ;
 
+	Optional<Cliente> buscarPorEmail(String username);
+
 }

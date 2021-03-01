@@ -3,8 +3,6 @@ package br.com.desafio.petz.api.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -52,15 +50,9 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 		
 	}
-	
-	
-	public Optional<Cliente> getClienteById(Long id) {
-		 return dao.findById(id);
-	}
 
 	private void verificarSeClienteExiste(Long id) {
-		Cliente cliente = dao.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id.toString()));
+		dao.findById(id).orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id.toString()));
 	}
 
 	@Override
@@ -110,6 +102,11 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new BusinessException("ERRO INTERNO -> findAll");
 
 		}
+	}
+
+	@Override 	@Transactional(readOnly = true)
+	public Optional<Cliente> buscarPorEmail(String email) {
+		return dao.findByEmail(email);
 	}
 
 

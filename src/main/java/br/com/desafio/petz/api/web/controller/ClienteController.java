@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.desafio.petz.api.converter.Converter;
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.service.ClienteService;
-import br.com.desafio.petz.api.service.conveter.Converter;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
@@ -144,7 +144,6 @@ public class ClienteController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/clientes/{id}")
-	
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
 		logger.info("UPDATE CLIENTE id: {}" , id);
 		Optional<Cliente> clienteOpt;
@@ -161,6 +160,7 @@ public class ClienteController {
 	}		
 
 	@DeleteMapping("/clientes/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Object> excluirCliente(@PathVariable Long id) {
 		logger.info("Excluir cliente id: {}", id);
 
