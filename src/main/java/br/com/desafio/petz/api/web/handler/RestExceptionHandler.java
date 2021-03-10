@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import br.com.desafio.petz.api.web.error.BusinessExceptionDetail;
+import br.com.desafio.petz.api.web.error.ClientExceptionDetail;
 import br.com.desafio.petz.api.web.error.DataIntegrityViolationExceptionDetails;
 import br.com.desafio.petz.api.web.error.ErrorDetail;
 import br.com.desafio.petz.api.web.error.InternalServerExceptionDetail;
@@ -131,30 +133,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		timestamp(new Date()).
 		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
 		build();
-		e.getCause().printStackTrace();
+		e.printStackTrace();
 
 		logger.error(ex.toString());
 
 		return ex ;
     }
-	
-//	@ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-//	public @ResponseBody ErrorDetail handleRuntimeException (RuntimeException e){
-//		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
-//		detalhe(e.getMessage()).
-//		developerMessage(InternalServerException.class.getName()).
-//		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
-//		timestamp(new Date()).
-//		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
-//		build();
-//
-//		LOGGER.error(ex.toString());
-//
-//		return ex;
-//		
-//	}
-	
+
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -223,12 +208,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	// TODO refatorar p @ResponseBody
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+		ClientExceptionDetail ise = ClientExceptionDetail.builder().
 				detalhe(ex.getCause().getMessage()).
 				developerMessage(InternalServerException.class.getName()).
-				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+				statusCode(status.value()).
+				titulo(status.getReasonPhrase()).
 				timestamp(new Date()).
-				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 				build();
 
 		logger.error(ise.toString());
@@ -241,13 +226,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
-		// TODO criar uma Excpetion para tratar erros genéricos do cliente
-		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+		ClientExceptionDetail ise = ClientExceptionDetail.builder().
 		detalhe(ex.getCause().getMessage()).
 		developerMessage(InternalServerException.class.getName()).
-		statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+		statusCode(status.value()).
+		titulo(status.getReasonPhrase()).
 		timestamp(new Date()).
-		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 		build();
 
 		logger.error(ise.toString());
@@ -260,12 +244,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		// TODO criar uma Excpetion para tratar erros genéricos do cliente
-		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
+		ClientExceptionDetail ise = ClientExceptionDetail.builder().
 				detalhe(ex.getCause().getMessage()).
 				developerMessage(InternalServerException.class.getName()).
-				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+				statusCode(status.value()).
+				titulo(status.getReasonPhrase()).
 				timestamp(new Date()).
-				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 				build();
 
 		logger.error(ise.toString());
@@ -276,8 +260,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	@Override
+	protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ClientExceptionDetail ise = ClientExceptionDetail.builder().
+				detalhe(ex.getCause().getMessage()).
+				developerMessage(InternalServerException.class.getName()).
+				statusCode(status.value()).
+				timestamp(new Date()).
+				titulo(status.getReasonPhrase()).
+				build();
+		
+		ex.printStackTrace();	
+		logger.error(ise.toString());
+
+		return new ResponseEntity<>(ise,status);
+		
+
+	}
+	
+	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		// TODO criar uma Excpetion para tratar erros genéricos do cliente
 		InternalServerExceptionDetail ise = InternalServerExceptionDetail.builder().
 				detalhe(ex.getMessage()).
 				developerMessage(InternalServerException.class.getName()).
