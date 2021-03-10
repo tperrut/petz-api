@@ -84,6 +84,7 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/clientes/{id}")
+	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
 		logger.info("BUSCAR CLIENTE {}" , id);
 		
@@ -101,6 +102,7 @@ public class ClienteController {
 	}	
 	
 	@GetMapping("/clientes/nome/{nome}")
+	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
 		logger.info("BUSCAR CLIENTE  POR NOME {}" , nome);
 
@@ -144,6 +146,7 @@ public class ClienteController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/clientes/{id}")
+	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
 		logger.info("UPDATE CLIENTE id: {}" , id);
 		Optional<Cliente> clienteOpt;

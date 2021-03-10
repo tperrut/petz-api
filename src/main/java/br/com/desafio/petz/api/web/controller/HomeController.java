@@ -21,7 +21,6 @@ public class HomeController {
 	
 	
 	@GetMapping(path="/",produces=MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('USER')")
 	public Object home() {
 		Map<String,String> map= new HashMap<String,String>();
 		map.put("msg", ConstanteUtil.WELCOME);
