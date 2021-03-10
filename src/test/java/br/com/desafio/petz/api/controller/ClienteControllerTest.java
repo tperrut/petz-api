@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dto.ClienteDto;
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
@@ -289,22 +290,22 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	private ClienteDto newClienteDtoToPost() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE, LocalDate.now());
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPostWithInvalidEmail() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now());
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPostWithEmptyEmail() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE , null, LocalDate.now());
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE , null, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPut() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE2 ,ClienteControllerTest.EMAIL_CLIENTE2, LocalDate.now());
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE2 ,ClienteControllerTest.EMAIL_CLIENTE2, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
 		return dto;
 	}
 	
