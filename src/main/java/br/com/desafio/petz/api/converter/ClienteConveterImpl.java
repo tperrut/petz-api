@@ -37,7 +37,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	private ClienteDto createNewDto(Cliente cliente) {
 		return new ClienteDto(cliente.getNome(),
 				cliente.getEmail(),
-				cliente.getDataNascimento());
+				cliente.getDataNascimento(),
+				cliente.getPerfil());
 	}
 
 	@Override
@@ -83,7 +84,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		if(dto.getNome() != null) cliente.setNome(dto.getNome());
 		if(dto.getEmail()!= null) cliente.setEmail(dto.getEmail());
 		if(dto.getDataNascimento() != null) cliente.setDataNascimento(dto.getDataNascimento());
-		if(dto.getSenha() != null) cliente.setSenha(PasswordUtils.gerarBCrypt(dto.getNome()));		
+		if(dto.getSenha() != null) cliente.setSenha(PasswordUtils.gerarBCrypt(dto.getSenha()));		
+		if(dto.getPerfil() != null) cliente.setPerfil(dto.getPerfil());		
 	}
 
 }
