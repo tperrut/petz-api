@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	@Autowired
+	@Autowired 
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
 	}
@@ -53,11 +53,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+		httpSecurity.csrf().disable()
+				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+				.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.antMatchers("/auth/**", "/rest/clientes/**","/v2/api-docs", "/swagger-resources/**", 
-						"/configuration/security", "/swagger-ui.html", "/webjars/**")
-				.permitAll().anyRequest().authenticated();
+				.antMatchers("/auth**","/rest/clientes", "/**",  "db/**", "/v2/api-docs", "/swagger-ui.html",
+						"/swagger-resources/**", "/configuration/security")
+				.permitAll()
+				.anyRequest().authenticated();
+
 		httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 		httpSecurity.headers().cacheControl();
 	}
