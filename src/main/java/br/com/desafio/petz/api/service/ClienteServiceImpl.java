@@ -89,7 +89,7 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 			return dao.findAll(pageable);
 		} catch (Exception e) {
-			throw new BusinessException("ERRO INTERNO -> findAll ( pageable ) ");
+			throw new BusinessException("ERRO INTERNO -> findAll ( pageable ) ", e);
 		}
 	}
 

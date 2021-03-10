@@ -6,7 +6,7 @@
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>
 			 <!-- %cyan(%d{ISO8601}) %highlight(%-5level) [%green(%t)] %yellow(%C{1.}): %msg%n%throwable -->
-			 %yellow[%d{yyyy-MM-dd_HH:mm:ss.SSS}] [- %yellow(%C{1.}) -] [%thread] [%-5level] %logger{36} - %msg%n
+			 %cyan[%d{yyyy-MM-dd_HH:mm:ss.SSS}] [- %yellow(%C{1.}) -] [%thread] [%-5level] %logger{36} : %highlight%msg%n
 			</Pattern>
 		</layout>
 	</appender>
