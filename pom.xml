@@ -120,7 +120,15 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		</dependency>
+		
 	</dependencies>
+	
 
 	<build>
 		<resources>
@@ -231,7 +239,38 @@
                     </container>
                 </configuration>
             </plugin>
-		    </plugins>
+		       <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+		       <plugin>
+		       	<groupId>org.eclipse.m2e</groupId>
+		       	<artifactId>lifecycle-mapping</artifactId>
+		       	<version>1.0.0</version>
+		       	<configuration>
+		       		<lifecycleMappingMetadata>
+		       			<pluginExecutions>
+		       				<pluginExecution>
+		       					<pluginExecutionFilter>
+		       						<groupId>
+		       							org.apache.maven.plugins
+		       						</groupId>
+		       						<artifactId>
+		       							maven-help-plugin
+		       						</artifactId>
+		       						<versionRange>
+		       							[3.1.1,)
+		       						</versionRange>
+		       						<goals>
+		       							<goal>active-profiles</goal>
+		       						</goals>
+		       					</pluginExecutionFilter>
+		       					<action>
+		       						<ignore></ignore>
+		       					</action>
+		       				</pluginExecution>
+		       			</pluginExecutions>
+		       		</lifecycleMappingMetadata>
+		       	</configuration>
+		       </plugin>
+			</plugins>
 		</pluginManagement>
 	</build>
 
