@@ -89,7 +89,7 @@ The authentication was implemented with Spring Security using JWT Token format .
 
     Two users have been created with their permissions.
 
-> The following Http Verbs (PUT, DELETE) are protected with permission only for the Administrator Profile. Just like the End Point: "rest/clientes" e "rest/pets"
+> ***The following Http Verbs (PUT, DELETE) are protected with permission only for the Administrator Profile. Just like the End Point: "rest/clientes" e "rest/pets"
 
 > The End Point "/" must be authenticated with the default user profile
 
