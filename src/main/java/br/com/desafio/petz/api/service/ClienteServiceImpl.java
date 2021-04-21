@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.web.exception.BusinessException;
+import br.com.desafio.petz.api.web.exception.EmailNotFoundException;
 import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
@@ -50,9 +51,10 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 		
 	}
-
-	private void verificarSeClienteExiste(Long id) {
-		dao.findById(id).orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id.toString()));
+	
+	@Override
+	public void verificarSeClienteExiste(Long id) throws ResourceNotFoundException {
+		dao.findById(id).orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id));
 	}
 
 	@Override
@@ -105,8 +107,8 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override 	@Transactional(readOnly = true)
-	public Optional<Cliente> buscarPorEmail(String email) {
-		return dao.findByEmail(email);
+	public Optional<Cliente> buscarPorEmail(String email) throws EmailNotFoundException{
+		return Optional.of(dao.findByEmail(email).orElseThrow(() -> new EmailNotFoundException()));
 	}
 
 

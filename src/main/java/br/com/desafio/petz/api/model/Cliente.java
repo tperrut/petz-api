@@ -66,13 +66,6 @@ public class Cliente implements Serializable {
 		this.id = id;
 	}
 	
-	public Cliente(String nomeParam, LocalDate dtNascimento, String emailParam) {
-		this.nome = nomeParam;
-		this.dataNascimento = dtNascimento;
-		this.email= emailParam;
-	}
-	
-	
 	
 }
 		

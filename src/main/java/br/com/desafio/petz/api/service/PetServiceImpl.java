@@ -26,13 +26,17 @@ public class PetServiceImpl implements PetService {
 	}
 
 	public void excluir(Long id) {
+		Optional<Pet> pet = dao.findById(id);
+		if (pet.isEmpty()) {
+			throw new ResourceNotFoundException(" PET_NOT_FOUND " + id);
+		}
 		dao.deleteById(id);
 	}
 
 	@Transactional(readOnly = true)
 	public Optional<Pet> buscarPorId(Long id) {
 		Optional<Pet> pet = dao.findById(id);
-		if (!pet.isPresent()) {
+		if (pet.isEmpty()) {
 			throw new ResourceNotFoundException(" PET_NOT_FOUND " + id);
 		}
 		return pet;
@@ -40,7 +44,12 @@ public class PetServiceImpl implements PetService {
 
 	@Transactional(readOnly = true)
 	public Optional<List<Pet>> buscarPorNome(String nome) {
-		return dao.findByNome(nome);
+		Optional<List<Pet>> pet = dao.findByNome(nome);
+		if (pet.isEmpty()) {
+			throw new ResourceNotFoundException(" PET_NOT_FOUND " + nome);
+		}
+		return pet;
+		
 	}
 
 	@Transactional(readOnly = true)

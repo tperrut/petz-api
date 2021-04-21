@@ -19,8 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dao.PetRepository;
 import br.com.desafio.petz.api.enuns.EnumTipo;
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
+import br.com.desafio.petz.api.util.PasswordUtils;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -152,7 +154,17 @@ public class PetRepositoryTest {
 	}
 	
 	private Cliente createCliente(LocalDate dataVencimento, String nome, String email) {
-		return  new Cliente(nome, dataVencimento, email);
+		Cliente cliente = new Cliente();
+		setValidFields(cliente);
+		return cliente; 
+	}
+	
+	private void setValidFields(Cliente cliente) {
+		cliente.setNome(PetRepositoryTest.CLIENTE_TESTE );
+		cliente.setEmail(PetRepositoryTest.EMAIL_TESTE);
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
 	}
 	
 	private Pet createPet() {

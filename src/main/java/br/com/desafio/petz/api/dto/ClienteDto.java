@@ -37,13 +37,4 @@ public class ClienteDto {
 	@NotEmpty(message = "Senha é obrigatória!")
 	private String senha;
 	
-	public ClienteDto(String nome, String email, LocalDate date, PerfilEnum perfil) {
-		this.nome = nome;
-		this.dataNascimento = date;
-		this.email = email;
-		this.perfil = perfil;
-	}
-	
-
-
 }

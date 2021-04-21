@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.web.exception.BusinessException;
+import br.com.desafio.petz.api.web.exception.EmailNotFoundException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
 public interface ClienteService {
@@ -26,6 +27,8 @@ public interface ClienteService {
 
 	List<Cliente> findAll() throws BusinessException ;
 
-	Optional<Cliente> buscarPorEmail(String username);
+	Optional<Cliente> buscarPorEmail(String username) throws EmailNotFoundException;
+
+	void verificarSeClienteExiste(Long l) throws ResourceNotFoundException;
 
 }

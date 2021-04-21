@@ -102,7 +102,6 @@ public class ClienteController {
 	}	
 	
 	@GetMapping("/clientes/nome/{nome}")
-	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> getClienteByNome(@PathVariable String nome) {
 		logger.info("BUSCAR CLIENTE  POR NOME {}" , nome);
 

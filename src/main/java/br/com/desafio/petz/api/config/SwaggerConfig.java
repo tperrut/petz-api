@@ -1,11 +1,18 @@
 package br.com.desafio.petz.api.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import br.com.desafio.petz.api.security.JwtUser;
 import br.com.desafio.petz.api.security.util.JwtTokenUtil;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -34,13 +41,22 @@ public class SwaggerConfig {
 				.apiInfo(apiInfo());
 	}
 	
-	
-
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("Swagger API")
-				.description("Documentação da API PETZ com Swagger").version("1.0").build();
+				.description("Documentação da API PETZ com Swagger").version("0.0.1").build();
 	}
 	
+	@Bean
+    public UserDetailsService userDetailsService(){
+		GrantedAuthority grantAdmin = new SimpleGrantedAuthority("ADMIN");
+		GrantedAuthority grantUser= new SimpleGrantedAuthority("USUARIO");
+		
+		UserDetails userDetailsAdmin = (UserDetails) new JwtUser(1L,"admin@petzapi.com", "admin12345", List.of(grantAdmin, grantUser));
+//		UserDetails userDetails = (UserDetails) new JwtUser(2L,"user@petzapi.com", "user12345", List.of(grantUser));
+		
+		return new InMemoryUserDetailsManager(List.of(userDetailsAdmin));
+	}
+
 	@Bean
 	public SecurityConfiguration security() {
 		String token;

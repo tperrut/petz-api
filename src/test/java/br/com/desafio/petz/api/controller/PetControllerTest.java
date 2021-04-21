@@ -26,11 +26,13 @@ import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dao.PetRepository;
 import br.com.desafio.petz.api.dto.PetDto;
 import br.com.desafio.petz.api.enuns.EnumTipo;
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
+import br.com.desafio.petz.api.util.PasswordUtils;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
 
-public class PetControllerTest extends AbstractTest {
+public class PetControllerTest extends AbstractControllerTest {
 	
 	public static final String CLIENTE= "Cliente Teste";
 	
@@ -111,7 +113,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(roles = "USUARIO")
 	public void getPetById() throws Exception {
 		clienteRepository.deleteAll();
 		petRepository.deleteAll();
@@ -131,6 +133,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USUARIO")
 	public void updatePetAllFileds() throws Exception {
 		clienteRepository.deleteAll();
 		petRepository.deleteAll();
@@ -152,6 +155,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USUARIO")
 	public void updatePetPartialFields() throws Exception {
 		clienteRepository.deleteAll();
 		petRepository.deleteAll();
@@ -174,6 +178,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USUARIO")
 	public void deletePet() throws Exception {
 	   clienteRepository.deleteAll();
 	   petRepository.deleteAll();
@@ -190,6 +195,7 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "USUARIO")
 	public void createPet() throws Exception {
 	   String uri = PetControllerTest.PATH;
 	   clienteRepository.deleteAll();
@@ -248,8 +254,17 @@ public class PetControllerTest extends AbstractTest {
 	}
 	
 	private Cliente newCliente(String keyEmail) throws JsonProcessingException {
-		Cliente cliente = new Cliente(PetControllerTest.CLIENTE, LocalDate.now(), keyEmail);
+		Cliente cliente = new Cliente();
+		setValidFields(cliente);
 		return clienteRepository.save(cliente);
+	}
+	
+	private void setValidFields(Cliente cliente) {
+		cliente.setNome(PetControllerTest.CLIENTE );
+		cliente.setEmail(PetControllerTest.EMAIL_CLIENTE );
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
 	}
 	
 	private Pet newPet(String nome, String raca, EnumTipo tipo, Cliente dono) {

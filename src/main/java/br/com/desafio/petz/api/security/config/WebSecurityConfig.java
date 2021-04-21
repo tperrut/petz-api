@@ -19,7 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import br.com.desafio.petz.api.security.JwtAuthenticationEntryPoint;
 import br.com.desafio.petz.api.security.filters.JwtAuthenticationTokenFilter;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+  prePostEnabled = true, 
+  securedEnabled = true, 
+  jsr250Enabled = true)
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -53,16 +56,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable()
+		httpSecurity
+				.cors() //o pulo do gato foi aqui.
+				.and()
+				.csrf().disable()
 				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
 				.and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.antMatchers("/auth**","/rest/clientes", "/**",  "db/**", "/v2/api-docs", "/swagger-ui.html",
-						"/swagger-resources/**", "/configuration/security")
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authorizeRequests()
+				.antMatchers("/auth**", "/rest/clientes", "/v2/api-docs", "/swagger-ui.html",
+						"/swagger-resources/**", "/configuration/security",  "/webjars/**")
 				.permitAll()
 				.anyRequest().authenticated();
 
 		httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 		httpSecurity.headers().cacheControl();
 	}
+	
+	
 }

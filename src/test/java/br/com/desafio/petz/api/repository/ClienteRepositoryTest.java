@@ -28,8 +28,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.desafio.petz.api.controller.ClienteControllerTest;
+import br.com.desafio.petz.api.controller.PetControllerTest;
 import br.com.desafio.petz.api.dao.ClienteRepository;
+import br.com.desafio.petz.api.enuns.PerfilEnum;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.util.PasswordUtils;
 import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 
 @RunWith(SpringRunner.class)
@@ -57,14 +60,42 @@ public class ClienteRepositoryTest {
 	public ExpectedException thrown = ExpectedException.none();
 	
 	
-	private Cliente createCliente(LocalDate dataVencimento, String nome, String email) {
-		Cliente cliente = new Cliente(nome, dataVencimento, email);
+	
+	private Cliente createClienteInvalidEmail() {
+		Cliente cliente = new Cliente();
+		cliente.setNome(ClienteRepositoryTest.CLIENTE_TESTE );
+		cliente.setEmail("emailZuado.com.br");
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
+		return cliente;
+	}
+	
+	
+	private Cliente createCliente1() {
+		Cliente cliente = new Cliente();
+		cliente.setNome(ClienteRepositoryTest.CLIENTE_TESTE );
+		cliente.setEmail(ClienteRepositoryTest.EMAIL_TESTE);
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
+		return cliente;
+	}
+	
+	private Cliente createCliente2() {
+		Cliente cliente = new Cliente();
+		cliente.setNome(ClienteRepositoryTest.CLIENTE_TESTE2 );
+		cliente.setEmail(ClienteRepositoryTest.EMAIL_TESTE2);
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
+	
 		return cliente;
 	}
 	
 	@Test
 	public void criarClienteComSucesso() {
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_TESTE);
+		Cliente cliente = createCliente1();
 		Cliente resposta = repository.save(cliente);
 		assertThat(resposta).isNotNull();
 	}
@@ -73,14 +104,14 @@ public class ClienteRepositoryTest {
 	public void criarClienteComEmailInavalido() {
 		thrown.expect(ConstraintViolationException.class);
 
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_INVALIDO);
+		Cliente cliente = createClienteInvalidEmail();
 		repository.save(cliente);
 	}
 	
 	@Test
 	public void buscarClientesComSucesso() {
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_TESTE);
-		Cliente cliente2 = createCliente(LocalDate.now(),CLIENTE_TESTE2, EMAIL_TESTE2);
+		Cliente cliente = createCliente1();
+		Cliente cliente2 = createCliente2();
 		repository.save(cliente);
 		repository.save(cliente2);
 		List<Cliente> toodsClientess = repository.findAll();
@@ -90,7 +121,7 @@ public class ClienteRepositoryTest {
 	
 	@Test
 	public void buscarClienteByIdComSucesso() {
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_TESTE);
+		Cliente cliente = createCliente1();
 		cliente = repository.save(cliente);
 
 		Long id = cliente.getId();
@@ -105,7 +136,7 @@ public class ClienteRepositoryTest {
 	
 	@Test
 	public void buscarClienteByNomeComSucesso() {
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_TESTE);
+		Cliente cliente = createCliente1();
 		repository.save(cliente);
 
 		Optional<List<Cliente>> resposta = repository.findByNome(cliente.getNome());
@@ -117,7 +148,7 @@ public class ClienteRepositoryTest {
 	
 	@Test
 	public void deleteClienteSucesso() {
-		Cliente cliente = createCliente(LocalDate.now().plusDays(12),CLIENTE_TESTE, EMAIL_TESTE);
+		Cliente cliente = createCliente1();
 		cliente = this.repository.save(cliente);
 		Long id = cliente.getId();
 		this.repository.delete(cliente);
@@ -126,10 +157,9 @@ public class ClienteRepositoryTest {
 	}
 	
 
-
 	@Test
 	public void alterarClienteTest() {
-		Cliente cliente = createCliente(LocalDate.now(),CLIENTE_TESTE, EMAIL_TESTE);
+		Cliente cliente = createCliente1();
 		Optional<Cliente> resposta = Optional.of(new Cliente());
 		cliente = repository.save(cliente);
 

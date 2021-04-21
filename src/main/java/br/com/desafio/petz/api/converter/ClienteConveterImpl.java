@@ -38,7 +38,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		return new ClienteDto(cliente.getNome(),
 				cliente.getEmail(),
 				cliente.getDataNascimento(),
-				cliente.getPerfil());
+				cliente.getPerfil(), cliente.getSenha());
 	}
 
 	@Override

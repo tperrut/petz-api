@@ -93,7 +93,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public @ResponseBody ErrorDetail duplicateEmailException(DataIntegrityViolationException e) {
 		DataIntegrityViolationExceptionDetails ex = DataIntegrityViolationExceptionDetails.builder().
-				detalhe(e.getRootCause().getMessage().substring(0, 46).concat(" ...")).
+				detalhe(e.getRootCause().getMessage()).
 				developerMessage(BusinessException.class.getName()).
 				statusCode(HttpStatus.CONFLICT.value()).
 				timestamp(new Date()).
@@ -209,8 +209,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ClientExceptionDetail ise = ClientExceptionDetail.builder().
-				detalhe(ex.getCause().getMessage()).
-				developerMessage(InternalServerException.class.getName()).
+				detalhe(ex.getLocalizedMessage()).
+				developerMessage(ClientExceptionDetail.class.getName()).
 				statusCode(status.value()).
 				titulo(status.getReasonPhrase()).
 				timestamp(new Date()).

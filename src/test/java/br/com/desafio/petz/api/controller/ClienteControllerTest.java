@@ -28,10 +28,14 @@ import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.enuns.PerfilEnum;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.util.PasswordUtils;
+import br.com.desafio.petz.api.web.error.ErrorDetail;
+import br.com.desafio.petz.api.web.error.ResourceNotFoundDetails;
 import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
 import br.com.desafio.petz.api.web.response.ResponseApi;;
 
-public class ClienteControllerTest extends AbstractTest {
+
+public class ClienteControllerTest extends AbstractControllerTest {
 	
 	public static final String CLIENTE= "CLIENTE Teste";
 	public static final String CLIENTE2= "CLIENTE2 Teste";
@@ -42,6 +46,9 @@ public class ClienteControllerTest extends AbstractTest {
 	public static final String PATH_ = "/rest/clientes/";
 	public static final String PATH_NOME = "/rest/clientes/nome/";
 	
+	
+//	@Autowired	private Flyway flyway;
+	 
 	@Autowired
 	private ObjectMapper objectMapper;
 	
@@ -56,10 +63,11 @@ public class ClienteControllerTest extends AbstractTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+//		flyway.info();
 	}
 	
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(roles = {"ADMIN"})
 	public void getClientesListEmpty() throws Exception {
 	   repository.deleteAll();
 
@@ -76,7 +84,7 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(roles = {"ADMIN"})
 	public void getClientesList() throws Exception {
 	   String uri = ClienteControllerTest.PATH;
 	   repository.deleteAll();
@@ -98,7 +106,7 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(roles = {"USUARIO"})
 	public void getClientesById() throws Exception {
 	   repository.deleteAll();
 	   Long id = createClienteByRepository(ClienteControllerTest.EMAIL_CLIENTE);
@@ -106,6 +114,7 @@ public class ClienteControllerTest extends AbstractTest {
 	   String uriGet = ClienteControllerTest.PATH_ +id.toString();
 	   MvcResult result = mvc.perform(MockMvcRequestBuilders
 			   .get(uriGet)
+			   .secure(false)
 			   .accept(MediaType.APPLICATION_JSON_VALUE))
 			   .andExpect(status().isOk())
  		       .andDo(print()) 		       
@@ -119,6 +128,7 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles="USUARIO")
 	public void updateClienteOK() throws Exception {
 	   repository.deleteAll();
 
@@ -150,6 +160,7 @@ public class ClienteControllerTest extends AbstractTest {
 	
 	
 	@Test
+	@WithMockUser(roles = {"ADMIN"})
 	public void deleteCliente() throws Exception {
 	   repository.deleteAll();
 
@@ -204,8 +215,6 @@ public class ClienteControllerTest extends AbstractTest {
 	   assertThat(ved.getTitulo()).isEqualTo("Erro: Email já cadastrado ou vazio!");
 	   assertThat(ved.getStatusCode()).isEqualTo(409);
 	   assertThat(ved.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.exception.BusinessException");
-	   assertThat(ved.getDetalhe()).contains("NULL not allowed for column \"EMAIL\"");
-
 	   
 	}
 
@@ -219,15 +228,92 @@ public class ClienteControllerTest extends AbstractTest {
 	*/
 	
 	@Test
+	@WithMockUser(roles = {"ADMIN"})
 	public void testNameNotFoundException() throws JsonProcessingException, Exception {
 		repository.deleteAll();
 
 		String uriGet = ClienteControllerTest.PATH_NOME + ClienteControllerTest.CLIENTE;
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriGet).accept(MediaType.APPLICATION_JSON_VALUE))
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriGet)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().is4xxClientError()).andDo(print()).andReturn();
 		/* .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists()) */
 		assertThat(mvcResult.getResponse().getContentAsString()).contains("CLIENTE : CLIENTE Teste NOT_FOUND.");
 	}
+	
+	@Test
+	@WithMockUser(roles = {"USUARIO"})
+	public void whenIdNotOkShouldThrowResourceNotFoundException() throws Exception {
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/clientes/45")
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+					.andReturn();
+		
+		String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+		ResourceNotFoundDetails rnfd = objectMapper.readValue(actualResponseBody, ResourceNotFoundDetails.class);	
+		
+		assertThat(rnfd.getTitulo()).isEqualTo("Not Found");
+		assertThat(rnfd.getStatusCode()).isEqualTo(404);
+		assertThat(rnfd.getDetalhe()).isEqualTo("CLIENTE ID 45");
+		assertThat(rnfd.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.exception.ResourceNotFoundException");
+
+	}
+	
+	@Test
+	@WithMockUser(roles = {"USUARIO"})
+	public void whenParameterIsNotOk_ShouldThrowClientExceptionDetail() throws Exception {
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/clientes/xxx")
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+					.andReturn();
+		
+		String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+		ErrorDetail rnfd = objectMapper.readValue(actualResponseBody, ErrorDetail.class);	
+		
+		assertThat(rnfd.getDetalhe()).isEqualTo(
+				"Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"xxx\"");
+		assertThat(rnfd.getTitulo()).isEqualTo("Bad Request");
+		assertThat(rnfd.getStatusCode()).isEqualTo(400);
+		assertThat(rnfd.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.error.ClientExceptionDetail");
+
+	}
+	
+//	@Test
+//	@WithMockUser(roles = {"USUARIO"})
+//	public void whenUrlIsNotOk_ShouldThrowClientExceptionDetail() throws Exception {
+//		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/res/clientes/nome/")
+//				.contentType("application/json")
+//				.accept(MediaType.APPLICATION_JSON_VALUE))
+//					.andReturn();
+//		
+//		String actualResponseBody = mvcResult.getResponse().getContentAsString();
+//
+//		ErrorDetail rnfd = objectMapper.readValue(actualResponseBody, ErrorDetail.class);	
+//		
+//		assertThat(rnfd.getDetalhe()).isEqualTo(
+//				"Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"xxx\"");
+//		assertThat(rnfd.getTitulo()).isEqualTo("Bad Request");
+//		assertThat(rnfd.getStatusCode()).isEqualTo(400);
+//		assertThat(rnfd.getDeveloperMessage()).isEqualTo("br.com.desafio.petz.api.web.error.ClientExceptionDetail");
+//
+//	}
+	
+//	@Test
+//	public void whenNullValue_thenReturns400AndErrorResult() throws Exception {
+//		
+//		
+//		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/res/cliente")
+//		          .contentType("application/json")
+//		          .param("teste", "true")
+//		          .andExpect(status().isBadRequest())
+//		          .andReturn();
+//		
+//		ErrorResult expectedErrorResponse = new ErrorResult("name", "must not be null");
+//		String actualResponseBody = mvcResult.getResponse().getContentAsString();
+//		String expectedResponseBody = objectMapper.writeValueAsString(expectedErrorResponse);
+//		assertThat(actualResponseBody).isEqualToIgnoringWhitespace(expectedResponseBody);
+//	}
 	
 	/**
 	 *
@@ -286,26 +372,29 @@ public class ClienteControllerTest extends AbstractTest {
 	}
 	
 	private Cliente newCliente(String keyEmail) throws JsonProcessingException {
-		return new Cliente(ClienteControllerTest.CLIENTE, LocalDate.now(), keyEmail);
+		Cliente cliente = new Cliente();
+		setValidFields(cliente);
+		cliente.setEmail(keyEmail);
+		return cliente;
 	}
 	
 	private ClienteDto newClienteDtoToPost() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.EMAIL_CLIENTE, LocalDate.now(), PerfilEnum.ROLE_ADMIN, "12345");
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPostWithInvalidEmail() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE ,ClienteControllerTest.INVALID_EMAIL, LocalDate.now(), PerfilEnum.ROLE_ADMIN, "12345");
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPostWithEmptyEmail() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE , null, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE , null, LocalDate.now(), PerfilEnum.ROLE_ADMIN, "12345");
 		return dto;
 	}
 	
 	private ClienteDto newClienteDtoToPut() throws JsonProcessingException {
-		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE2 ,ClienteControllerTest.EMAIL_CLIENTE2, LocalDate.now(), PerfilEnum.ROLE_ADMIN);
+		ClienteDto dto = new ClienteDto(ClienteControllerTest.CLIENTE2 ,ClienteControllerTest.EMAIL_CLIENTE2, LocalDate.now(), PerfilEnum.ROLE_ADMIN, "12345");
 		return dto;
 	}
 	
@@ -318,4 +407,12 @@ public class ClienteControllerTest extends AbstractTest {
 		return super.mapToJson(dto);
 	}
 	
+	private void setValidFields(Cliente cliente) {
+		cliente.setNome(ClienteControllerTest.CLIENTE );
+		cliente.setEmail(ClienteControllerTest.EMAIL_CLIENTE );
+		cliente.setDataNascimento(LocalDate.now());
+		cliente.setSenha(PasswordUtils.gerarBCrypt("123456"));		
+		cliente.setPerfil(PerfilEnum.ROLE_ADMIN);		
+	}
+
 }
