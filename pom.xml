@@ -148,6 +148,18 @@
 		</resources>
 		<plugins>
 			<plugin>
+			    <groupId>org.flywaydb</groupId>
+			    <artifactId>flyway-maven-plugin</artifactId>
+			    <version>4.0.3</version>
+			    <configuration>
+			        <user>root</user>
+			        <password>root</password>
+			        <schemas>
+			            <schema>petz</schema>
+			        </schemas>
+			    </configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
@@ -234,6 +246,14 @@
 					</execution> -->
 				</executions>
 			</plugin>
+			<plugin>
+			    <artifactId>maven-compiler-plugin</artifactId>
+			    <version>3.0</version>
+			    <configuration>
+			      <source>${java.version}</source>
+			      <target>${java.version}</target>
+			    </configuration>
+			  </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
