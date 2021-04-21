@@ -15,8 +15,9 @@ script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo "Versão da API - ${BUILD_VERSION}" 
-  - ./mvnw dependency:purge-local-repository clean install
-  - ./mvnw package  -DskipTests=true -X
+#  - ./mvnw dependency:purge-local-repository clean install
+  - ./mvnw complile -X
+#  - ./mvnw package  -DskipTests=true -X
  
 deploy:
   provider: heroku
@@ -35,7 +36,7 @@ addons:
 
 cache:
   directories:
-#    - '$HOME/.m2/repository'
+    - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'  
 
 git:
