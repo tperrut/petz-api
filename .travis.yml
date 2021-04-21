@@ -16,8 +16,8 @@ script:
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo "Versão da API - ${BUILD_VERSION}" 
 #  - ./mvnw dependency:purge-local-repository clean install
-  - ./mvnw install -DskipTests
-#  - ./mvnw package  -DskipTests=true -X
+#  - ./mvnw install -DskipTests
+  - ./mvnw package  -DskipTests
  
 deploy:
   provider: heroku
