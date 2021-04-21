@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 
 x-database-variables: &database-variables
@@ -6,13 +6,15 @@ x-database-variables: &database-variables
   SPRING_DATASOURCE_USERNAME: root
   SPRING_DATASOURCE_PASSWORD: root
 
-
+volumes:
+  petz_data:
+  
 services:
 
   petz-app:
     container_name: petz-app
     volumes:
-      - .db/mysql:/var/lib/mysql
+      - petz_data:/var/lib/mysql
     restart: always
     image: tperrut/petz-api:0.0.7-SNAPSHOT    
     environment:
