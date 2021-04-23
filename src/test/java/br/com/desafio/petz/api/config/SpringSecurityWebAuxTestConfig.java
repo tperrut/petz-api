@@ -1,5 +1,6 @@
 package br.com.desafio.petz.api.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +24,16 @@ public class SpringSecurityWebAuxTestConfig {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
-	@Bean
-	public UserDetailsService userDetailsService(){
-		GrantedAuthority grantAdmin = new SimpleGrantedAuthority("ADMIN");
-		GrantedAuthority grantUser= new SimpleGrantedAuthority("USUARIO");
-		
-		UserDetails userDetailsAdmin = (UserDetails) new JwtUser(1L,"admin@petzapi.com", "admin12345", List.of(grantAdmin, grantUser));
-//		UserDetails userDetails = (UserDetails) new JwtUser(2L,"user@petzapi.com", "user12345", List.of(grantUser));
-		
-		return new InMemoryUserDetailsManager(List.of(userDetailsAdmin));
-	}
-	
+	@Autowired
+	private UserDetailsService userDetailsService;
+
 	@Bean
     @Primary
 	public SecurityConfiguration securityTest() {
 		String token;
 		try {
 			
-			UserDetails userDetails = this.userDetailsService().loadUserByUsername("admin@petzapi.com");
+			UserDetails userDetails = this.userDetailsService.loadUserByUsername("admin@petzapi.com");
 			token = this.jwtTokenUtil.obterToken(userDetails);
 		} catch (Exception e) {
 			token = "";

@@ -1,6 +1,6 @@
 package br.com.desafio.petz.api.config;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,11 +50,11 @@ public class SwaggerConfig {
     public UserDetailsService userDetailsService(){
 		GrantedAuthority grantAdmin = new SimpleGrantedAuthority("ADMIN");
 		GrantedAuthority grantUser= new SimpleGrantedAuthority("USUARIO");
+
+		UserDetails userDetailsAdmin = (UserDetails) new JwtUser(1L,"admin@petzapi.com", "admin12345", Arrays.asList(grantAdmin));
+		UserDetails userDetails = (UserDetails) new JwtUser(2L,"user@petzapi.com", "user12345", Arrays.asList(grantUser));
 		
-		UserDetails userDetailsAdmin = (UserDetails) new JwtUser(1L,"admin@petzapi.com", "admin12345", List.of(grantAdmin, grantUser));
-//		UserDetails userDetails = (UserDetails) new JwtUser(2L,"user@petzapi.com", "user12345", List.of(grantUser));
-		
-		return new InMemoryUserDetailsManager(List.of(userDetailsAdmin));
+		return new InMemoryUserDetailsManager(Arrays.asList(userDetailsAdmin,userDetails));
 	}
 
 	@Bean
