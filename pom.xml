@@ -135,7 +135,12 @@
 		    <groupId>org.flywaydb</groupId>
 		    <artifactId>flyway-core</artifactId>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.1.6.RELEASE</version>
+		</dependency>
+
 	</dependencies>
 	
 
@@ -153,7 +158,8 @@
 			    <version>4.0.3</version>
 			    <configuration>
 			        <user>root</user>
-			        <password>root</password>
+			        <!--suppress UnresolvedMavenProperty -->
+					<password>${env.PASSWORD_DB}</password>
 			        <schemas>
 			            <schema>petz</schema>
 			        </schemas>
@@ -229,17 +235,7 @@
 											<minimum>0.60</minimum>
 									   </limit>
 			                        </limits>
-		                        </rule> 
-<!--		                        <rule>-->
-<!--		                            <element>PACKAGE</element>-->
-<!--		                            <limits>-->
-<!--		                                <limit>-->
-<!--		                                    <counter>LINE</counter>-->
-<!--		                                    <value>COVEREDRATIO</value>-->
-<!--		                                    <minimum>0.7</minimum>-->
-<!--		                                </limit>-->
-<!--		                            </limits>-->
-<!--		                        </rule> -->
+		                        </rule>
 		                    </rules>
 		                </configuration>
 					</execution>
