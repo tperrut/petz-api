@@ -20,6 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+
 		<!-- Organization and project keys are displayed in the right sidebar of the project homepage -->
 		<sonar.organization>tperrut</sonar.organization>
 		<sonar.projectKey>tperrut_petz-api</sonar.projectKey>

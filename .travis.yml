@@ -16,7 +16,8 @@ script:
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo "Versão da API - ${BUILD_VERSION}" 
 #  - ./mvnw dependency:purge-local-repository clean install
-  - ./mvnw clean package install -Dspring.profiles.active=dev -DskipTests flyway:migrate
+  - ./mvnw clean package install -Dspring.profiles.active=dev -DskipTests
+#  - ./mvnw flyway:migrate
   - ./deployment/run-tests.sh
 
  
