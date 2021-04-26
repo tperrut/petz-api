@@ -10,7 +10,7 @@ install: true
 before_install:
   - echo "before_install  ---> Dando permissão de exec pra o mvnw e scripts .sh ---> "
   - sudo chmod +x mvnw ./deployment/*
-
+  - echo ${$SONAR_API_KEY}
 script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
