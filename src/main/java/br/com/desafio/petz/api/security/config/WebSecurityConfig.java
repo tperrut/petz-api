@@ -59,7 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity
 				.cors() //o pulo do gato foi aqui.
 				.and()
-				.csrf().disable()
 				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
 				.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

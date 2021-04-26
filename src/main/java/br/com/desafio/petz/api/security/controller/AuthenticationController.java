@@ -68,7 +68,8 @@ public class AuthenticationController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		log.info("Gerando token para o email {}.", authenticationDto.getEmail());
+		String email = authenticationDto.getEmail().replaceAll("[\n|\r|\t]", "_");
+		log.info("Gerando token para o email {}.", email);
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				authenticationDto.getEmail(), authenticationDto.getSenha()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
