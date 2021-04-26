@@ -106,8 +106,10 @@ public class AuthenticationController {
 		if (!response.getErros().isEmpty()) { 
 			return ResponseEntity.badRequest().body(response);
 		}
-		
-		String refreshedToken = jwtTokenUtil.refreshToken(token.get());
+		String refreshedToken = "";
+		if (token.isPresent())
+			refreshedToken = jwtTokenUtil.refreshToken(token.get());
+
 		response.setData(Arrays.asList(new TokenDto(refreshedToken)));
 		return ResponseEntity.ok(response);
 	}

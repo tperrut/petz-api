@@ -33,10 +33,11 @@ public class JwtTokenUtil {
 	 * @return String
 	 */
 	public String getUsernameFromToken(String token) {
-		String username;
+		String username ="";
 		try {
 			Claims claims = getClaimsFromToken(token);
-			username = claims.getSubject();
+			if(claims != null)
+				username = claims.getSubject();
 		} catch (Exception e) {
 			username = null;
 		}
@@ -50,10 +51,11 @@ public class JwtTokenUtil {
 	 * @return Date
 	 */
 	public Date getExpirationDateFromToken(String token) {
-		Date expiration;
+		Date expiration= null;
 		try {
 			Claims claims = getClaimsFromToken(token);
-			expiration = claims.getExpiration();
+			if(claims != null)
+				expiration = claims.getExpiration();
 		} catch (Exception e) {
 			expiration = null;
 		}
@@ -70,7 +72,8 @@ public class JwtTokenUtil {
 		String refreshedToken;
 		try {
 			Claims claims = getClaimsFromToken(token);
-			claims.put(CLAIM_KEY_CREATED, new Date());
+			if(claims != null)
+				claims.put(CLAIM_KEY_CREATED, new Date());
 			refreshedToken = gerarToken(claims);
 		} catch (Exception e) {
 			refreshedToken = null;
@@ -96,10 +99,11 @@ public class JwtTokenUtil {
 	 */
 	public String obterToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-		userDetails.getAuthorities().forEach(authority -> claims.put(CLAIM_KEY_ROLE, authority.getAuthority()));
-		claims.put(CLAIM_KEY_CREATED, new Date());
-
+		if (claims != null) {
+			claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+			userDetails.getAuthorities().forEach(authority -> claims.put(CLAIM_KEY_ROLE, authority.getAuthority()));
+			claims.put(CLAIM_KEY_CREATED, new Date());
+		}
 		return gerarToken(claims);
 	}
 
