@@ -184,7 +184,7 @@
 				<version>0.8.6</version>
 				<configuration>
 					<excludes>
-						<exclude>***/main/resources/**</exclude>
+						<exclude>**/main/resources/**</exclude>
 						<exclude>**/test/**</exclude>
 					</excludes>
 				</configuration>
@@ -211,7 +211,7 @@
                         </configuration>
 					</execution>
 					
-					<!-- <execution>
+					<execution>
 						<id>default-check</id>
 						<goals>
 							<goal>check</goal>
@@ -221,36 +221,34 @@
 						<configuration>
 		                    <rules>
 		                       <rule>
-		                        <element>PACKAGE</element>
-		                        
 			                        <limits>
 			                           <limit>
 									        <counter>COMPLEXITY</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.50</minimum>
+											<minimum>0.60</minimum>
 									   </limit>
 			                        </limits>
 		                        </rule> 
-		                        <rule>
-		                            <element>PACKAGE</element>
-		                            <limits>
-		                                <limit>
-		                                    <counter>LINE</counter>
-		                                    <value>COVEREDRATIO</value>
-		                                    <minimum>0.7</minimum>
-		                                </limit>
-		                            </limits>
-		                        </rule> 
+<!--		                        <rule>-->
+<!--		                            <element>PACKAGE</element>-->
+<!--		                            <limits>-->
+<!--		                                <limit>-->
+<!--		                                    <counter>LINE</counter>-->
+<!--		                                    <value>COVEREDRATIO</value>-->
+<!--		                                    <minimum>0.7</minimum>-->
+<!--		                                </limit>-->
+<!--		                            </limits>-->
+<!--		                        </rule> -->
 		                    </rules>
 		                </configuration>
-					</execution> -->
+					</execution>
 				</executions>
 			</plugin>
 			  
 		</plugins>
 		<pluginManagement>
 			<plugins>
-			
+				<!--Config Sonar plugin-->
 		      <plugin>
 		        <groupId>org.sonarsource.scanner.maven</groupId>
 		        <artifactId>sonar-maven-plugin</artifactId>
@@ -259,7 +257,7 @@
 		          <goalPrefix>sonar</goalPrefix>
 		        </configuration>
 		      </plugin>
-		      
+		       <!-- Configuração do jib-maven-plugin -->
 		       <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
@@ -370,7 +368,6 @@
 				<env>docker</env>
 			</properties>
 		</profile>
-			
 		<profile>
 			<id>dev</id>
 			<activation>
