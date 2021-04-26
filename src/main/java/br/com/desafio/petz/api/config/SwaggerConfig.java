@@ -26,12 +26,6 @@ import java.util.Arrays;
 @EnableSwagger2
 public class SwaggerConfig {
 	
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
-
-	@Autowired
-	private UserDetailsService userDetailsService;
-	
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
@@ -60,7 +54,7 @@ public class SwaggerConfig {
 		String token;
 		try {
 			UserDetails userDetails = userDetailsService.loadUserByUsername("admin@petzapi.com");
-			token = jwtTokenUtil.obterToken(userDetails);
+			token = tokenUtil.obterToken(userDetails);
 		} catch (Exception e) {
 			token = "";
 		}

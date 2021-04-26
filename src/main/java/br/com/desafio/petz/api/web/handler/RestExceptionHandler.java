@@ -115,8 +115,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		titulo(e.getMessage()).
 		build();
 
-		e.printStackTrace();
-
 		logger.error(e.toString());
 
 		return ex;
@@ -140,7 +138,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return ex ;
     }
 
-	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {

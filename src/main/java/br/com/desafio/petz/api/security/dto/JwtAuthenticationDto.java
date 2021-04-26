@@ -8,7 +8,9 @@ public class JwtAuthenticationDto {
 	private String email;
 	private String senha;
 
-	public JwtAuthenticationDto() {
+	public JwtAuthenticationDto(String email, String password) {
+		this.email = email;
+		this.senha = password;
 	}
 
 	@NotEmpty(message = "Email não pode ser vazio.")

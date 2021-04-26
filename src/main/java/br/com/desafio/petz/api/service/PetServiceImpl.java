@@ -17,6 +17,7 @@ import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 @Service
 public class PetServiceImpl implements PetService {
 
+	public static final String PET_NOT_FOUND = "PET_NOT_FOUND ";
 	@Autowired
 	private PetRepository dao;
 
@@ -28,7 +29,7 @@ public class PetServiceImpl implements PetService {
 	public void excluir(Long id) {
 		Optional<Pet> pet = dao.findById(id);
 		if (!pet.isPresent()) {
-			throw new ResourceNotFoundException(" PET_NOT_FOUND " + id);
+			throw new ResourceNotFoundException(PET_NOT_FOUND + id);
 		}
 		dao.deleteById(id);
 	}
@@ -37,7 +38,7 @@ public class PetServiceImpl implements PetService {
 	public Optional<Pet> buscarPorId(Long id) {
 		Optional<Pet> pet = dao.findById(id);
 		if (!pet.isPresent()) {
-			throw new ResourceNotFoundException(" PET_NOT_FOUND " + id);
+			throw new ResourceNotFoundException(PET_NOT_FOUND + id);
 		}
 		return pet;
 	}
@@ -46,7 +47,7 @@ public class PetServiceImpl implements PetService {
 	public Optional<List<Pet>> buscarPorNome(String nome) {
 		Optional<List<Pet>> pet = dao.findByNome(nome);
 		if (!pet.isPresent()) {
-			throw new ResourceNotFoundException(" PET_NOT_FOUND " + nome);
+			throw new ResourceNotFoundException(PET_NOT_FOUND + nome);
 		}
 		return pet;
 		
