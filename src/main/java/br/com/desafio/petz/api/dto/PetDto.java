@@ -1,21 +1,17 @@
 package br.com.desafio.petz.api.dto;
 
-import java.time.LocalDate;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import br.com.desafio.petz.api.enuns.EnumTipo;
 import br.com.desafio.petz.api.model.Cliente;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 
 @Getter @Setter @NoArgsConstructor

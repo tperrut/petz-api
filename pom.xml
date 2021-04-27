@@ -152,6 +152,7 @@
 			</resource>
 		</resources>
 		<plugins>
+			<!-- Config Plugin Flyway-->
 			<plugin>
 			    <groupId>org.flywaydb</groupId>
 			    <artifactId>flyway-maven-plugin</artifactId>
@@ -170,6 +171,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!--maven-help-plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-help-plugin</artifactId>
@@ -183,8 +185,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
-		      
+			<!--Coverage jacoco -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>

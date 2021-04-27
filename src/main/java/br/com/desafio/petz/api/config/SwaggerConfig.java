@@ -2,7 +2,6 @@ package br.com.desafio.petz.api.config;
 
 import br.com.desafio.petz.api.security.JwtUser;
 import br.com.desafio.petz.api.security.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;

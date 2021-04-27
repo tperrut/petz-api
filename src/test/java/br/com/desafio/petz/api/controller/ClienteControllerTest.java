@@ -1,38 +1,34 @@
 	package br.com.desafio.petz.api.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+	import br.com.desafio.petz.api.dao.ClienteRepository;
+	import br.com.desafio.petz.api.dto.ClienteDto;
+	import br.com.desafio.petz.api.enuns.PerfilEnum;
+	import br.com.desafio.petz.api.model.Cliente;
+	import br.com.desafio.petz.api.util.PasswordUtils;
+	import br.com.desafio.petz.api.web.error.ErrorDetail;
+	import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
+	import br.com.desafio.petz.api.web.response.ResponseApi;
+	import com.fasterxml.jackson.core.JsonParseException;
+	import com.fasterxml.jackson.core.JsonProcessingException;
+	import com.fasterxml.jackson.databind.JsonMappingException;
+	import org.junit.Before;
+	import org.junit.Rule;
+	import org.junit.Test;
+	import org.junit.rules.ExpectedException;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.http.HttpStatus;
+	import org.springframework.http.MediaType;
+	import org.springframework.security.test.context.support.WithMockUser;
+	import org.springframework.test.web.servlet.MvcResult;
+	import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
+	import java.io.IOException;
+	import java.io.UnsupportedEncodingException;
+	import java.time.LocalDate;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.com.desafio.petz.api.dao.ClienteRepository;
-import br.com.desafio.petz.api.dto.ClienteDto;
-import br.com.desafio.petz.api.enuns.PerfilEnum;
-import br.com.desafio.petz.api.model.Cliente;
-import br.com.desafio.petz.api.util.PasswordUtils;
-import br.com.desafio.petz.api.web.error.ErrorDetail;
-import br.com.desafio.petz.api.web.error.ResourceNotFoundDetails;
-import br.com.desafio.petz.api.web.error.ValidationErrorDetail;
-import br.com.desafio.petz.api.web.response.ResponseApi;;
+	import static org.assertj.core.api.Assertions.assertThat;
+	import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+	import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class ClienteControllerTest extends AbstractControllerTest {
@@ -45,17 +41,10 @@ public class ClienteControllerTest extends AbstractControllerTest {
 	public static final String PATH = "/rest/clientes";
 	public static final String PATH_ = "/rest/clientes/";
 	public static final String PATH_NOME = "/rest/clientes/nome/";
-	
-	
-//	@Autowired	private Flyway flyway;
-	 
-	@Autowired
-	private ObjectMapper objectMapper;
-	
+
 	@Autowired
 	private ClienteRepository repository;
-	
-	
+
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
@@ -63,7 +52,6 @@ public class ClienteControllerTest extends AbstractControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-//		flyway.info();
 	}
 	
 	@Test
@@ -250,7 +238,7 @@ public class ClienteControllerTest extends AbstractControllerTest {
 		
 		String actualResponseBody = mvcResult.getResponse().getContentAsString();
 
-		ResourceNotFoundDetails rnfd = objectMapper.readValue(actualResponseBody, ResourceNotFoundDetails.class);	
+		ErrorDetail rnfd = this.mapFromJson(actualResponseBody, ErrorDetail.class);
 		
 		assertThat(rnfd.getTitulo()).isEqualTo("Not Found");
 		assertThat(rnfd.getStatusCode()).isEqualTo(404);
@@ -269,7 +257,7 @@ public class ClienteControllerTest extends AbstractControllerTest {
 		
 		String actualResponseBody = mvcResult.getResponse().getContentAsString();
 
-		ErrorDetail rnfd = objectMapper.readValue(actualResponseBody, ErrorDetail.class);	
+		ErrorDetail rnfd = this.mapFromJson(actualResponseBody, ErrorDetail.class);
 		
 		assertThat(rnfd.getDetalhe()).isEqualTo(
 				"Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"xxx\"");
@@ -321,7 +309,6 @@ public class ClienteControllerTest extends AbstractControllerTest {
 	 * Refatorar ====================================>>>>>>>>>>>>>>>>>>>>>>>>
 	 * TODO colocar esses metodos numa classeUtil
 
-	
 	 */
 	private Long createClienteByRepository(String keyEmail) throws JsonProcessingException, Exception {
 		Cliente entity = newCliente(keyEmail);
@@ -400,7 +387,7 @@ public class ClienteControllerTest extends AbstractControllerTest {
 	
 	private ResponseApi<ClienteDto> convertStringToObject(MvcResult result)
 			throws IOException, JsonParseException, JsonMappingException, UnsupportedEncodingException {
-		return objectMapper.readValue(result.getResponse().getContentAsString(), ResponseApi.class);
+		return mapFromJson(result.getResponse().getContentAsString(), ResponseApi.class);
 	}
 	
 	private String convertToJson(ClienteDto dto) throws JsonProcessingException {

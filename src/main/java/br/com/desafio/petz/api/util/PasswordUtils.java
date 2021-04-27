@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PasswordUtils {
-	
+
+	private PasswordUtils(){}
+
 	private static final Logger log = LoggerFactory.getLogger(PasswordUtils.class);
 
 	/**

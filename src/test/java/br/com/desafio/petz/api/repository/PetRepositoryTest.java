@@ -102,7 +102,7 @@ public class PetRepositoryTest {
 		Long id = pet.getId();
 		Optional<Pet> resposta = petRepository.findById(id);
 		
-		assertThat(resposta.isPresent()).isTrue();
+		assertThat(resposta).isPresent();
 		assertThat(resposta.get().getId()).isEqualTo(id);
 		assertThat(resposta.get().getNome()).isEqualTo(PET_TESTE);
 		assertThat(resposta.get().getDataNascimento()).isEqualTo(pet.getDataNascimento());
@@ -118,7 +118,7 @@ public class PetRepositoryTest {
 
 		Optional<List<Pet>> resposta = petRepository.findByNome(pet.getNome());
 		
-		assertThat(resposta.isPresent()).isTrue();
+		assertThat(resposta).isPresent();
 		assertThat(resposta.get().isEmpty()).isFalse();
 		assertThat(resposta.get().get(0).getNome()).isEqualTo(PET_TESTE);
 	}
@@ -132,7 +132,7 @@ public class PetRepositoryTest {
 		Long id = pet.getId();
 		this.petRepository.delete(pet);
 		Optional<Pet> retorno =  this.petRepository.findById(id);
-		assertThat(retorno.isPresent()).isFalse();
+		assertThat(retorno).isPresent();
 	}
 	
 

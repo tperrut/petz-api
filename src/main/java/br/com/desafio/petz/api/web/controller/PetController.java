@@ -1,12 +1,12 @@
 package br.com.desafio.petz.api.web.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
+import br.com.desafio.petz.api.converter.Converter;
+import br.com.desafio.petz.api.dto.PetDto;
+import br.com.desafio.petz.api.model.Pet;
+import br.com.desafio.petz.api.service.PetService;
+import br.com.desafio.petz.api.web.response.Response;
+import br.com.desafio.petz.api.web.response.ResponseApi;
+import br.com.desafio.petz.api.web.response.ResponseApiPaged;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import br.com.desafio.petz.api.converter.Converter;
-import br.com.desafio.petz.api.dto.PetDto;
-import br.com.desafio.petz.api.model.Pet;
-import br.com.desafio.petz.api.service.PetService;
-import br.com.desafio.petz.api.util.ConstanteUtil;
-import br.com.desafio.petz.api.web.exception.InternalServerException;
-import br.com.desafio.petz.api.web.response.Response;
-import br.com.desafio.petz.api.web.response.ResponseApi;
-import br.com.desafio.petz.api.web.response.ResponseApiPaged;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest")
@@ -110,7 +98,7 @@ public class PetController {
 		ResponseApi<PetDto> petResponse = new ResponseApi<>();
 		List<PetDto> listDataTtoResponse = new ArrayList<>();
 		
-		Pet pet = converter.converteDtoToEntity(dto);
+		Pet pet = converter.convertDtoToEntity(dto);
 		pet = service.salvar(pet);
 		
 		listDataTtoResponse.add(converter.convertToDto(pet));
@@ -130,7 +118,7 @@ public class PetController {
 		Optional<Pet> petOpt = service.buscarPorId(id);
 		Pet pet = null;
 		if (petOpt.isPresent()) {
-			pet = converter.converteDtoToEntity(dto, petOpt.get());
+			pet = converter.convertDtoToEntity(dto, petOpt.get());
 			pet.setId(id);
 			service.salvar(pet);
 		}

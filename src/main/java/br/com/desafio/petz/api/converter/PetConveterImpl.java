@@ -1,27 +1,26 @@
 package br.com.desafio.petz.api.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import br.com.desafio.petz.api.dto.PetDto;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.model.Pet;
 import br.com.desafio.petz.api.service.ClienteService;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service 
 public class PetConveterImpl implements Converter<Pet, PetDto> {
-	
-	
-	@Autowired
+
 	private ClienteService clienteService;
 	
-	
+	public PetConveterImpl(ClienteService clienteService){
+		this.clienteService = clienteService;
+	}
+
 	/**
 	 * Nesse converter o Dto usa o Padrão Builder
 	 */
@@ -30,14 +29,13 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 		if(pets == null) 
 			return new ArrayList<>(); 
 		
-		List<PetDto>  lista = null;
-		lista = pets.stream().map(pet -> {
-			return PetDto.builder().nome(pet.getNome()).
+		List<PetDto>  lista;
+		lista = pets.stream().map(pet -> PetDto.builder().
+					nome(pet.getNome()).
 					raca(pet.getRaca()).
 					dataNascimento(pet.getDataNascimento()).
-					build();
-					
-		}).collect(Collectors.toList());
+					build()
+		).collect(Collectors.toList());
 					
 		return lista;
 	}
@@ -53,7 +51,7 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 	}
 	
 	@Override
-	public Pet converteDtoToEntity(PetDto dto, Pet pet) {
+	public Pet convertDtoToEntity(PetDto dto, Pet pet) {
 		if(dto== null) return new Pet();
 		
 		Optional<Cliente> dono;
@@ -68,7 +66,7 @@ public class PetConveterImpl implements Converter<Pet, PetDto> {
 
 	
 	@Override
-	public Pet converteDtoToEntity(PetDto dto) {
+	public Pet convertDtoToEntity(PetDto dto) {
 		Pet pet = new Pet();
 		if(dto== null) return pet;
 		

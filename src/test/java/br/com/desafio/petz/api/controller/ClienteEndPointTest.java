@@ -73,9 +73,6 @@ public class ClienteEndPointTest {
 	private ClienteService service;
 		
 	@Autowired
-	private ObjectMapper objectMapper;
-	
-	@Autowired
 	private JwtTokenUtil jwtService;
 	
 	@Autowired
@@ -160,7 +157,7 @@ public class ClienteEndPointTest {
 				String.class,
 				ClienteEndPointTest.CLIENTE);
 
-		assertThat(response.getBody().contains(ClienteEndPointTest.CLIENTE)).isTrue();
+		assertThat(response.getBody()).contains(ClienteEndPointTest.CLIENTE);
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
 	}
 	

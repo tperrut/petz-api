@@ -1,13 +1,12 @@
 package br.com.desafio.petz.api.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.desafio.petz.api.enuns.PerfilEnum;
+import br.com.desafio.petz.api.model.Cliente;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import br.com.desafio.petz.api.enuns.PerfilEnum;
-import br.com.desafio.petz.api.model.Cliente;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JwtUserFactory {
 	
@@ -32,7 +31,7 @@ public class JwtUserFactory {
 	 * @return List<GrantedAuthority>
 	 */
 	private static List<GrantedAuthority> mapToGrantedAuthorities(PerfilEnum perfilEnum) {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(perfilEnum.toString()));
 		return authorities;
 	}

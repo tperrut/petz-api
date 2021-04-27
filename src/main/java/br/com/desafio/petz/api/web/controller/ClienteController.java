@@ -126,7 +126,7 @@ public class ClienteController {
 		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
-		cliente = converter.converteDtoToEntity(dto);
+		cliente = converter.convertDtoToEntity(dto);
 		cliente = service.salvar(cliente);
 		listDataTtoResponse.add(converter.convertToDto(cliente));
 		clienteResponse.setData(listDataTtoResponse);
@@ -139,7 +139,7 @@ public class ClienteController {
 	 * Esse método pode alterar alguma propriedade do
 	 * Cliente.
 	 * 
-	 * @param IdCliente {@code }
+	 * @param id {@code }
 	 * 
 	 * @param id
 	 * @return 204 No Content.
@@ -153,7 +153,7 @@ public class ClienteController {
 
 		clienteOpt = service.buscarPorId(id);
 		if (clienteOpt.isPresent()) {
-			cliente = converter.converteDtoToEntity(dto, clienteOpt.get());
+			cliente = converter.convertDtoToEntity(dto, clienteOpt.get());
 			service.alterar(cliente);
 		}
 		

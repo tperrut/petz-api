@@ -108,7 +108,7 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override 	@Transactional(readOnly = true)
 	public Optional<Cliente> buscarPorEmail(String email) throws EmailNotFoundException{
-		return Optional.of(dao.findByEmail(email).orElseThrow(() -> new EmailNotFoundException()));
+		return Optional.of(dao.findByEmail(email).orElseThrow(EmailNotFoundException::new));
 	}
 
 

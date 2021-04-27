@@ -127,7 +127,7 @@ public class ClienteRepositoryTest {
 		Long id = cliente.getId();
 		Optional<Cliente> resposta = repository.findById(id);
 		
-		assertThat(resposta.isPresent()).isTrue();
+		assertThat(resposta).isPresent();
 		assertThat(resposta.get().getId()).isEqualTo(id);
 		assertThat(resposta.get().getNome()).isEqualTo(CLIENTE_TESTE);
 		assertThat(resposta.get().getDataNascimento()).isEqualTo(cliente.getDataNascimento());
@@ -141,7 +141,7 @@ public class ClienteRepositoryTest {
 
 		Optional<List<Cliente>> resposta = repository.findByNome(cliente.getNome());
 		
-		assertThat(resposta.isPresent()).isTrue();
+		assertThat(resposta).isPresent();
 		assertThat(resposta.get().isEmpty()).isFalse();
 		assertThat(resposta.get().get(0).getNome()).isEqualTo(CLIENTE_TESTE);
 	}
@@ -153,7 +153,7 @@ public class ClienteRepositoryTest {
 		Long id = cliente.getId();
 		this.repository.delete(cliente);
 		Optional<Cliente> retorno =  this.repository.findById(id);
-		assertThat(retorno.isPresent()).isFalse();
+		assertThat(retorno).isPresent();
 	}
 	
 

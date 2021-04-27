@@ -6,12 +6,12 @@ import java.util.List;
 public interface Converter<T, E> {
 	
 		
-		T converteDtoToEntity(E dto, T entity);
+		T convertDtoToEntity(E dto, T entity);
 		
-		T converteDtoToEntity(E dto);
+		T convertDtoToEntity(E dto);
 		
 		E convertToDto(T entry);
 
-		List<E> convertListToListDto(List<T> lista);
+		List<E> convertListToListDto(List<T> list);
 
 }

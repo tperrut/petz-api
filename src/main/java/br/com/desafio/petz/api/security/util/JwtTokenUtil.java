@@ -39,7 +39,7 @@ public class JwtTokenUtil {
 			if(claims != null)
 				username = claims.getSubject();
 		} catch (Exception e) {
-			username = null;
+			return username;
 		}
 		return username;
 	}
@@ -51,13 +51,13 @@ public class JwtTokenUtil {
 	 * @return Date
 	 */
 	public Date getExpirationDateFromToken(String token) {
-		Date expiration= null;
+		Date expiration = null;
 		try {
 			Claims claims = getClaimsFromToken(token);
 			if(claims != null)
 				expiration = claims.getExpiration();
 		} catch (Exception e) {
-			expiration = null;
+			return expiration;
 		}
 		return expiration;
 	}
@@ -69,14 +69,14 @@ public class JwtTokenUtil {
 	 * @return String
 	 */
 	public String refreshToken(String token) {
-		String refreshedToken;
+		String refreshedToken = null;
 		try {
 			Claims claims = getClaimsFromToken(token);
 			if(claims != null)
 				claims.put(CLAIM_KEY_CREATED, new Date());
 			refreshedToken = gerarToken(claims);
 		} catch (Exception e) {
-			refreshedToken = null;
+			return refreshedToken;
 		}
 		return refreshedToken;
 	}
@@ -99,11 +99,10 @@ public class JwtTokenUtil {
 	 */
 	public String obterToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		if (claims != null) {
-			claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-			userDetails.getAuthorities().forEach(authority -> claims.put(CLAIM_KEY_ROLE, authority.getAuthority()));
-			claims.put(CLAIM_KEY_CREATED, new Date());
-		}
+		claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+		userDetails.getAuthorities().forEach(authority -> claims.put(CLAIM_KEY_ROLE, authority.getAuthority()));
+		claims.put(CLAIM_KEY_CREATED, new Date());
+
 		return gerarToken(claims);
 	}
 
@@ -115,11 +114,11 @@ public class JwtTokenUtil {
 	 * @return Claims
 	 */
 	private Claims getClaimsFromToken(String token) {
-		Claims claims;
+		Claims claims = null;
 		try {
 			claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 		} catch (Exception e) {
-			claims = null;
+			return claims;
 		}
 		return claims;
 	}

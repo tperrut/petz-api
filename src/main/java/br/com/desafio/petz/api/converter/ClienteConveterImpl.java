@@ -22,8 +22,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		try {
 			if(clientes.isEmpty()) return new ArrayList<>(); 
 			
-			List<ClienteDto>  lista = null;
-			lista = clientes.stream().map(cliente -> createNewDto(cliente)).collect(Collectors.toList());
+			List<ClienteDto>  lista;
+			lista = clientes.stream().map(Cliente::createNewDto).collect(Collectors.toList());
 						
 			return lista;
 		} catch (Exception e) {
@@ -32,13 +32,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		}
 	}
 
-
-
 	private ClienteDto createNewDto(Cliente cliente) {
-		return new ClienteDto(cliente.getNome(),
-				cliente.getEmail(),
-				cliente.getDataNascimento(),
-				cliente.getPerfil(), cliente.getSenha());
+		return Cliente.createNewDto(cliente);
 	}
 
 	@Override
@@ -49,10 +44,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		return createNewDto(cliente);
 	}
 
-	
-
 	@Override
-	public Cliente converteDtoToEntity(ClienteDto dto, Cliente cliente) {
+	public Cliente convertDtoToEntity(ClienteDto dto, Cliente cliente) {
 		 try {
 			return	createClienteForUpdate(dto,cliente);
 		} catch (Exception e) {
@@ -61,7 +54,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	}
 	
 	@Override
-	public Cliente converteDtoToEntity(ClienteDto dto) {
+	public Cliente convertDtoToEntity(ClienteDto dto) {
 		 try {
 			return	createClienteForSave(dto);
 		} catch (Exception e) {

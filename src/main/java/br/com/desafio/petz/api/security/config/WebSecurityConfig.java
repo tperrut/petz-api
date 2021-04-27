@@ -1,5 +1,6 @@
 package br.com.desafio.petz.api.security.config;
 
+import br.com.desafio.petz.api.web.exception.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws AuthException {
 		return new JwtAuthenticationTokenFilter();
 	}
 
