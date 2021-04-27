@@ -3,8 +3,6 @@ package br.com.desafio.petz.api.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.desafio.petz.api.dao.ClienteRepository;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.web.exception.BusinessException;
+import br.com.desafio.petz.api.web.exception.EmailNotFoundException;
 import br.com.desafio.petz.api.web.exception.NameNotFoundException;
 import br.com.desafio.petz.api.web.exception.ResourceNotFoundException;
 
@@ -53,14 +52,9 @@ public class ClienteServiceImpl implements ClienteService {
 		
 	}
 	
-	
-	public Optional<Cliente> getClienteById(Long id) {
-		 return dao.findById(id);
-	}
-
-	private void verificarSeClienteExiste(Long id) {
-		Cliente cliente = dao.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id.toString()));
+	@Override
+	public void verificarSeClienteExiste(Long id) throws ResourceNotFoundException {
+		dao.findById(id).orElseThrow(() -> new ResourceNotFoundException("CLIENTE ID " + id));
 	}
 
 	@Override
@@ -97,7 +91,7 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 			return dao.findAll(pageable);
 		} catch (Exception e) {
-			throw new BusinessException("ERRO INTERNO -> findAll ( pageable ) ");
+			throw new BusinessException("ERRO INTERNO -> findAll ( pageable ) ", e);
 		}
 	}
 
@@ -110,6 +104,11 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new BusinessException("ERRO INTERNO -> findAll");
 
 		}
+	}
+
+	@Override 	@Transactional(readOnly = true)
+	public Optional<Cliente> buscarPorEmail(String email) throws EmailNotFoundException{
+		return Optional.of(dao.findByEmail(email).orElseThrow(EmailNotFoundException::new));
 	}
 
 

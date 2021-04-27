@@ -1,35 +1,29 @@
 package br.com.desafio.petz.api.model;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-
+import br.com.desafio.petz.api.dto.ClienteDto;
+import br.com.desafio.petz.api.enuns.PerfilEnum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "Cliente")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Cliente implements Serializable {
 	
+	private static final long serialVersionUID = 4257771624784337787L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
@@ -50,19 +44,23 @@ public class Cliente implements Serializable {
 	@Column(nullable = false)
 	private String nome;
 	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PerfilEnum perfil;
+	
+	@Column(nullable = false)
+	private String senha;
 	
 	public Cliente(Long id) {
 		this.id = id;
 	}
-	
-	public Cliente(String nomeParam, LocalDate dtNascimento, String emailParam) {
-		this.nome = nomeParam;
-		this.dataNascimento = dtNascimento;
-		this.email= emailParam;
+
+	public static ClienteDto createNewDto(Cliente cliente) {
+		return new ClienteDto(cliente.getNome(),
+				cliente.getEmail(),
+				cliente.getDataNascimento(),
+				cliente.getPerfil(), cliente.getSenha());
 	}
-	
-	
-	
 }
 		
 		

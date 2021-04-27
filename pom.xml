@@ -6,7 +6,7 @@
 
 	<groupId>desafio.petz</groupId>
 	<artifactId>petz-api</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<name>petz-api</name>
 	<description>Desafio interview </description>
 
@@ -20,6 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+
 		<!-- Organization and project keys are displayed in the right sidebar of the project homepage -->
 		<sonar.organization>tperrut</sonar.organization>
 		<sonar.projectKey>tperrut_petz-api</sonar.projectKey>
@@ -39,15 +40,8 @@
     </scm>
     
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+	
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -58,6 +52,13 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<!--Database  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -76,7 +77,8 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+		
+		<!-- Swagger e Swagger UI -->
 		<dependency>
 			<groupId>io.springfox </groupId>
 			<artifactId>springfox-swagger2 </artifactId>
@@ -88,7 +90,8 @@
 			<artifactId>springfox-swagger-ui </artifactId>
 			<version>2.6.1 </version>
 		</dependency>
-
+		
+		<!-- Ehcache  -->
 		<dependency>
 			<groupId>net.sf.ehcache </groupId>
 			<artifactId>ehcache</artifactId>
@@ -99,13 +102,47 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		
+		
+		
+		<!-- Token Jwt -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
+		</dependency>
+		
+		<!-- Security  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		</dependency>
+		
+		<!-- To test Spring Security with JUnit, we need the spring-security-test dependency:  -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.1.6.RELEASE</version>
+		</dependency>
+
 	</dependencies>
+	
 
 	<build>
 		<resources>
@@ -115,10 +152,26 @@
 			</resource>
 		</resources>
 		<plugins>
+			<!-- Config Plugin Flyway-->
+			<plugin>
+			    <groupId>org.flywaydb</groupId>
+			    <artifactId>flyway-maven-plugin</artifactId>
+			    <version>4.0.3</version>
+			    <configuration>
+			        <user>root</user>
+			        <!--suppress UnresolvedMavenProperty -->
+					<password>${env.PASSWORD_DB}</password>
+			        <schemas>
+			            <schema>petz</schema>
+			        </schemas>
+					<locations>src/main/resources/db/migration/mysql</locations>
+			    </configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!--maven-help-plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-help-plugin</artifactId>
@@ -132,16 +185,15 @@
 					</execution>
 				</executions>
 			</plugin>
-
-		      
+			<!--Coverage jacoco -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.6</version>
 				<configuration>
 					<excludes>
-						<exclude>in/sivalabs/freelancerkit/entities/*</exclude>
-						<exclude>in/sivalabs/freelancerkit/*Application</exclude>
+						<exclude>**/main/resources/**</exclude>
+						<exclude>**/test/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -158,7 +210,13 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
-						
+						<configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>target/jacoco-ut</outputDirectory>
+                        </configuration>
 					</execution>
 					
 					<execution>
@@ -166,15 +224,16 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
+						<phase>test</phase>
 						
 						<configuration>
 		                    <rules>
-		                        <rule>
+		                       <rule>
 			                        <limits>
 			                           <limit>
 									        <counter>COMPLEXITY</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.60</minimum>
+											<minimum>0.50</minimum>
 									   </limit>
 			                        </limits>
 		                        </rule>
@@ -183,10 +242,11 @@
 					</execution>
 				</executions>
 			</plugin>
+			  
 		</plugins>
 		<pluginManagement>
 			<plugins>
-			
+				<!--Config Sonar plugin-->
 		      <plugin>
 		        <groupId>org.sonarsource.scanner.maven</groupId>
 		        <artifactId>sonar-maven-plugin</artifactId>
@@ -195,7 +255,7 @@
 		          <goalPrefix>sonar</goalPrefix>
 		        </configuration>
 		      </plugin>
-		      
+		       <!-- Configuração do jib-maven-plugin -->
 		       <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
@@ -215,7 +275,39 @@
                     </container>
                 </configuration>
             </plugin>
-		    </plugins>
+		       <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+		       <plugin>
+		       	<groupId>org.eclipse.m2e</groupId>
+		       	<artifactId>lifecycle-mapping</artifactId>
+		       	<version>1.0.0</version>
+		       	<configuration>
+		       		<lifecycleMappingMetadata>
+		       			<pluginExecutions>
+		       				<pluginExecution>
+		       					<pluginExecutionFilter>
+		       						<groupId>
+		       							org.apache.maven.plugins
+		       						</groupId>
+		       						<artifactId>
+		       							maven-help-plugin
+		       						</artifactId>
+		       						<versionRange>
+		       							[3.1.1,)
+		       						</versionRange>
+		       						<goals>
+		       							<goal>active-profiles</goal>
+		       						</goals>
+		       					</pluginExecutionFilter>
+		       					<action>
+		       						<ignore></ignore>
+		       					</action>
+		       				</pluginExecution>
+		       			</pluginExecutions>
+		       		</lifecycleMappingMetadata>
+		       	</configuration>
+		       </plugin>
+		     
+			</plugins>
 		</pluginManagement>
 	</build>
 
@@ -251,7 +343,6 @@
 			<activation>
 				<!-- this profile is active by default -->
 				<activeByDefault>false</activeByDefault>
-				<!-- activate if system properties 'env=prod' -->
 				<property>
 					<name>env</name>
 					<value>prod</value>
@@ -266,7 +357,6 @@
 			<activation>
 				<!-- this profile is active by default -->
 				<activeByDefault>false</activeByDefault>
-				<!-- activate if system properties 'env=prod' -->
 				<property>
 					<name>env</name>
 					<value>docker</value>
@@ -276,13 +366,11 @@
 				<env>docker</env>
 			</properties>
 		</profile>
-			
 		<profile>
 			<id>dev</id>
 			<activation>
 				<!-- this profile is active by default -->
 				<activeByDefault>false</activeByDefault>
-				<!-- activate if system properties 'env=dev' -->
 				<property>
 					<name>env</name>
 					<value>dev</value>

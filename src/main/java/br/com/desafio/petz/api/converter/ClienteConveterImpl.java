@@ -1,4 +1,4 @@
-package br.com.desafio.petz.api.service.conveter;
+package br.com.desafio.petz.api.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
+import br.com.desafio.petz.api.util.PasswordUtils;
 import br.com.desafio.petz.api.web.exception.BusinessException;
 
 @Service 
@@ -21,8 +22,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		try {
 			if(clientes.isEmpty()) return new ArrayList<>(); 
 			
-			List<ClienteDto>  lista = null;
-			lista = clientes.stream().map(cliente -> createNewDto(cliente)).collect(Collectors.toList());
+			List<ClienteDto>  lista;
+			lista = clientes.stream().map(Cliente::createNewDto).collect(Collectors.toList());
 						
 			return lista;
 		} catch (Exception e) {
@@ -31,12 +32,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		}
 	}
 
-
-
 	private ClienteDto createNewDto(Cliente cliente) {
-		return new ClienteDto(cliente.getNome(),
-				cliente.getEmail(),
-				cliente.getDataNascimento());
+		return Cliente.createNewDto(cliente);
 	}
 
 	@Override
@@ -47,10 +44,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		return createNewDto(cliente);
 	}
 
-	
-
 	@Override
-	public Cliente converteDtoToEntity(ClienteDto dto, Cliente cliente) {
+	public Cliente convertDtoToEntity(ClienteDto dto, Cliente cliente) {
 		 try {
 			return	createClienteForUpdate(dto,cliente);
 		} catch (Exception e) {
@@ -59,7 +54,7 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 	}
 	
 	@Override
-	public Cliente converteDtoToEntity(ClienteDto dto) {
+	public Cliente convertDtoToEntity(ClienteDto dto) {
 		 try {
 			return	createClienteForSave(dto);
 		} catch (Exception e) {
@@ -82,7 +77,8 @@ public class ClienteConveterImpl implements Converter<Cliente, ClienteDto> {
 		if(dto.getNome() != null) cliente.setNome(dto.getNome());
 		if(dto.getEmail()!= null) cliente.setEmail(dto.getEmail());
 		if(dto.getDataNascimento() != null) cliente.setDataNascimento(dto.getDataNascimento());
-				
+		if(dto.getSenha() != null) cliente.setSenha(PasswordUtils.gerarBCrypt(dto.getSenha()));		
+		if(dto.getPerfil() != null) cliente.setPerfil(dto.getPerfil());		
 	}
 
 }

@@ -15,8 +15,11 @@ script:
   - echo "Iniciando Fase d _script ---> Build e testes da aplicação ---> "
   - BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
   - echo "Versão da API - ${BUILD_VERSION}" 
- 
-  - ./mvnw clean package install -DskipTests=true
+#  - ./mvnw dependency:purge-local-repository clean install
+  - ./mvnw clean package install -Dspring.profiles.active=dev -DskipTests
+#  - ./mvnw flyway:migrate
+  - ./deployment/run-tests.sh
+
  
 deploy:
   provider: heroku

@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.desafio.petz.api.converter.Converter;
 import br.com.desafio.petz.api.dto.ClienteDto;
 import br.com.desafio.petz.api.model.Cliente;
 import br.com.desafio.petz.api.service.ClienteService;
-import br.com.desafio.petz.api.service.conveter.Converter;
 import br.com.desafio.petz.api.web.response.Response;
 import br.com.desafio.petz.api.web.response.ResponseApi;
 import br.com.desafio.petz.api.web.response.ResponseApiPaged;
@@ -84,6 +84,7 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/clientes/{id}")
+	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> getClienteById(@PathVariable Long id) {
 		logger.info("BUSCAR CLIENTE {}" , id);
 		
@@ -125,7 +126,7 @@ public class ClienteController {
 		List<ClienteDto> listDataTtoResponse = new ArrayList<>();
 		ResponseApi<ClienteDto> clienteResponse = new ResponseApi<>();
 
-		cliente = converter.converteDtoToEntity(dto);
+		cliente = converter.convertDtoToEntity(dto);
 		cliente = service.salvar(cliente);
 		listDataTtoResponse.add(converter.convertToDto(cliente));
 		clienteResponse.setData(listDataTtoResponse);
@@ -138,13 +139,13 @@ public class ClienteController {
 	 * Esse método pode alterar alguma propriedade do
 	 * Cliente.
 	 * 
-	 * @param IdCliente {@code }
+	 * @param id {@code }
 	 * 
 	 * @param id
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/clientes/{id}")
-	
+	@PreAuthorize("hasAnyRole('USUARIO')")
 	public ResponseEntity<Object> alterarCliente(@RequestBody ClienteDto dto, @PathVariable Long id) {
 		logger.info("UPDATE CLIENTE id: {}" , id);
 		Optional<Cliente> clienteOpt;
@@ -152,7 +153,7 @@ public class ClienteController {
 
 		clienteOpt = service.buscarPorId(id);
 		if (clienteOpt.isPresent()) {
-			cliente = converter.converteDtoToEntity(dto, clienteOpt.get());
+			cliente = converter.convertDtoToEntity(dto, clienteOpt.get());
 			service.alterar(cliente);
 		}
 		
@@ -161,6 +162,7 @@ public class ClienteController {
 	}		
 
 	@DeleteMapping("/clientes/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Object> excluirCliente(@PathVariable Long id) {
 		logger.info("Excluir cliente id: {}", id);
 

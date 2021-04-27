@@ -3,13 +3,15 @@ package br.com.desafio.petz.api.web.error;
 import java.util.Date;
 
 public class ErrorDetail {
-	
+
+
 	protected String titulo;
 	protected String detalhe;
 	protected int statusCode;
 	protected Date timestamp;
 	protected String developerMessage;
-	
+
+
 	public String getTitulo() {
 		return titulo;
 	}

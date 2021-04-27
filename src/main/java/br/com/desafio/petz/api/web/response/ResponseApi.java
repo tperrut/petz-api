@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ResponseApi<T> implements Response<T>{
 	
 	private List<T> data;
-	private Set<String> erros = new HashSet<String>();
+	private Set<String> erros = new HashSet<>();
 	
 	@Override
 	public Set<String> getErros() {

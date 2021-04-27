@@ -30,6 +30,6 @@ public class ConstanteUtil {
 	public static final String ERRO_CANCELAR_CLIENTE=" Contate o admin! Erro ao Cancelar CLIENTE [ID={}].";
 	public static final String ERRO_NOT_PENDING = "CLIENTE [ID=%s] deve estar com o status PENDING";
 	
-
+	private ConstanteUtil(){}
 
 }	
