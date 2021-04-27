@@ -153,7 +153,7 @@ public class ClienteRepositoryTest {
 		Long id = cliente.getId();
 		this.repository.delete(cliente);
 		Optional<Cliente> retorno =  this.repository.findById(id);
-		assertThat(retorno).isPresent();
+		assertThat(retorno).isEmpty();
 	}
 	
 

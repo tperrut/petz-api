@@ -132,7 +132,7 @@ public class PetRepositoryTest {
 		Long id = pet.getId();
 		this.petRepository.delete(pet);
 		Optional<Pet> retorno =  this.petRepository.findById(id);
-		assertThat(retorno).isPresent();
+		assertThat(retorno).isEmpty();
 	}
 	
 

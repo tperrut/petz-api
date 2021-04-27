@@ -81,7 +81,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public @ResponseBody ErrorDetail duplicateEmailException(DataIntegrityViolationException e) {
 		ErrorDetail ex = ErrorDetailBuilder.withBuilder().
 				withDetalhe(e.getRootCause().getMessage()).
-				withDeveloperMessage(DataIntegrityViolationException.class.getName()).
+				withDeveloperMessage(BusinessException.class.getName()).
 				withStatusCode(HttpStatus.CONFLICT.value()).
 				withTimestamp(new Date()).
 				withTitulo("Erro: Email já cadastrado ou vazio!").
